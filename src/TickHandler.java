@@ -1,12 +1,13 @@
 import java.util.EnumSet;
-import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 
@@ -29,6 +30,9 @@ public class TickHandler implements ITickHandler{
                 if(lookedObject.typeOfHit == EnumMovingObjectType.ENTITY) {
                     if(lastEntityHovered == lookedObject.entityHit) {
                         ticksHovered++;
+                        if(ticksHovered == 20) {
+                            System.out.println("entity: " + lookedObject.entityHit.getEntityName());
+                        }
                         xHovered = 0;
                         yHovered = 0;
                         zHovered = 0;
@@ -46,10 +50,10 @@ public class TickHandler implements ITickHandler{
                         if(ticksHovered == 40) {
                             Block block = Block.blocksList[player.worldObj.getBlockId(xHovered, yHovered, zHovered)];
                             if(block != null) {
-                                List<String> infoList = InfoSupplier.getInfo(Paths.WIKI_PATH + block.getUnlocalizedName().replace("tile.", "block/"));
-                                for(String line : infoList) {
-                                    player.addChatMessage(line);
-                                }
+                                GuiBlockWiki gui = new GuiBlockWiki();
+                                FMLCommonHandler.instance().showGuiScreen(gui);
+                                gui.setCurrentFile(Paths.WIKI_PATH + block.getUnlocalizedName().replace("tile.", "block/"), new ItemStack(block.blockID, 1, player.worldObj.getBlockMetadata(xHovered, yHovered, zHovered)));
+
                             }
                         }
                     } else {
