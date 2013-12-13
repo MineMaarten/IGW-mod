@@ -1,4 +1,4 @@
-IGW-mod
+In-Game Wiki Mod
 =======
 
-ModJam 3 mod, of which the abbreviation (IGW) will remain secret until release.
+ModJam 3 mod, the In-Game Wiki Mod.
