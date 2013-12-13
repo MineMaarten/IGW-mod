@@ -47,7 +47,8 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
     private static EnumWikiSection curSection = EnumWikiSection.BLOCK_AND_ITEM;
 
     private static Entity curEntity;
-    private static List<Entity> entityList = new ArrayList<Entity>();
+    private static List<Entity> filteredEntityList = new ArrayList<Entity>();
+    private static List<Entity> shownEntityList = new ArrayList<Entity>();
 
     private enum EnumWikiSection{
         BLOCK_AND_ITEM, ENTITIES
@@ -114,6 +115,13 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
                 curSection = EnumWikiSection.values()[i];
             }
         }
+        if(curSection == EnumWikiSection.ENTITIES) {
+            for(int i = 0; i < shownEntityList.size(); i++) {
+                if(x >= guiLeft + 41 && x <= guiLeft + 76 && y >= guiTop + 75 + i * 36 && y <= guiTop + 110 + i * 36) {
+                    setCurrentFile(Paths.WIKI_PATH + curEntity.getEntityName().replace(".name", "").replace("entity.", "entity/"), shownEntityList.get(i));
+                }
+            }
+        }
 
     }
 
@@ -121,6 +129,13 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
         currentFile = fileName;
         fileInfo = InfoSupplier.getInfo(fileName);
         drawingStack = stack;
+        updateWikiPage();
+    }
+
+    public void setCurrentFile(String fileName, Entity entity){
+        currentFile = fileName;
+        fileInfo = InfoSupplier.getInfo(fileName);
+        curEntity = entity;
         updateWikiPage();
     }
 
@@ -166,12 +181,12 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
     }
 
     private void updateEntitySearch(){
-        entityList.clear();
+        filteredEntityList.clear();
         Set<String> set = EntityList.stringToClassMapping.keySet();
         String textFieldText = searchField.getSelectedtext().toLowerCase();
         for(String key : set) {
             if(EntityLivingBase.class.isAssignableFrom((Class)EntityList.stringToClassMapping.get(key)) && key.toLowerCase().contains(textFieldText)) {
-                entityList.add(EntityList.createEntityByName(key, FMLClientHandler.instance().getClient().theWorld));
+                filteredEntityList.add(EntityList.createEntityByName(key, FMLClientHandler.instance().getClient().theWorld));
             }
         }
         currentScroll = 0.0F;
@@ -246,7 +261,7 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
      * returns (if you are not on the inventoryTab) and (the flag isn't set) and( you have more than 1 page of items)
      */
     private boolean needsScrollBars(){
-        return ((ContainerBlockWiki)inventorySlots).hasMoreThan1PageOfItemsInList();
+        return curSection == EnumWikiSection.BLOCK_AND_ITEM ? ((ContainerBlockWiki)inventorySlots).hasMoreThan1PageOfItemsInList() : filteredEntityList.size() > 4;
     }
 
     /**
@@ -258,7 +273,7 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
         int i = Mouse.getEventDWheel();
 
         if(i != 0 && needsScrollBars()) {
-            int j = ((ContainerBlockWiki)inventorySlots).itemList.size() / 8 - 9 + 1;
+            int j = curSection == EnumWikiSection.BLOCK_AND_ITEM ? ((ContainerBlockWiki)inventorySlots).itemList.size() / 8 - 9 + 1 : filteredEntityList.size() - 4 + 1;
 
             if(i > 0) {
                 i = 1;
@@ -278,7 +293,25 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
                 currentScroll = 1.0F;
             }
 
-            ((ContainerBlockWiki)inventorySlots).scrollTo(currentScroll);
+            if(curSection == EnumWikiSection.BLOCK_AND_ITEM) {
+                ((ContainerBlockWiki)inventorySlots).scrollTo(currentScroll);
+            } else {
+                scrollEntityListTo(currentScroll);
+            }
+        }
+    }
+
+    private void scrollEntityListTo(float scroll){
+        int scrollPossibilities = filteredEntityList.size() - 4 + 1;
+        int currentIndex = (int)(scroll * scrollPossibilities + 0.5D);
+
+        if(currentIndex < 0) {
+            currentIndex = 0;
+        }
+
+        shownEntityList.clear();
+        for(int i = currentIndex; i < currentIndex + 4 && i < filteredEntityList.size(); i++) {
+            shownEntityList.add(filteredEntityList.get(i));
         }
     }
 
@@ -322,9 +355,9 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
         super.drawScreen(par1, par2, partialTicks);
 
         if(curSection == EnumWikiSection.ENTITIES) {
-            drawEntity(curEntity, guiLeft + 65, guiTop + 40, partialTicks);
-            for(int i = 0; i < entityList.size(); i++) {
-                drawEntity(entityList.get(i), guiLeft + 40, guiTop + 70 + i * 36, partialTicks);
+            drawEntity(curEntity, guiLeft + 65, guiTop + 40, 1, partialTicks);
+            for(int i = 0; i < shownEntityList.size(); i++) {
+                drawEntity(shownEntityList.get(i), guiLeft + 60, guiTop + 70 + i * 36, 0.5F, partialTicks);
             }
         }
 
@@ -332,11 +365,12 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
         GL11.glDisable(GL11.GL_LIGHTING);
     }
 
-    private void drawEntity(Entity entity, int x, int y, float partialTicks){
+    private void drawEntity(Entity entity, int x, int y, float size, float partialTicks){
         if(entity != null) {
             GL11.glPushMatrix();
             GL11.glTranslated(x, y, 0);
-            GL11.glScaled(20, -20, -20);
+            float maxHitboxComponent = Math.max(entity.width, entity.height);
+            GL11.glScaled(40 * size / maxHitboxComponent, -40 * size, -40 * size);
             //GL11.glRotated(20, 1, 0, 1);
             GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
             GL11.glRotated(TickHandler.ticksExisted + partialTicks, 0, 1, 0);
