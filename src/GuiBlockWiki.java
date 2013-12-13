@@ -4,11 +4,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderCreeper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.I18n;
@@ -16,6 +15,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryBasic;
@@ -44,12 +45,9 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
     private static List<String> fileInfo = new ArrayList<String>();
     private static ItemStack drawingStack;
     private static EnumWikiSection curSection = EnumWikiSection.BLOCK_AND_ITEM;
-    private static Render curEntityRenderer = new RenderCreeper();
-    private static Entity curEntity;
 
-    static {
-        curEntityRenderer.setRenderManager(RenderManager.instance);
-    }
+    private static Entity curEntity;
+    private static List<Entity> entityList = new ArrayList<Entity>();
 
     private enum EnumWikiSection{
         BLOCK_AND_ITEM, ENTITIES
@@ -142,6 +140,7 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
         searchField.setCanLoseFocus(false);
         // searchField.setTextColor(16777215);
         updateCreativeSearch();
+        updateEntitySearch();
     }
 
     /**
@@ -160,38 +159,54 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
     protected void keyTyped(char par1, int par2){
         if(searchField.textboxKeyTyped(par1, par2)) {
             updateCreativeSearch();
+            updateEntitySearch();
         } else {
             super.keyTyped(par1, par2);
         }
+    }
+
+    private void updateEntitySearch(){
+        entityList.clear();
+        Set<String> set = EntityList.stringToClassMapping.keySet();
+        String textFieldText = searchField.getSelectedtext().toLowerCase();
+        for(String key : set) {
+            if(EntityLivingBase.class.isAssignableFrom((Class)EntityList.stringToClassMapping.get(key)) && key.toLowerCase().contains(textFieldText)) {
+                entityList.add(EntityList.createEntityByName(key, FMLClientHandler.instance().getClient().theWorld));
+            }
+        }
+        currentScroll = 0.0F;
     }
 
     private void updateCreativeSearch(){
         ContainerBlockWiki containercreative = (ContainerBlockWiki)inventorySlots;
         containercreative.itemList.clear();
 
-        Item[] aitem = Item.itemsList;
-        int i = aitem.length;
-        int j;
+        if(curSection == EnumWikiSection.BLOCK_AND_ITEM) {
+            Item[] aitem = Item.itemsList;
+            int i = aitem.length;
+            int j;
 
-        for(j = 0; j < i; ++j) {
-            Item item = aitem[j];
+            for(j = 0; j < i; ++j) {
+                Item item = aitem[j];
 
-            if(item != null && item.getCreativeTab() != null) {
-                item.getSubItems(item.itemID, (CreativeTabs)null, containercreative.itemList);
+                if(item != null && item.getCreativeTab() != null) {
+                    item.getSubItems(item.itemID, (CreativeTabs)null, containercreative.itemList);
+                }
             }
-        }
 
-        Enchantment[] aenchantment = Enchantment.enchantmentsList;
-        i = aenchantment.length;
+            Enchantment[] aenchantment = Enchantment.enchantmentsList;
+            i = aenchantment.length;
 
-        for(j = 0; j < i; ++j) {
-            Enchantment enchantment = aenchantment[j];
+            for(j = 0; j < i; ++j) {
+                Enchantment enchantment = aenchantment[j];
 
-            if(enchantment != null && enchantment.type != null) {
-                Item.enchantedBook.func_92113_a(enchantment, containercreative.itemList);
+                if(enchantment != null && enchantment.type != null) {
+                    Item.enchantedBook.func_92113_a(enchantment, containercreative.itemList);
+                }
             }
+
+            updateFilteredItems(containercreative);
         }
-        updateFilteredItems(containercreative);
     }
 
     //split from above for custom search tabs
@@ -271,7 +286,7 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
      * Draws the screen and all the components in it.
      */
     @Override
-    public void drawScreen(int par1, int par2, float par3){
+    public void drawScreen(int par1, int par2, float partialTicks){
         boolean flag = Mouse.isButtonDown(0);
         int k = guiLeft;
         int l = guiTop;
@@ -304,18 +319,30 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
             ((ContainerBlockWiki)inventorySlots).scrollTo(currentScroll);
         }
 
-        super.drawScreen(par1, par2, par3);
+        super.drawScreen(par1, par2, partialTicks);
 
-        if(curEntityRenderer != null) {
-            GL11.glPushMatrix();
-            GL11.glTranslated(50, 50, 0);
-            GL11.glScaled(20, -20, -20);
-            curEntityRenderer.doRender(curEntity, 0, 0, 0, 0, 0);
-            GL11.glPopMatrix();
+        if(curSection == EnumWikiSection.ENTITIES) {
+            drawEntity(curEntity, guiLeft + 65, guiTop + 40, partialTicks);
+            for(int i = 0; i < entityList.size(); i++) {
+                drawEntity(entityList.get(i), guiLeft + 40, guiTop + 70 + i * 36, partialTicks);
+            }
         }
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glDisable(GL11.GL_LIGHTING);
+    }
+
+    private void drawEntity(Entity entity, int x, int y, float partialTicks){
+        if(entity != null) {
+            GL11.glPushMatrix();
+            GL11.glTranslated(x, y, 0);
+            GL11.glScaled(20, -20, -20);
+            //GL11.glRotated(20, 1, 0, 1);
+            GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
+            GL11.glRotated(TickHandler.ticksExisted + partialTicks, 0, 1, 0);
+            RenderManager.instance.renderEntityWithPosYaw(entity, 0D, 0D, 0.0D, 0, partialTicks);
+            GL11.glPopMatrix();
+        }
     }
 
     @Override
@@ -365,7 +392,7 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         // RenderHelper.enableGUIStandardItemLighting();
 
-        mc.getTextureManager().bindTexture(Textures.GUI_BLOCK_WIKI);
+        mc.getTextureManager().bindTexture(curSection == EnumWikiSection.BLOCK_AND_ITEM ? Textures.GUI_BLOCK_WIKI : Textures.GUI_ENTITY_WIKI);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
         searchField.drawTextBox();
         int i1 = guiLeft + SCROLL_X;
@@ -373,7 +400,7 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
         int l = k + SCROLL_HEIGHT;
         mc.getTextureManager().bindTexture(field_110424_t);
         drawTexturedModalRect(i1, k + (int)((l - k - 17) * currentScroll), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
-        drawSelectedStack();
+        if(curSection == EnumWikiSection.BLOCK_AND_ITEM) drawSelectedStack();
         drawWikiPage();
 
     }
@@ -476,54 +503,6 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
             return false;
         }
     }
-
-    /**
-     * Renders passed creative inventory tab into the screen.
-     */
-    /*
-    protected void renderCreativeTab(CreativeTabs par1CreativeTabs){
-        boolean flag = par1CreativeTabs.getTabIndex() == selectedTabIndex;
-        boolean flag1 = par1CreativeTabs.isTabInFirstRow();
-        int i = par1CreativeTabs.getTabColumn();
-        int j = i * 28;
-        int k = 0;
-        int l = guiLeft + 28 * i;
-        int i1 = guiTop;
-        byte b0 = 32;
-
-        if(flag) {
-            k += 32;
-        }
-
-        if(i == 5) {
-            l = guiLeft + xSize - 28;
-        } else if(i > 0) {
-            l += i;
-        }
-
-        if(flag1) {
-            i1 -= 28;
-        } else {
-            k += 64;
-            i1 += ySize - 4;
-        }
-
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glColor3f(1F, 1F, 1F); //Forge: Reset color in case Items change it.
-        drawTexturedModalRect(l, i1, j, k, 28, b0);
-        zLevel = 100.0F;
-        itemRenderer.zLevel = 100.0F;
-        l += 6;
-        i1 += 8 + (flag1 ? 1 : -1);
-        GL11.glEnable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        ItemStack itemstack = par1CreativeTabs.getIconItemStack();
-        itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), itemstack, l, i1);
-        itemRenderer.renderItemOverlayIntoGUI(fontRenderer, mc.getTextureManager(), itemstack, l, i1);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        itemRenderer.zLevel = 0.0F;
-        zLevel = 0.0F;
-    }*/
 
     /**
      * Returns the creative inventory

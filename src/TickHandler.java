@@ -17,6 +17,7 @@ public class TickHandler implements ITickHandler{
     private static int xHovered;
     private static int yHovered;
     private static int zHovered;
+    public static int ticksExisted;
 
     @Override
     public void tickStart(EnumSet<TickType> type, Object... tickData){}
@@ -25,6 +26,7 @@ public class TickHandler implements ITickHandler{
     public void tickEnd(EnumSet<TickType> type, Object... tickData){
         EntityPlayer player = (EntityPlayer)tickData[0];
         if(player == FMLClientHandler.instance().getClient().thePlayer) {
+            ticksExisted++;
             MovingObjectPosition lookedObject = WikiUtils.getPlayerLookedObject();
             if(lookedObject != null) {
                 if(lookedObject.typeOfHit == EnumMovingObjectType.ENTITY) {
