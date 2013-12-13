@@ -17,7 +17,6 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
@@ -80,6 +79,7 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
     private static final double TEXT_SCALE = 0.5;
     private static final int TEXT_START_X = 100;
     private static final int TEXT_START_Y = 10;
+    private static boolean wasInBlockSection = true;
 
     public GuiBlockWiki(){
         super(new ContainerBlockWiki());
@@ -91,7 +91,6 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
 
         customItemRenderer = new RenderItem();
         customItemRenderer.setRenderManager(RenderManager.instance);
-        curEntity = new EntityCreeper(player.worldObj);
     }
 
     @Override
@@ -118,7 +117,7 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
         if(curSection == EnumWikiSection.ENTITIES) {
             for(int i = 0; i < shownEntityList.size(); i++) {
                 if(x >= guiLeft + 41 && x <= guiLeft + 76 && y >= guiTop + 75 + i * 36 && y <= guiTop + 110 + i * 36) {
-                    setCurrentFile(Paths.WIKI_PATH + curEntity.getEntityName().replace(".name", "").replace("entity.", "entity/"), shownEntityList.get(i));
+                    setCurrentFile(Paths.WIKI_PATH + "entity/" + EntityList.getEntityString(shownEntityList.get(i)), shownEntityList.get(i));
                 }
             }
         }
@@ -320,6 +319,19 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
      */
     @Override
     public void drawScreen(int par1, int par2, float partialTicks){
+        if(wasInBlockSection != (curSection == EnumWikiSection.BLOCK_AND_ITEM)) {
+            wasInBlockSection = !wasInBlockSection;
+            if(wasInBlockSection) {
+                for(Slot slot : (List<Slot>)inventorySlots.inventorySlots) {
+                    slot.xDisplayPosition += 500;
+                }
+            } else {
+                for(Slot slot : (List<Slot>)inventorySlots.inventorySlots) {
+                    slot.xDisplayPosition -= 500;
+                }
+            }
+        }
+
         boolean flag = Mouse.isButtonDown(0);
         int k = guiLeft;
         int l = guiTop;
@@ -351,13 +363,11 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
 
             ((ContainerBlockWiki)inventorySlots).scrollTo(currentScroll);
         }
-
         super.drawScreen(par1, par2, partialTicks);
-
         if(curSection == EnumWikiSection.ENTITIES) {
             drawEntity(curEntity, guiLeft + 65, guiTop + 40, 1, partialTicks);
             for(int i = 0; i < shownEntityList.size(); i++) {
-                drawEntity(shownEntityList.get(i), guiLeft + 60, guiTop + 70 + i * 36, 0.5F, partialTicks);
+                drawEntity(shownEntityList.get(i), guiLeft + 58, guiTop + 103 + i * 36, 0.5F, partialTicks);
             }
         }
 
@@ -370,7 +380,7 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
             GL11.glPushMatrix();
             GL11.glTranslated(x, y, 0);
             float maxHitboxComponent = Math.max(entity.width, entity.height);
-            GL11.glScaled(40 * size / maxHitboxComponent, -40 * size, -40 * size);
+            GL11.glScaled(40 * size / maxHitboxComponent, -40 * size / maxHitboxComponent, -40 * size / maxHitboxComponent);
             //GL11.glRotated(20, 1, 0, 1);
             GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
             GL11.glRotated(TickHandler.ticksExisted + partialTicks, 0, 1, 0);
