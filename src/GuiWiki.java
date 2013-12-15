@@ -477,13 +477,11 @@ public class GuiWiki extends InventoryEffectRenderer{
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2){
         super.drawGuiContainerForegroundLayer(par1, par2);
-
-        GL11.glEnable(GL11.GL_LIGHTING);
-
         for(LocatedTexture texture : locatedTextures) {
             mc.getTextureManager().bindTexture(texture.texture);
             drawTexture(texture.x, texture.y, texture.width, texture.heigth);
         }
+        GL11.glEnable(GL11.GL_LIGHTING);
 
         if(curSection == EnumWikiSection.BLOCK_AND_ITEM) drawSelectedStack();
         for(LocatedStack locatedStack : locatedStacks) {
@@ -627,6 +625,9 @@ public class GuiWiki extends InventoryEffectRenderer{
         } else if(code.startsWith("shaped")) {
             WikiCommandRecipeIntegration.addShapedRecipe(code.substring(6), locatedStacks, locatedTextures, x, y);
             return new Rectangle(100, 60);
+        } else if(code.startsWith("furnace")) {
+            WikiCommandRecipeIntegration.addFurnaceRecipe(code.substring(7), locatedStacks, locatedTextures, x, y);
+            return new Rectangle(82, 54);
         }
         return new Rectangle(-4, 0);
     }

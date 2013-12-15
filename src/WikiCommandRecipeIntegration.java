@@ -39,4 +39,25 @@ public class WikiCommandRecipeIntegration{
         ItemStack resultStack = WikiUtils.getStackFromName(result);
         if(resultStack != null) locatedStacks.add(new LocatedStack(resultStack, x + RESULT_STACK_X_OFFSET + GuiWiki.TEXT_START_X, y + RESULT_STACK_Y_OFFSET + GuiWiki.TEXT_START_Y));
     }
+
+    /**
+     * 
+     * @param code example: {block/sand}block/glass
+     * @param locatedStacks
+     * @param locatedTextures
+     * @param x
+     * @param y
+     */
+    public static void addFurnaceRecipe(String code, List<LocatedStack> locatedStacks, List<LocatedTexture> locatedTextures, int x, int y){
+        locatedTextures.add(new LocatedTexture(TextureSupplier.getTexture(Paths.WIKI_PATH + "texture/GuiFurnace.png"), x + GuiWiki.TEXT_START_X, y + GuiWiki.TEXT_START_Y, 256, 256, 1));
+        String[] recipe = code.substring(1).split("}");
+        ItemStack inputStack = WikiUtils.getStackFromName(recipe[0]);
+        if(inputStack != null) {
+            locatedStacks.add(new LocatedStack(inputStack, x + STACKS_X_OFFSET + GuiWiki.TEXT_START_X, y + STACKS_Y_OFFSET + GuiWiki.TEXT_START_Y));
+        }
+        ItemStack resultStack = WikiUtils.getStackFromName(recipe[1]);
+        if(resultStack != null) {
+            locatedStacks.add(new LocatedStack(resultStack, x + STACKS_X_OFFSET + 61 + GuiWiki.TEXT_START_X, y + STACKS_Y_OFFSET + 19 + GuiWiki.TEXT_START_Y));
+        }
+    }
 }
