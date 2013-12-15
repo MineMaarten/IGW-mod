@@ -1,4 +1,5 @@
 import java.awt.Rectangle;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -8,6 +9,7 @@ import java.util.Set;
 
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.I18n;
@@ -39,7 +41,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 
 @SideOnly(Side.CLIENT)
-public class GuiBlockWiki extends InventoryEffectRenderer{
+public class GuiWiki extends InventoryEffectRenderer{
     private static String currentFile = "";
     private static List<String> fileInfo = new ArrayList<String>();
     private static ItemStack drawingStack;
@@ -48,6 +50,7 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
     private static Entity curEntity;
     private static List<Entity> filteredEntityList = new ArrayList<Entity>();
     private static List<Entity> shownEntityList = new ArrayList<Entity>();
+    private static List<Entity> totalEntityList;
 
     private enum EnumWikiSection{
         BLOCK_AND_ITEM, ENTITIES
@@ -55,6 +58,8 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
 
     private final List<LocatedStack> locatedStacks = new ArrayList<LocatedStack>();
     private final List<LocatedString> locatedStrings = new ArrayList<LocatedString>();
+    private final List<LocatedTexture> locatedTextures = new ArrayList<LocatedTexture>();
+
     private final RenderItem customItemRenderer;
 
     private static InventoryBasic inventory = new InventoryBasic("tmp", true, 36);
@@ -77,11 +82,15 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
     private static final int SCROLL_Y = 66;
     private static final int WRAP_LENGTH = 55;
     private static final double TEXT_SCALE = 0.5;
-    private static final int TEXT_START_X = 100;
-    private static final int TEXT_START_Y = 10;
-    private static boolean wasInBlockSection = true;
+    public static final int TEXT_START_X = 100;
+    public static final int TEXT_START_Y = 10;
+    private boolean wasInBlockSection = true;
 
-    public GuiBlockWiki(){
+    private int currentTextureWidth = 16;
+    private int currentTextureHeight = 16;
+    private float currentTextureSize = 1;
+
+    public GuiWiki(){
         super(new ContainerBlockWiki());
         EntityPlayer player = FMLClientHandler.instance().getClient().thePlayer;
         player.openContainer = inventorySlots;
@@ -117,7 +126,7 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
         if(curSection == EnumWikiSection.ENTITIES) {
             for(int i = 0; i < shownEntityList.size(); i++) {
                 if(x >= guiLeft + 41 && x <= guiLeft + 76 && y >= guiTop + 75 + i * 36 && y <= guiTop + 110 + i * 36) {
-                    setCurrentFile(Paths.WIKI_PATH + "entity/" + EntityList.getEntityString(shownEntityList.get(i)), shownEntityList.get(i));
+                    setCurrentFile(shownEntityList.get(i));
                 }
             }
         }
@@ -125,16 +134,16 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
     }
 
     public void setCurrentFile(ItemStack stack){
-        currentFile = Paths.WIKI_PATH + stack.getUnlocalizedName().replace("tile.", "block/");
+        currentFile = Paths.WIKI_PATH + stack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/");
         fileInfo = InfoSupplier.getInfo(currentFile);
         drawingStack = stack;
         curSection = EnumWikiSection.BLOCK_AND_ITEM;
         updateWikiPage();
     }
 
-    public void setCurrentFile(String fileName, Entity entity){
-        currentFile = fileName;
-        fileInfo = InfoSupplier.getInfo(fileName);
+    public void setCurrentFile(Entity entity){
+        currentFile = Paths.WIKI_PATH + "entity/" + EntityList.getEntityString(entity);
+        fileInfo = InfoSupplier.getInfo(currentFile);
         curEntity = entity;
         curSection = EnumWikiSection.ENTITIES;
         updateWikiPage();
@@ -184,13 +193,23 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
     private void updateEntitySearch(){
         filteredEntityList.clear();
         Set<String> set = EntityList.stringToClassMapping.keySet();
-        String textFieldText = searchField.getSelectedtext().toLowerCase();
-        for(String key : set) {
-            if(EntityLivingBase.class.isAssignableFrom((Class)EntityList.stringToClassMapping.get(key)) && key.toLowerCase().contains(textFieldText)) {
-                filteredEntityList.add(EntityList.createEntityByName(key, FMLClientHandler.instance().getClient().theWorld));
+        String textFieldText = searchField.getText().toLowerCase();
+        if(totalEntityList == null) {
+            totalEntityList = new ArrayList<Entity>();
+            for(String key : set) {
+                Class entityClass = (Class)EntityList.stringToClassMapping.get(key);
+                if(EntityLivingBase.class.isAssignableFrom(entityClass) && !Modifier.isAbstract(entityClass.getModifiers())) {
+                    totalEntityList.add(EntityList.createEntityByName(key, FMLClientHandler.instance().getClient().theWorld));
+                }
+            }
+        }
+        for(Entity entity : totalEntityList) {
+            if(entity.getEntityName().toLowerCase().contains(textFieldText)) {
+                filteredEntityList.add(entity);
             }
         }
         currentScroll = 0.0F;
+        scrollEntityListTo(currentScroll);
     }
 
     private void updateCreativeSearch(){
@@ -364,10 +383,11 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
             }
 
             ((ContainerBlockWiki)inventorySlots).scrollTo(currentScroll);
+            scrollEntityListTo(currentScroll);
         }
         super.drawScreen(par1, par2, partialTicks);
         if(curSection == EnumWikiSection.ENTITIES) {
-            drawEntity(curEntity, guiLeft + 65, guiTop + 40, 1, partialTicks);
+            drawEntity(curEntity, guiLeft + 65, guiTop + 40, 0.7F, partialTicks);
             for(int i = 0; i < shownEntityList.size(); i++) {
                 drawEntity(shownEntityList.get(i), guiLeft + 58, guiTop + 103 + i * 36, 0.5F, partialTicks);
             }
@@ -380,8 +400,8 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
     private void drawEntity(Entity entity, int x, int y, float size, float partialTicks){
         if(entity != null) {
             GL11.glPushMatrix();
-            GL11.glTranslated(x, y, 0);
-            float maxHitboxComponent = Math.max(entity.width, entity.height);
+            GL11.glTranslated(x, y, 10);
+            float maxHitboxComponent = Math.max(1, Math.max(entity.width, entity.height));
             GL11.glScaled(40 * size / maxHitboxComponent, -40 * size / maxHitboxComponent, -40 * size / maxHitboxComponent);
             //GL11.glRotated(20, 1, 0, 1);
             GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
@@ -451,13 +471,9 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
 
     }
 
-    private void drawWikiPage(){
-        GL11.glPushMatrix();
-        GL11.glTranslated(guiLeft + TEXT_START_X, TEXT_START_Y + guiTop, 0);
-        GL11.glScaled(TEXT_SCALE, TEXT_SCALE, 1);
-        for(LocatedString locatedString : locatedStrings) {
-            fontRenderer.drawString(locatedString.string, locatedString.x, locatedString.y, locatedString.color, locatedString.shadow);
-        }
+    @Override
+    protected void drawGuiContainerForegroundLayer(int par1, int par2){
+        super.drawGuiContainerForegroundLayer(par1, par2);
         GL11.glPopMatrix();
         GL11.glPushMatrix();
         GL11.glTranslated(guiLeft, guiTop, 0);
@@ -465,6 +481,32 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
             itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), locatedStack.stack, locatedStack.x, locatedStack.y);
         }
         GL11.glPopMatrix();
+    }
+
+    private void drawWikiPage(){
+        for(LocatedTexture texture : locatedTextures) {
+            mc.getTextureManager().bindTexture(texture.texture);
+            drawTexture(guiLeft + texture.x, guiTop + texture.y, texture.width, texture.heigth);
+        }
+
+        GL11.glPushMatrix();
+        GL11.glTranslated(guiLeft + TEXT_START_X, TEXT_START_Y + guiTop, 0);
+        GL11.glScaled(TEXT_SCALE, TEXT_SCALE, 1);
+        for(LocatedString locatedString : locatedStrings) {
+            fontRenderer.drawString(locatedString.string, locatedString.x, locatedString.y, locatedString.color, locatedString.shadow);
+        }
+
+    }
+
+    public static void drawTexture(int x, int y, int width, int height){
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV(x, y + height, 0, 0.0, 1.0);
+        tessellator.addVertexWithUV(x + width, y + height, 0, 1.0, 1.0);
+        tessellator.addVertexWithUV(x + width, y, 0, 1.0, 0.0);
+        tessellator.addVertexWithUV(x, y, 0, 0.0, 0.0);
+        tessellator.draw();
+        // this.drawTexturedModalRect(x, y, 0, 0, 16, 16);
     }
 
     private void drawSelectedStack(){
@@ -478,6 +520,7 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
     private void updateWikiPage(){
         locatedStacks.clear();
         locatedStrings.clear();
+        locatedTextures.clear();
         List<String> wrappedInfo = new ArrayList<String>();
         for(String line : fileInfo) {
             wrappedInfo.addAll(Arrays.asList(WordUtils.wrap(line, WRAP_LENGTH).split(System.getProperty("line.separator"))));
@@ -512,11 +555,32 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
     }
 
     private Rectangle decomposeCode(String code, int x, int y){
-        ItemStack stack = WikiUtils.getStackFromName(code);
-        if(stack != null) {
-            locatedStacks.add(new LocatedStack(stack, TEXT_START_X + x / 2, TEXT_START_Y + y / 2));
+        if(code.startsWith("block/")) {
+            ItemStack stack = WikiUtils.getStackFromName(code);
+            if(stack != null) {
+                locatedStacks.add(new LocatedStack(stack, TEXT_START_X + x / 2, TEXT_START_Y + y / 2));
+            }
+            return new Rectangle(36, 36);
+        } else if(code.startsWith("texture/")) {
+            locatedTextures.add(new LocatedTexture(TextureSupplier.getTexture(Paths.WIKI_PATH + code), TEXT_START_X + x / 2, TEXT_START_Y + y / 2, currentTextureWidth, currentTextureHeight, currentTextureSize));
+            return new Rectangle((int)(currentTextureWidth * 2 * currentTextureSize), (int)(currentTextureHeight * 2 * currentTextureSize));
+        } else if(code.startsWith("tsize=")) {
+            try {
+                currentTextureSize = Float.parseFloat(code.substring(6));
+            } catch(Exception e) {}
+        } else if(code.startsWith("theight=")) {
+            try {
+                currentTextureHeight = Integer.parseInt(code.substring(8));
+            } catch(Exception e) {}
+        } else if(code.startsWith("twidth=")) {
+            try {
+                currentTextureWidth = Integer.parseInt(code.substring(7));
+            } catch(Exception e) {}
+        } else if(code.startsWith("shaped")) {
+            WikiCommandRecipeIntegration.addShapedRecipe(code.substring(6), locatedStacks, locatedTextures, x, y);
+            return new Rectangle(100, 60);
         }
-        return new Rectangle(36, 36);
+        return new Rectangle(-4, 0);
     }
 
     /**

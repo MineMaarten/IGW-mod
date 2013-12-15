@@ -1,2 +1,5 @@
 A Grass Block is a block that was introduced very early in the game. It uses 4 textures: a gray one for the top which is then tinted to the correct color according to what biome the block is in, one borrowed from the dirt block for the bottom, an edited dirt texture with grass on the top edge on all of the sides, and a gray texture matching the shape of the grass on the side of the block, which is tinted to the correct biome color. When covered by snow the side texture is white. On natural maps, grass appears on topmost blocks of dirt with no fluids or opaque solid blocks above them.
 In mining, grass blocks behave just like [block/dirt] - they drop dirt resources and are best dug with a shovel; however, they make a different sound when harvested and take slightly longer to dig up. This can be used to tell when the player is about to break the surface when tunneling upwards.
+
+The following is a test to test textures: [theight=50][twidth=50][texture/GuiInfo.png] This line doesn't break :).
+We can also modify the picture: [theight=16][twidth=16][texture/GuiInfo.png] And this line also doesn't break.

@@ -1,0 +1,3 @@
+
+Crafting recipe test:
+[shaped{www,cic,crc,w=block/wood,c=block/stonebrick,i=item/ingotIron,r=item/redstone}block/pistonBase]

@@ -19,7 +19,7 @@ class ContainerBlockWiki extends Container{
     public ContainerBlockWiki(){
         for(int i = 0; i < 9; ++i) {
             for(int j = 0; j < 2; ++j) {
-                addSlotToContainer(new Slot(GuiBlockWiki.getInventory(), i * 2 + j, 41 + j * 18, 66 + i * 18));
+                addSlotToContainer(new Slot(GuiWiki.getInventory(), i * 2 + j, 41 + j * 18, 66 + i * 18));
             }
         }
         scrollTo(0.0F);
@@ -46,9 +46,9 @@ class ContainerBlockWiki extends Container{
                 int i1 = l + (k + j) * 2;
 
                 if(i1 >= 0 && i1 < itemList.size()) {
-                    GuiBlockWiki.getInventory().setInventorySlotContents(l + k * 2, (ItemStack)itemList.get(i1));
+                    GuiWiki.getInventory().setInventorySlotContents(l + k * 2, (ItemStack)itemList.get(i1));
                 } else {
-                    GuiBlockWiki.getInventory().setInventorySlotContents(l + k * 2, (ItemStack)null);
+                    GuiWiki.getInventory().setInventorySlotContents(l + k * 2, (ItemStack)null);
                 }
             }
         }

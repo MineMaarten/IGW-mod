@@ -30,14 +30,11 @@ public class TickHandler implements ITickHandler{
         EntityPlayer player = (EntityPlayer)tickData[0];
         if(player == FMLClientHandler.instance().getClient().thePlayer) {
             ticksExisted++;
-            MovingObjectPosition lookedObject = WikiUtils.getPlayerLookedObject();
+            MovingObjectPosition lookedObject = FMLClientHandler.instance().getClient().objectMouseOver;
             if(lookedObject != null) {
                 if(lookedObject.typeOfHit == EnumMovingObjectType.ENTITY) {
                     if(lastEntityHovered == lookedObject.entityHit) {
                         ticksHovered++;
-                        if(ticksHovered == 20) {
-                            System.out.println("entity: " + lookedObject.entityHit.getEntityName());
-                        }
                         xHovered = 0;
                         yHovered = 0;
                         zHovered = 0;
@@ -86,19 +83,25 @@ public class TickHandler implements ITickHandler{
 
     public static void openWikiGui(){
         if(showTooltip()) {
-            World world = FMLClientHandler.instance().getClient().theWorld;
-            if(world != null) {
-                Block block = Block.blocksList[world.getBlockId(xHovered, yHovered, zHovered)];
-                if(block != null) {
-                    GuiBlockWiki gui = new GuiBlockWiki();
-                    FMLCommonHandler.instance().showGuiScreen(gui);
-                    int idPicked = block.idPicked(world, xHovered, yHovered, zHovered);
-                    gui.setCurrentFile(new ItemStack(idPicked != 0 ? idPicked : block.blockID, 1, world.getBlockMetadata(xHovered, yHovered, zHovered)));
+            if(lastEntityHovered != null) {
+                GuiWiki gui = new GuiWiki();
+                FMLCommonHandler.instance().showGuiScreen(gui);
+                gui.setCurrentFile(lastEntityHovered);
+            } else {
+                World world = FMLClientHandler.instance().getClient().theWorld;
+                if(world != null) {
+                    Block block = Block.blocksList[world.getBlockId(xHovered, yHovered, zHovered)];
+                    if(block != null) {
+                        GuiWiki gui = new GuiWiki();
+                        FMLCommonHandler.instance().showGuiScreen(gui);
+                        int idPicked = block.idPicked(world, xHovered, yHovered, zHovered);
+                        gui.setCurrentFile(new ItemStack(idPicked != 0 ? idPicked : block.blockID, 1, world.getBlockMetadata(xHovered, yHovered, zHovered)));
 
+                    }
                 }
             }
         } else {
-            FMLCommonHandler.instance().showGuiScreen(new GuiBlockWiki());
+            FMLCommonHandler.instance().showGuiScreen(new GuiWiki());
         }
     }
 
