@@ -1,2 +1,3 @@
 
-Sand can be smelted into glass.[furnace{block/sand}block/glass]
+Sand can be smelted into glass.
+[furnace{block/sand}block/glass]

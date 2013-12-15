@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
@@ -18,11 +20,15 @@ public class WikiUtils{
     public static ItemStack getStackFromName(String name){
         if(unlocMap == null) {
             unlocMap = new HashMap<String, ItemStack>();
+            List<ItemStack> stackList = new ArrayList<ItemStack>();
             for(Item item : Item.itemsList) {
                 if(item != null) {
-                    String itemName = item.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/");
-                    unlocMap.put(itemName, new ItemStack(item));
+                    item.getSubItems(item.itemID, item.getCreativeTab(), stackList);
                 }
+            }
+            for(ItemStack stack : stackList) {
+                String itemName = stack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/");
+                unlocMap.put(itemName, stack);
             }
         }
         return unlocMap.get(name);

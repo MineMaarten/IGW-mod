@@ -20,10 +20,8 @@ public class TooltipOverlayHandler implements ITickHandler{
             FontRenderer fontRenderer = FMLClientHandler.instance().getClient().fontRenderer;
             String objectName = TickHandler.getCurrentObjectName();
             String moreInfo = "'i' for more info";
-            String onlyOnce = "This only will be shown once.";
-            fontRenderer.drawString(objectName, sr.getScaledWidth() / 2 - fontRenderer.getStringWidth(objectName) / 2, sr.getScaledHeight() / 2 - 30, 0xFFFFFFFF);
-            fontRenderer.drawString(moreInfo, sr.getScaledWidth() / 2 - fontRenderer.getStringWidth(moreInfo) / 2, sr.getScaledHeight() / 2 - 20, 0xFFFFFFFF);
-            if(TickHandler.showOnlyShownOnce()) fontRenderer.drawString(onlyOnce, sr.getScaledWidth() / 2 - fontRenderer.getStringWidth(onlyOnce) / 2, sr.getScaledHeight() / 2 - 10, 0xFFFFFFFF);
+            fontRenderer.drawString(objectName, sr.getScaledWidth() / 2 - fontRenderer.getStringWidth(objectName) / 2, sr.getScaledHeight() / 2 - 20, 0xFFFFFFFF);
+            fontRenderer.drawString(moreInfo, sr.getScaledWidth() / 2 - fontRenderer.getStringWidth(moreInfo) / 2, sr.getScaledHeight() / 2 - 10, 0xFFFFFFFF);
         }
     }
 

@@ -38,7 +38,7 @@ public class InfoSupplier{
             }
             return textList;
         } catch(Exception e) {
-            return Arrays.asList("No info available. Add " + objectName + " to add info about this object.");
+            return Arrays.asList("No info available. Add " + objectName.replace("igwmod:", "/assets/igwmod/") + " to add info about this object.");
         }
     }
 }

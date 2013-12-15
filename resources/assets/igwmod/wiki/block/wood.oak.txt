@@ -1,0 +1,3 @@
+
+[shaped{xxx,xsx,xxx,s=block/wood.oak}block/button]
+[shaped{xxx,xxx,ssx,s=block/wood.oak}block/pressurePlate]

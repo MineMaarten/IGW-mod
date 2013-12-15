@@ -1,4 +1,3 @@
-import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -20,7 +19,8 @@ public class IGWMod{
 
         TickRegistry.registerTickHandler(new TooltipOverlayHandler(), Side.CLIENT);
 
-        MinecraftForge.EVENT_BUS.register(new HighlightHandler());
+        //Not being used, as it doesn't really add anything...
+        // MinecraftForge.EVENT_BUS.register(new HighlightHandler());
 
         //We don't need a proxy here, because this is a client-only mod.
         KeyBindingRegistry.registerKeyBinding(new KeybindingHandler());

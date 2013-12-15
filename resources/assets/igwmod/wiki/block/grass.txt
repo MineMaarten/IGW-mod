@@ -2,4 +2,4 @@ A Grass Block is a block that was introduced very early in the game. It uses 4 t
 In mining, grass blocks behave just like [block/dirt] - they drop dirt resources and are best dug with a shovel; however, they make a different sound when harvested and take slightly longer to dig up. This can be used to tell when the player is about to break the surface when tunneling upwards.
 
 The following is a test to test textures: [theight=50][twidth=50][texture/GuiInfo.png] This line doesn't break :).
-We can also modify the picture: [theight=16][twidth=16][texture/GuiInfo.png] And this line also doesn't break.
+We can also scale the picture: [theight=16][twidth=16][texture/GuiInfo.png] And this line also doesn't break.

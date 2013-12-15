@@ -57,7 +57,7 @@ public class WikiCommandRecipeIntegration{
         }
         ItemStack resultStack = WikiUtils.getStackFromName(recipe[1]);
         if(resultStack != null) {
-            locatedStacks.add(new LocatedStack(resultStack, x + STACKS_X_OFFSET + 61 + GuiWiki.TEXT_START_X, y + STACKS_Y_OFFSET + 19 + GuiWiki.TEXT_START_Y));
+            locatedStacks.add(new LocatedStack(resultStack, x + STACKS_X_OFFSET + 60 + GuiWiki.TEXT_START_X, y + STACKS_Y_OFFSET + 18 + GuiWiki.TEXT_START_Y));
         }
     }
 }
