@@ -17,8 +17,11 @@ public class IGWMod{
     public void preInit(FMLPreInitializationEvent event){
         TickRegistry.registerTickHandler(new TickHandler(), Side.CLIENT);
 
+        TickRegistry.registerTickHandler(new TooltipOverlayHandler(), Side.CLIENT);
+
         //We don't need a proxy here, because this is a client-only mod.
         KeyBindingRegistry.registerKeyBinding(new KeybindingHandler());
+
     }
 
     @EventHandler

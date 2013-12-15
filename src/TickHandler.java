@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -50,7 +51,6 @@ public class TickHandler implements ITickHandler{
                     if(lookedObject.blockX == xHovered && lookedObject.blockY == yHovered && lookedObject.blockZ == zHovered) {
                         ticksHovered++;
                         lastEntityHovered = null;
-                        if(ticksHovered == 60) player.addChatMessage("press 'i' to see info about this object.");
                     } else {
                         ticksHovered = 0;
                         lastEntityHovered = null;
@@ -64,7 +64,7 @@ public class TickHandler implements ITickHandler{
     }
 
     public static boolean showTooltip(){
-        return ticksHovered > 60;
+        return ticksHovered > 20;
     }
 
     @Override
@@ -92,6 +92,20 @@ public class TickHandler implements ITickHandler{
         } else {
             FMLCommonHandler.instance().showGuiScreen(new GuiBlockWiki());
         }
+    }
+
+    public static String getCurrentObjectName(){
+        if(lastEntityHovered != null) {
+            return lastEntityHovered.getEntityName();
+        } else {
+            World world = FMLClientHandler.instance().getClient().theWorld;
+            Block block = Block.blocksList[world.getBlockId(xHovered, yHovered, zHovered)];
+            if(block != null) {
+                return new ItemStack(block.blockID, 1, world.getBlockMetadata(xHovered, yHovered, zHovered)).getDisplayName();
+            }
+            return EnumChatFormatting.RED + "-No object-";
+        }
+
     }
 
 }
