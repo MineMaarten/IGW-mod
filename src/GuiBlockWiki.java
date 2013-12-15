@@ -171,6 +171,7 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
      */
     @Override
     protected void keyTyped(char par1, int par2){
+        System.out.println("keycode: " + par2);
         if(searchField.textboxKeyTyped(par1, par2)) {
             updateCreativeSearch();
             updateEntitySearch();

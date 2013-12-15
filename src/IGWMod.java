@@ -1,3 +1,4 @@
+import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -15,6 +16,9 @@ public class IGWMod{
     @EventHandler
     public void preInit(FMLPreInitializationEvent event){
         TickRegistry.registerTickHandler(new TickHandler(), Side.CLIENT);
+
+        //We don't need a proxy here, because this is a client-only mod.
+        KeyBindingRegistry.registerKeyBinding(new KeybindingHandler());
     }
 
     @EventHandler
