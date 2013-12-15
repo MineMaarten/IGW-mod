@@ -7,11 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
+import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
@@ -23,6 +26,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
@@ -466,7 +470,6 @@ public class GuiWiki extends InventoryEffectRenderer{
         int l = k + SCROLL_HEIGHT;
         mc.getTextureManager().bindTexture(field_110424_t);
         drawTexturedModalRect(i1, k + (int)((l - k - 17) * currentScroll), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
-        if(curSection == EnumWikiSection.BLOCK_AND_ITEM) drawSelectedStack();
         drawWikiPage();
 
     }
@@ -474,20 +477,21 @@ public class GuiWiki extends InventoryEffectRenderer{
     @Override
     protected void drawGuiContainerForegroundLayer(int par1, int par2){
         super.drawGuiContainerForegroundLayer(par1, par2);
-        GL11.glPopMatrix();
-        GL11.glPushMatrix();
-        GL11.glTranslated(guiLeft, guiTop, 0);
+
+        GL11.glEnable(GL11.GL_LIGHTING);
+
+        for(LocatedTexture texture : locatedTextures) {
+            mc.getTextureManager().bindTexture(texture.texture);
+            drawTexture(texture.x, texture.y, texture.width, texture.heigth);
+        }
+
+        if(curSection == EnumWikiSection.BLOCK_AND_ITEM) drawSelectedStack();
         for(LocatedStack locatedStack : locatedStacks) {
             itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), locatedStack.stack, locatedStack.x, locatedStack.y);
         }
-        GL11.glPopMatrix();
     }
 
     private void drawWikiPage(){
-        for(LocatedTexture texture : locatedTextures) {
-            mc.getTextureManager().bindTexture(texture.texture);
-            drawTexture(guiLeft + texture.x, guiTop + texture.y, texture.width, texture.heigth);
-        }
 
         GL11.glPushMatrix();
         GL11.glTranslated(guiLeft + TEXT_START_X, TEXT_START_Y + guiTop, 0);
@@ -495,6 +499,7 @@ public class GuiWiki extends InventoryEffectRenderer{
         for(LocatedString locatedString : locatedStrings) {
             fontRenderer.drawString(locatedString.string, locatedString.x, locatedString.y, locatedString.color, locatedString.shadow);
         }
+        GL11.glPopMatrix();
 
     }
 
@@ -510,10 +515,53 @@ public class GuiWiki extends InventoryEffectRenderer{
     }
 
     private void drawSelectedStack(){
+        if(drawingStack != null) {
+            if(drawingStack.getItem() instanceof ItemBlock) {
+                renderRotatingBlockIntoGUI(drawingStack, 60, 20, 2.9F);
+            } else {
+                GL11.glPushMatrix();
+                GL11.glTranslated(60 - 8, 20 - 8, 0);
+                GL11.glScaled(2.2, 2.2, 2.2);
+                itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), drawingStack, 0, 0);
+                GL11.glPopMatrix();
+            }
+        }
+    }
+
+    /**
+     * This method was copied from Equivalent Exchange 3's RenderUtils.java class, https://github.com/pahimar/Equivalent-Exchange-3/blob/master/src/main/java/com/pahimar/ee3/client/renderer/RenderUtils.java
+     * @param fontRenderer
+     * @param stack
+     * @param x
+     * @param y
+     * @param zLevel
+     * @param scale
+     */
+    public void renderRotatingBlockIntoGUI(ItemStack stack, int x, int y, float scale){
+
+        RenderBlocks renderBlocks = new RenderBlocks();
+
+        Block block = Block.blocksList[stack.itemID];
+        FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
         GL11.glPushMatrix();
-        GL11.glScaled(2.2, 2.2, 2.2);
-        customItemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), drawingStack, guiLeft / 2 + 20, guiTop / 2 + 3);
-        // itemRenderer.renderItemOverlayIntoGUI(fontRenderer, mc.getTextureManager(), drawingStack, 2, 2, s);
+        GL11.glTranslatef(x - 2, y + 3, -3.0F + zLevel);
+        GL11.glScalef(10.0F, 10.0F, 10.0F);
+        GL11.glTranslatef(1.0F, 0.5F, 1.0F);
+        GL11.glScalef(1.0F * scale, 1.0F * scale, -1.0F);
+        GL11.glRotatef(210.0F, 1.0F, 0.0F, 0.0F);
+        GL11.glRotatef(-TickHandler.ticksExisted, 0.0F, 1.0F, 0.0F);
+
+        int var10 = Item.itemsList[stack.itemID].getColorFromItemStack(stack, 0);
+        float var16 = (var10 >> 16 & 255) / 255.0F;
+        float var12 = (var10 >> 8 & 255) / 255.0F;
+        float var13 = (var10 & 255) / 255.0F;
+
+        GL11.glColor4f(var16, var12, var13, 1.0F);
+
+        GL11.glRotatef(-90.0F, 0.0F, 1.0F, 0.0F);
+        renderBlocks.useInventoryTint = true;
+        renderBlocks.renderBlockAsItem(block, stack.getItemDamage(), 1.0F);
+        renderBlocks.useInventoryTint = true;
         GL11.glPopMatrix();
     }
 
