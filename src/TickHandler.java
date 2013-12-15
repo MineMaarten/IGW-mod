@@ -20,6 +20,7 @@ public class TickHandler implements ITickHandler{
     private static int yHovered;
     private static int zHovered;
     public static int ticksExisted;
+    private static final int MIN_TICKS_HOVER = 50;
 
     @Override
     public void tickStart(EnumSet<TickType> type, Object... tickData){}
@@ -42,6 +43,7 @@ public class TickHandler implements ITickHandler{
                         zHovered = 0;
                     } else {
                         lastEntityHovered = lookedObject.entityHit;
+                        if(showOnlyShownOnce()) ConfigHandler.disableTooltip();
                         ticksHovered = 0;
                         xHovered = 0;
                         yHovered = 0;
@@ -52,6 +54,7 @@ public class TickHandler implements ITickHandler{
                         ticksHovered++;
                         lastEntityHovered = null;
                     } else {
+                        if(showOnlyShownOnce()) ConfigHandler.disableTooltip();
                         ticksHovered = 0;
                         lastEntityHovered = null;
                         xHovered = lookedObject.blockX;
@@ -64,7 +67,11 @@ public class TickHandler implements ITickHandler{
     }
 
     public static boolean showTooltip(){
-        return ticksHovered > 20;
+        return ticksHovered > MIN_TICKS_HOVER;
+    }
+
+    public static boolean showOnlyShownOnce(){
+        return ticksHovered > MIN_TICKS_HOVER + 30;
     }
 
     @Override
@@ -85,7 +92,8 @@ public class TickHandler implements ITickHandler{
                 if(block != null) {
                     GuiBlockWiki gui = new GuiBlockWiki();
                     FMLCommonHandler.instance().showGuiScreen(gui);
-                    gui.setCurrentFile(Paths.WIKI_PATH + block.getUnlocalizedName().replace("tile.", "block/"), new ItemStack(block.blockID, 1, world.getBlockMetadata(xHovered, yHovered, zHovered)));
+                    int idPicked = block.idPicked(world, xHovered, yHovered, zHovered);
+                    gui.setCurrentFile(new ItemStack(idPicked != 0 ? idPicked : block.blockID, 1, world.getBlockMetadata(xHovered, yHovered, zHovered)));
 
                 }
             }
@@ -101,7 +109,8 @@ public class TickHandler implements ITickHandler{
             World world = FMLClientHandler.instance().getClient().theWorld;
             Block block = Block.blocksList[world.getBlockId(xHovered, yHovered, zHovered)];
             if(block != null) {
-                return new ItemStack(block.blockID, 1, world.getBlockMetadata(xHovered, yHovered, zHovered)).getDisplayName();
+                int idPicked = block.idPicked(world, xHovered, yHovered, zHovered);
+                return new ItemStack(idPicked != 0 ? idPicked : block.blockID, 1, world.getBlockMetadata(xHovered, yHovered, zHovered)).getDisplayName();
             }
             return EnumChatFormatting.RED + "-No object-";
         }

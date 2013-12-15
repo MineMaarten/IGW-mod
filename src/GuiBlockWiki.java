@@ -96,7 +96,7 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
     @Override
     protected void handleMouseClick(Slot slot, int x, int y, int mouse){
         if(slot != null && slot.getHasStack()) {
-            setCurrentFile(Paths.WIKI_PATH + slot.getStack().getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/"), slot.getStack());
+            setCurrentFile(slot.getStack());
         }
     }
 
@@ -105,7 +105,7 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
         super.mouseClicked(x, y, button);
         for(LocatedStack locatedStack : locatedStacks) {
             if(locatedStack.isMouseWithinRegion(x - 84, y)) {
-                setCurrentFile(Paths.WIKI_PATH + locatedStack.stack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/"), locatedStack.stack);
+                setCurrentFile(locatedStack.stack);
                 break;
             }
         }
@@ -124,10 +124,11 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
 
     }
 
-    public void setCurrentFile(String fileName, ItemStack stack){
-        currentFile = fileName;
-        fileInfo = InfoSupplier.getInfo(fileName);
+    public void setCurrentFile(ItemStack stack){
+        currentFile = Paths.WIKI_PATH + stack.getUnlocalizedName().replace("tile.", "block/");
+        fileInfo = InfoSupplier.getInfo(currentFile);
         drawingStack = stack;
+        curSection = EnumWikiSection.BLOCK_AND_ITEM;
         updateWikiPage();
     }
 
@@ -135,6 +136,7 @@ public class GuiBlockWiki extends InventoryEffectRenderer{
         currentFile = fileName;
         fileInfo = InfoSupplier.getInfo(fileName);
         curEntity = entity;
+        curSection = EnumWikiSection.ENTITIES;
         updateWikiPage();
     }
 

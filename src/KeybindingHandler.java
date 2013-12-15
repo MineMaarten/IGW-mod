@@ -23,7 +23,7 @@ public class KeybindingHandler extends KeyBindingRegistry.KeyHandler{
 
     @Override
     public void keyDown(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd, boolean isRepeat){
-        if(FMLClientHandler.instance().getClient().inGameHasFocus) {
+        if(tickEnd && FMLClientHandler.instance().getClient().inGameHasFocus) {
             TickHandler.openWikiGui();
         }
     }

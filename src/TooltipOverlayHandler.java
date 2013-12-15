@@ -14,14 +14,16 @@ public class TooltipOverlayHandler implements ITickHandler{
 
     @Override
     public void tickEnd(EnumSet<TickType> type, Object... tickData){//tickData[0] = partialTicks
-        if(TickHandler.showTooltip() && FMLClientHandler.instance().getClient().inGameHasFocus) {
+        if(TickHandler.showTooltip() && ConfigHandler.shouldShowTooltip && FMLClientHandler.instance().getClient().inGameHasFocus) {
             Minecraft mc = FMLClientHandler.instance().getClient();
             ScaledResolution sr = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
             FontRenderer fontRenderer = FMLClientHandler.instance().getClient().fontRenderer;
             String objectName = TickHandler.getCurrentObjectName();
             String moreInfo = "'i' for more info";
-            fontRenderer.drawString(objectName, sr.getScaledWidth() / 2 - fontRenderer.getStringWidth(objectName) / 2, sr.getScaledHeight() / 2 - 20, 0xFFFFFFFF);
-            fontRenderer.drawString(moreInfo, sr.getScaledWidth() / 2 - fontRenderer.getStringWidth(moreInfo) / 2, sr.getScaledHeight() / 2 - 10, 0xFFFFFFFF);
+            String onlyOnce = "This only will be shown once.";
+            fontRenderer.drawString(objectName, sr.getScaledWidth() / 2 - fontRenderer.getStringWidth(objectName) / 2, sr.getScaledHeight() / 2 - 30, 0xFFFFFFFF);
+            fontRenderer.drawString(moreInfo, sr.getScaledWidth() / 2 - fontRenderer.getStringWidth(moreInfo) / 2, sr.getScaledHeight() / 2 - 20, 0xFFFFFFFF);
+            if(TickHandler.showOnlyShownOnce()) fontRenderer.drawString(onlyOnce, sr.getScaledWidth() / 2 - fontRenderer.getStringWidth(onlyOnce) / 2, sr.getScaledHeight() / 2 - 10, 0xFFFFFFFF);
         }
     }
 
