@@ -16,6 +16,7 @@ The info in the files can be plain text. However, there are some commands with w
  www
  cic
  crc w=block/wood,c=block/stonebrick,i=item/ingotIron,r=item/redstone  .The real notation should be [shaped{www,cic,crc,w=block/wood,c=block/stonebrick,i=item/ingotIron,r=item/redstone}block/pistonBase]
+For items that have multiple items as output do: [shaped{nnn,ncn,nsn,s=item/stick,c=item/coal}item/torch#4]
  The 'www', 'cic', and 'crc' specify the pattern. Then each individual letter gets replaced by the block/item specified, so 'w' gets replaced by 'w=block/wood' so block/wood, which is a Wooden Plank.
 -furnace{block/<ingredient>}block/<result> will create a furnace recipe. To include the sand-->glass recipe:  [furnace{block/sand}block/glass]
 -texture/<texture> Will display the texture located at the given location. The size of the texture can be parsed by the following commands, which should be used BEFORE this one.
@@ -24,7 +25,6 @@ The info in the files can be plain text. However, there are some commands with w
 -tsize=<size> adjusts how big the texture will be drawn. An example of drawing a texture is [theigth=16][twidth=16][texture/GuiInfo.png] . This will draw an info 16x16 pixel info icon.
 
 TODO:
--crafting recipes crafting multiple items (1 coal + 1 stick = 4 torches, the 4 needs to be displayed).
 -clickable icon command for entities.
 -changable keybinding
 -support for multiple pages for the same subject (if there's lots of info).

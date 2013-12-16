@@ -82,7 +82,7 @@ public class TickHandler implements ITickHandler{
             GuiWiki gui = new GuiWiki();
             FMLCommonHandler.instance().showGuiScreen(gui);
             gui.setCurrentFile(lastEntityHovered);
-        } else {
+        } else if(xHovered != 0 || yHovered != 0 || zHovered != 0) {
             World world = FMLClientHandler.instance().getClient().theWorld;
             if(world != null) {
                 Block block = Block.blocksList[world.getBlockId(xHovered, yHovered, zHovered)];
@@ -93,10 +93,9 @@ public class TickHandler implements ITickHandler{
                     gui.setCurrentFile(new ItemStack(idPicked != 0 ? idPicked : block.blockID, 1, world.getBlockMetadata(xHovered, yHovered, zHovered)));
                 }
             }
+        } else {
+            FMLCommonHandler.instance().showGuiScreen(new GuiWiki());
         }
-        //  } else {
-        //      FMLCommonHandler.instance().showGuiScreen(new GuiWiki());
-        //  }
     }
 
     public static String getCurrentObjectName(){

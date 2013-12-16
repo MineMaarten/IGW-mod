@@ -1,3 +1,13 @@
+Wooden planks can be made from
+[shaped{xxx,xsx,xxx},s=block/wood.oak}block/wood.oak]
 
-[shaped{xxx,xsx,xxx,s=block/wood.oak}block/button]
-[shaped{xxx,xxx,ssx,s=block/wood.oak}block/pressurePlate]
+
+
+
+
+
+
+Wood can be used as fuel in a Furnace, as aesthetic block or in many crafting recipes:
+
+[shaped{xxx,xsx,xsx,s=block/wood.oak}item/stick#4]
+

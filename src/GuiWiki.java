@@ -9,6 +9,7 @@ import java.util.Set;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -95,7 +96,7 @@ public class GuiWiki extends InventoryEffectRenderer{
     private static final double TEXT_SCALE = 0.5;
     public static final int TEXT_START_X = 100;
     public static final int TEXT_START_Y = 10;
-    private static final int CHAR_WIDTH = 5;
+    private static final int CHAR_WIDTH = 10;
     private boolean wasInBlockSection = true;
 
     private int currentTextureWidth = 16;
@@ -126,7 +127,7 @@ public class GuiWiki extends InventoryEffectRenderer{
     protected void mouseClicked(int x, int y, int button){
         super.mouseClicked(x, y, button);
         for(LocatedStack locatedStack : locatedStacks) {
-            if(locatedStack.isMouseWithinRegion(x - 84, y)) {
+            if(locatedStack.isMouseWithinRegion(x - guiLeft, y)) {
                 setCurrentFile(locatedStack.stack);
                 break;
             }
@@ -406,8 +407,9 @@ public class GuiWiki extends InventoryEffectRenderer{
             ((ContainerBlockWiki)inventorySlots).scrollTo(currentScroll);
             scrollEntityListTo(currentScroll);
         }
-        super.drawScreen(par1, par2, partialTicks);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+        //  GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        // RenderHelper.enableStandardItemLighting();
         if(curSection == EnumWikiSection.ENTITIES) {
             drawEntity(curEntity, guiLeft + 65, guiTop + 40, 0.7F, partialTicks);
             for(int i = 0; i < shownEntityList.size(); i++) {
@@ -415,12 +417,20 @@ public class GuiWiki extends InventoryEffectRenderer{
             }
         }
         drawEntity(tabEntity, guiLeft + 18, guiTop + 71, 0.6F, partialTicks);
+        //  GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
+        super.drawScreen(par1, par2, partialTicks);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glDisable(GL11.GL_LIGHTING);
     }
 
     private void drawEntity(Entity entity, int x, int y, float size, float partialTicks){
         if(entity != null) {
+            GL11.glDisable(GL11.GL_LIGHTING);
+            short short1 = 240;
+            short short2 = 240;
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, short1 / 1.0F, short2 / 1.0F);
+
             GL11.glPushMatrix();
             GL11.glTranslated(x, y, 10);
             float maxHitboxComponent = Math.max(1, Math.max(entity.width, entity.height));
@@ -430,6 +440,8 @@ public class GuiWiki extends InventoryEffectRenderer{
             GL11.glRotated(TickHandler.ticksExisted + partialTicks, 0, 1, 0);
             RenderManager.instance.renderEntityWithPosYaw(entity, 0D, 0D, 0.0D, 0, partialTicks);
             GL11.glPopMatrix();
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GL11.glDisable(GL11.GL_LIGHTING);
         }
     }
 
@@ -506,6 +518,7 @@ public class GuiWiki extends InventoryEffectRenderer{
         renderRotatingBlockIntoGUI(new ItemStack(Block.grass), 11, 17, 1.5F);
         for(LocatedStack locatedStack : locatedStacks) {
             itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), locatedStack.stack, locatedStack.x, locatedStack.y);
+            itemRenderer.renderItemOverlayIntoGUI(fontRenderer, mc.getTextureManager(), locatedStack.stack, locatedStack.x, locatedStack.y, null);
         }
         drawTooltips(par1, par2);
     }
@@ -605,7 +618,7 @@ public class GuiWiki extends InventoryEffectRenderer{
     private void updateWikiPage(){
         List<String> wrappedInfo = new ArrayList<String>();
         for(String line : fileInfo) {
-            while(line.length() > 0) {
+            while(line != null) {
                 int wrapLength = WRAP_LENGTH;
                 for(int i = 0; i < line.length(); i++) {
                     if(line.charAt(i) == '[') {
@@ -620,10 +633,12 @@ public class GuiWiki extends InventoryEffectRenderer{
                 }
                 String[] seperatedStrings = WordUtils.wrap(line, wrapLength).split(System.getProperty("line.separator"));
                 wrappedInfo.add(seperatedStrings[0]);
+                // wrappedInfo.addAll(Arrays.asList(seperatedStrings));
                 line = "";
                 for(int i = 1; i < seperatedStrings.length; i++) {
                     line = line + (i > 1 ? " " : "") + seperatedStrings[i];
                 }
+                if(line.equals("")) line = null;
             }
         }
         locatedStacks.clear();

@@ -36,8 +36,14 @@ public class WikiCommandRecipeIntegration{
                 }
             }
         }
-        ItemStack resultStack = WikiUtils.getStackFromName(result);
-        if(resultStack != null) locatedStacks.add(new LocatedStack(resultStack, x + RESULT_STACK_X_OFFSET + GuiWiki.TEXT_START_X, y + RESULT_STACK_Y_OFFSET + GuiWiki.TEXT_START_Y));
+
+        String[] resultItem = result.contains("\\#") ? result.split("\\#") : new String[]{result};
+        ItemStack resultStack = WikiUtils.getStackFromName(resultItem[0]);
+        if(resultStack != null) {
+            if(resultItem.length > 1) resultStack.stackSize = Integer.parseInt(resultItem[1]);
+            locatedStacks.add(new LocatedStack(resultStack, x + RESULT_STACK_X_OFFSET + GuiWiki.TEXT_START_X, y + RESULT_STACK_Y_OFFSET + GuiWiki.TEXT_START_Y));
+        }
+
     }
 
     /**
