@@ -1,3 +1,4 @@
+package igwmod;
 import java.util.HashMap;
 
 import net.minecraft.util.ResourceLocation;

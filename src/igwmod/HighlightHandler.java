@@ -1,3 +1,4 @@
+package igwmod;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.event.ForgeSubscribe;

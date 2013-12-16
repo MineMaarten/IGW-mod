@@ -1,3 +1,4 @@
+package igwmod;
 public class LocatedString{
     public String string;
     public int x, y, color;

@@ -1,3 +1,4 @@
+package igwmod;
 import java.io.File;
 
 import net.minecraftforge.common.Configuration;

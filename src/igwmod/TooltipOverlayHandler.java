@@ -1,3 +1,4 @@
+package igwmod;
 import java.util.EnumSet;
 
 import net.minecraft.client.Minecraft;

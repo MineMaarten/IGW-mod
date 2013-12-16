@@ -1,3 +1,5 @@
+package igwmod;
+
 import java.awt.Rectangle;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -96,7 +98,7 @@ public class GuiWiki extends InventoryEffectRenderer{
     private static final double TEXT_SCALE = 0.5;
     public static final int TEXT_START_X = 100;
     public static final int TEXT_START_Y = 10;
-    private static final int CHAR_WIDTH = 10;
+    private static final int CHAR_WIDTH = 5;
     private boolean wasInBlockSection = true;
 
     private int currentTextureWidth = 16;

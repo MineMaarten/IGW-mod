@@ -1,3 +1,4 @@
+package igwmod;
 import net.minecraft.util.ResourceLocation;
 
 public class LocatedTexture{

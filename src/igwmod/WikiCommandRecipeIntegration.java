@@ -1,3 +1,5 @@
+package igwmod;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +39,7 @@ public class WikiCommandRecipeIntegration{
             }
         }
 
-        String[] resultItem = result.contains("\\#") ? result.split("\\#") : new String[]{result};
+        String[] resultItem = result.contains("#") ? result.split("#") : new String[]{result};
         ItemStack resultStack = WikiUtils.getStackFromName(resultItem[0]);
         if(resultStack != null) {
             if(resultItem.length > 1) resultStack.stackSize = Integer.parseInt(resultItem[1]);

@@ -1,3 +1,4 @@
+package igwmod;
 import net.minecraft.item.ItemStack;
 
 public class LocatedStack{

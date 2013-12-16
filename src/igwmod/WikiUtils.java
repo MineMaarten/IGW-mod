@@ -1,3 +1,5 @@
+package igwmod;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +33,7 @@ public class WikiUtils{
                 unlocMap.put(itemName, stack);
             }
         }
-        return unlocMap.get(name);
+        ItemStack stack = unlocMap.get(name);
+        return stack != null ? stack.copy() : null;
     }
 }
