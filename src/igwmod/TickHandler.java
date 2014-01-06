@@ -1,4 +1,7 @@
 package igwmod;
+
+import igwmod.gui.GuiWiki;
+
 import java.util.EnumSet;
 
 import net.minecraft.block.Block;
@@ -90,8 +93,7 @@ public class TickHandler implements ITickHandler{
                 if(block != null) {
                     GuiWiki gui = new GuiWiki();
                     FMLCommonHandler.instance().showGuiScreen(gui);
-                    int idPicked = block.idPicked(world, xHovered, yHovered, zHovered);
-                    gui.setCurrentFile(new ItemStack(idPicked != 0 ? idPicked : block.blockID, 1, world.getBlockMetadata(xHovered, yHovered, zHovered)));
+                    gui.setCurrentFile(world, xHovered, yHovered, zHovered);
                 }
             }
         } else {

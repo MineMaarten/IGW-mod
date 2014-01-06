@@ -1,4 +1,7 @@
-package igwmod;
+package igwmod.render;
+import igwmod.ConfigHandler;
+import igwmod.TickHandler;
+
 import java.util.EnumSet;
 
 import net.minecraft.client.Minecraft;

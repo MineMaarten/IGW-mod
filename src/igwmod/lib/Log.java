@@ -1,4 +1,4 @@
-package igwmod;
+package igwmod.lib;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

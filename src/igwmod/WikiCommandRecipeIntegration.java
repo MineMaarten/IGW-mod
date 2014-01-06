@@ -1,5 +1,10 @@
 package igwmod;
 
+import igwmod.gui.GuiWiki;
+import igwmod.gui.LocatedStack;
+import igwmod.gui.LocatedTexture;
+import igwmod.lib.Paths;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

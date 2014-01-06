@@ -1,4 +1,5 @@
-package igwmod;
+package igwmod.gui;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -6,13 +7,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * This class is derived from Vanilla's ContainerCreative class.
  */
-@SideOnly(Side.CLIENT)
 class ContainerBlockWiki extends Container{
     /** the list of items in this container */
     public List itemList = new ArrayList();

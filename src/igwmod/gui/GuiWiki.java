@@ -1,4 +1,15 @@
-package igwmod;
+package igwmod.gui;
+
+import igwmod.InfoSupplier;
+import igwmod.TextureSupplier;
+import igwmod.TickHandler;
+import igwmod.WikiCommandRecipeIntegration;
+import igwmod.WikiUtils;
+import igwmod.api.BlockWikiEvent;
+import igwmod.api.EntityWikiEvent;
+import igwmod.api.ItemWikiEvent;
+import igwmod.lib.Paths;
+import igwmod.lib.Textures;
 
 import java.awt.Rectangle;
 import java.lang.reflect.Modifier;
@@ -33,6 +44,8 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 
 import org.apache.commons.lang3.text.WordUtils;
 import org.lwjgl.input.Keyboard;
@@ -157,19 +170,35 @@ public class GuiWiki extends InventoryEffectRenderer{
 
     }
 
-    public void setCurrentFile(ItemStack stack){
-        currentFile = Paths.WIKI_PATH + stack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/");
+    public void setCurrentFile(World world, int x, int y, int z){
+        BlockWikiEvent wikiEvent = new BlockWikiEvent(world, x, y, z);
+        wikiEvent.pageOpened = Paths.WIKI_PATH + wikiEvent.drawnStack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/");
+        MinecraftForge.EVENT_BUS.post(wikiEvent);
+        currentFile = wikiEvent.pageOpened;
         fileInfo = InfoSupplier.getInfo(currentFile);
-        drawingStack = stack;
+        drawingStack = wikiEvent.drawnStack;
         curSection = EnumWikiSection.BLOCK_AND_ITEM;
         updateWikiPage();
     }
 
     public void setCurrentFile(Entity entity){
-        currentFile = Paths.WIKI_PATH + "entity/" + EntityList.getEntityString(entity);
+        EntityWikiEvent wikiEvent = new EntityWikiEvent(entity);
+        wikiEvent.pageOpened = Paths.WIKI_PATH + "entity/" + EntityList.getEntityString(entity);
+        MinecraftForge.EVENT_BUS.post(wikiEvent);
+        currentFile = wikiEvent.pageOpened;
         fileInfo = InfoSupplier.getInfo(currentFile);
-        curEntity = entity;
+        curEntity = wikiEvent.entity;
         curSection = EnumWikiSection.ENTITIES;
+        updateWikiPage();
+    }
+
+    public void setCurrentFile(ItemStack stack){
+        ItemWikiEvent wikiEvent = new ItemWikiEvent(stack, stack.getUnlocalizedName());
+        MinecraftForge.EVENT_BUS.post(wikiEvent);
+        currentFile = wikiEvent.pageOpened;
+        fileInfo = InfoSupplier.getInfo(currentFile);
+        drawingStack = wikiEvent.itemStack;
+        curSection = EnumWikiSection.BLOCK_AND_ITEM;
         updateWikiPage();
     }
 
@@ -741,7 +770,7 @@ public class GuiWiki extends InventoryEffectRenderer{
     /**
      * Returns the creative inventory
      */
-    static InventoryBasic getInventory(){
+    public static InventoryBasic getInventory(){
         return inventory;
     }
 }

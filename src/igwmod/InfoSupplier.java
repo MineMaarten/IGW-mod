@@ -1,5 +1,8 @@
 package igwmod;
 
+import igwmod.lib.Constants;
+import igwmod.updater.PageDownloader;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;

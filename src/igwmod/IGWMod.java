@@ -1,5 +1,7 @@
 package igwmod;
 
+import igwmod.lib.Constants;
+import igwmod.render.TooltipOverlayHandler;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;

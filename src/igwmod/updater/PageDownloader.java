@@ -1,4 +1,7 @@
-package igwmod;
+package igwmod.updater;
+
+import igwmod.lib.Constants;
+import igwmod.lib.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,6 +15,7 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
 
+@Deprecated
 public class PageDownloader{
     public static boolean upToDate = false;
     public static String onlinePageDir;

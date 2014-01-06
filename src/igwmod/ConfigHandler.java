@@ -1,5 +1,7 @@
 package igwmod;
 
+import igwmod.lib.Constants;
+
 import java.io.File;
 
 import net.minecraftforge.common.Configuration;

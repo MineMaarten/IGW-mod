@@ -1,4 +1,4 @@
-package igwmod;
+package igwmod.lib;
 import net.minecraft.util.ResourceLocation;
 
 public class Textures{
