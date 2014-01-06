@@ -1,6 +1,15 @@
 In-Game Wiki Mod
 =======
 
+ATTENTION:
+I decided to make this mod because I was feeling that documentation for mods in-game is often bad. I searched for mods that already did what I was planning to make to no avail. However, recently (after ModJam) I've been pointed towards the WikiLink mod. It's a mod that opens a GUI when you press 'i' when hovereing over a block or over an item in a GUI. This then gives you a screen with all the links available to wiki's you can go to. This is a quick, cool and easy way to handle the above described problem. Many thanks to DrEinsteinium for making this mod! A link to the WikiLink mod: http://www.minecraftforum.net/topic/1926671-164-wikilink-30105d-ftb-tooltips-and-more/ . I wish I saw this earlier. As my problem is solved (in a far better way than I would do it with the IGW-mod) I think I won't develop this mod any further...
+
+
+
+
+
+
+
 ModJam 3 mod, the In-Game Wiki Mod. This mod adds a Graphical User Interface (GUI) into the game. You can open this with the 'i' key. For now (ModJam) this is hard-coded. In here you can browse and search through info about (currently):
 -Blocks & Items
 -Entities
