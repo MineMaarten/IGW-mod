@@ -1,0 +1,7 @@
+
+Crafting recipe test:
+[crafting{www,cic,crc,w=block/wood.oak,c=block/stonebrick,i=item/ingotIron,r=item/redstone}block/pistonBase]
+
+And automatic generated:
+
+[crafting{key=piston}]

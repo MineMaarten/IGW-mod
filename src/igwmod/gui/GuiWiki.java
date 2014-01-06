@@ -193,7 +193,7 @@ public class GuiWiki extends InventoryEffectRenderer{
     }
 
     public void setCurrentFile(ItemStack stack){
-        ItemWikiEvent wikiEvent = new ItemWikiEvent(stack, stack.getUnlocalizedName());
+        ItemWikiEvent wikiEvent = new ItemWikiEvent(stack, Paths.WIKI_PATH + stack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/"));
         MinecraftForge.EVENT_BUS.post(wikiEvent);
         currentFile = wikiEvent.pageOpened;
         fileInfo = InfoSupplier.getInfo(currentFile);
@@ -726,8 +726,8 @@ public class GuiWiki extends InventoryEffectRenderer{
             try {
                 currentTextureWidth = Integer.parseInt(code.substring(7));
             } catch(Exception e) {}
-        } else if(code.startsWith("shaped")) {
-            WikiCommandRecipeIntegration.addShapedRecipe(code.substring(6), locatedStacks, locatedTextures, x, y);
+        } else if(code.startsWith("crafting")) {
+            WikiCommandRecipeIntegration.addCraftingRecipe(code.substring(8), locatedStacks, locatedTextures, x, y);
             return new Rectangle(100, 60);
         } else if(code.startsWith("furnace")) {
             WikiCommandRecipeIntegration.addFurnaceRecipe(code.substring(7), locatedStacks, locatedTextures, x, y);

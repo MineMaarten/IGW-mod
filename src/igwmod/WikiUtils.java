@@ -33,7 +33,14 @@ public class WikiUtils{
                 unlocMap.put(itemName, stack);
             }
         }
-        ItemStack stack = unlocMap.get(name);
-        return stack != null ? stack.copy() : null;
+        String[] splitName = name.contains("#") ? name.split("#") : new String[]{name};
+        ItemStack stack = unlocMap.get(splitName[0]);
+        if(stack != null) {
+            stack = stack.copy();
+            if(splitName.length > 1) stack.stackSize = Integer.parseInt(splitName[1]);
+            return stack;
+        } else {
+            return null;
+        }
     }
 }

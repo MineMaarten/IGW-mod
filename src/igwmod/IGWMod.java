@@ -2,6 +2,7 @@ package igwmod;
 
 import igwmod.lib.Constants;
 import igwmod.render.TooltipOverlayHandler;
+import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -31,6 +32,8 @@ public class IGWMod{
         KeyBindingRegistry.registerKeyBinding(new KeybindingHandler());
 
         ConfigHandler.init(event.getSuggestedConfigurationFile());
+
+        MinecraftForge.EVENT_BUS.register(new RecipeEventTest());
     }
 
     @EventHandler
