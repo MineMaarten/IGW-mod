@@ -38,7 +38,7 @@ public class PreModLoader implements IFMLLoadingPlugin{
     public void injectData(Map<String, Object> data){
         Log.info("In-Game wiki mod early stage loading...");
         File mcDir = (File)data.get("mcLocation");
-        PageDownloader.init(mcDir);
+        // PageDownloader.init(mcDir);
     }
 
 }

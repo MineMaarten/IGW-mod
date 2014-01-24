@@ -1,46 +1,42 @@
 package igwmod.updater;
 
-import igwmod.lib.Constants;
 import igwmod.lib.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
-import org.apache.commons.io.FileUtils;
 
 @Deprecated
 public class PageDownloader{
     public static boolean upToDate = false;
     public static String onlinePageDir;
 
-    public static void init(File mcDir){
-        Log.info("Retrieving wikipages from " + Constants.WIKI_PAGE_LOCATION);
-        String minecraftDir = mcDir.getAbsolutePath();
-        minecraftDir = minecraftDir.substring(0, minecraftDir.length() - 1);
-        onlinePageDir = minecraftDir + "mods/" + Constants.ZIP_NAME;
-        try {
-            File wikiFile = File.createTempFile(onlinePageDir + ".zip", null);
-            Long startTime = System.nanoTime();
-            FileUtils.copyURLToFile(new URL(Constants.WIKI_PAGE_LOCATION), wikiFile, Constants.CONNECTION_TIMEOUT, Constants.READ_TIMEOUT);
-            Log.info("Succesfully retrieved the wikipages in a whopping " + (System.nanoTime() - startTime) / 1000000 + " ms! #swag");
-            unZip(wikiFile, onlinePageDir);
-            // addFilesToExistingZip(new File(minecraftDir + "mods/igw.jar"), new File[]{new File(onlinePageDir + ".jar")});
-            upToDate = true;
-        } catch(MalformedURLException e) {
-            Log.error("The URL used to retrieve the wikipages seems malformed!");
-            e.printStackTrace();
-        } catch(IOException e) {
-            Log.error("An error has occured when trying to retrieve the wikipages!");
-            e.printStackTrace();
-        }
-    }
+    /*
+        public static void init(File mcDir){
+            Log.info("Retrieving wikipages from " + Constants.WIKI_PAGE_LOCATION);
+            String minecraftDir = mcDir.getAbsolutePath();
+            minecraftDir = minecraftDir.substring(0, minecraftDir.length() - 1);
+            onlinePageDir = minecraftDir + "mods/" + Constants.ZIP_NAME;
+            try {
+                File wikiFile = File.createTempFile(onlinePageDir + ".zip", null);
+                Long startTime = System.nanoTime();
+                FileUtils.copyURLToFile(new URL(Constants.WIKI_PAGE_LOCATION), wikiFile, Constants.CONNECTION_TIMEOUT, Constants.READ_TIMEOUT);
+                Log.info("Succesfully retrieved the wikipages in a whopping " + (System.nanoTime() - startTime) / 1000000 + " ms! #swag");
+                unZip(wikiFile, onlinePageDir);
+                // addFilesToExistingZip(new File(minecraftDir + "mods/igw.jar"), new File[]{new File(onlinePageDir + ".jar")});
+                upToDate = true;
+            } catch(MalformedURLException e) {
+                Log.error("The URL used to retrieve the wikipages seems malformed!");
+                e.printStackTrace();
+            } catch(IOException e) {
+                Log.error("An error has occured when trying to retrieve the wikipages!");
+                e.printStackTrace();
+            }
+        }*/
 
     //Based on http://stackoverflow.com/questions/938958/how-should-i-extract-compressed-folders-in-java
     private static void unZip(File zipFile, String location){

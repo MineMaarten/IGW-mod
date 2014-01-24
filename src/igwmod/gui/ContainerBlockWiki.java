@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -12,49 +13,27 @@ import net.minecraft.item.ItemStack;
  * This class is derived from Vanilla's ContainerCreative class.
  */
 class ContainerBlockWiki extends Container{
-    /** the list of items in this container */
-    public List itemList = new ArrayList();
 
-    public ContainerBlockWiki(){
-        for(int i = 0; i < 9; ++i) {
-            for(int j = 0; j < 2; ++j) {
-                addSlotToContainer(new Slot(GuiWiki.getInventory(), i * 2 + j, 41 + j * 18, 66 + i * 18));
+    public void updateStacks(List<LocatedStack> stacks, List<IPageLink> pageLinks){
+        InventoryBasic inventory = new InventoryBasic("tmp", true, 45);
+        inventorySlots = new ArrayList();
+        inventoryItemStacks = new ArrayList();
+        for(int i = 0; i < stacks.size(); i++) {
+            addSlotToContainer(new Slot(inventory, i, stacks.get(i).x, stacks.get(i).y));
+            inventory.setInventorySlotContents(i, stacks.get(i).stack);
+        }
+        for(int i = 0; i < pageLinks.size(); i++) {
+            if(pageLinks.get(i) instanceof LocatedStack) {
+                LocatedStack stack = (LocatedStack)pageLinks.get(i);
+                addSlotToContainer(new Slot(inventory, stacks.size() + i, stack.x, stack.y));
+                inventory.setInventorySlotContents(stacks.size() + i, stack.stack);
             }
         }
-        scrollTo(0.0F);
     }
 
     @Override
     public boolean canInteractWith(EntityPlayer par1EntityPlayer){
         return true;
-    }
-
-    /**
-     * Updates the gui slots ItemStack's based on scroll position.
-     */
-    public void scrollTo(float par1){
-        int i = itemList.size() / 2 - 9 + 1;
-        int j = (int)(par1 * i + 0.5D);
-
-        if(j < 0) {
-            j = 0;
-        }
-
-        for(int k = 0; k < 9; ++k) {
-            for(int l = 0; l < 2; ++l) {
-                int i1 = l + (k + j) * 2;
-
-                if(i1 >= 0 && i1 < itemList.size()) {
-                    GuiWiki.getInventory().setInventorySlotContents(l + k * 2, (ItemStack)itemList.get(i1));
-                } else {
-                    GuiWiki.getInventory().setInventorySlotContents(l + k * 2, (ItemStack)null);
-                }
-            }
-        }
-    }
-
-    public boolean hasMoreThan1PageOfItemsInList(){
-        return itemList.size() > 18;
     }
 
     @Override
