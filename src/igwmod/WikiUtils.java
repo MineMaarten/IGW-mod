@@ -43,4 +43,8 @@ public class WikiUtils{
             return null;
         }
     }
+
+    public static String getNameFromStack(ItemStack stack){
+        return stack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/");
+    }
 }

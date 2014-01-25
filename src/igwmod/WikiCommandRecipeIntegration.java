@@ -1,6 +1,7 @@
 package igwmod;
 
-import igwmod.api.RecipeRetrievalEvent;
+import igwmod.api.CraftingRetrievalEvent;
+import igwmod.api.FurnaceRetrievalEvent;
 import igwmod.gui.GuiWiki;
 import igwmod.gui.LocatedStack;
 import igwmod.gui.LocatedTexture;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.common.MinecraftForge;
@@ -23,6 +25,8 @@ public class WikiCommandRecipeIntegration{
     private static final int STACKS_Y_OFFSET = 1;
     private static final int RESULT_STACK_X_OFFSET = 95;
     private static final int RESULT_STACK_Y_OFFSET = STACKS_Y_OFFSET + 18;
+    public static Map<String, IRecipe> autoMappedRecipes = new HashMap<String, IRecipe>();
+    public static Map<String, ItemStack> autoMappedFurnaceRecipes = new HashMap<String, ItemStack>();
 
     /**
      * 
@@ -33,6 +37,7 @@ public class WikiCommandRecipeIntegration{
     public static void addCraftingRecipe(String code, List<LocatedStack> locatedStacks, List<LocatedTexture> locatedTextures) throws IllegalArgumentException{
         if(!code.startsWith("crafting{")) throw new IllegalArgumentException("Code needs to starts with 'crafting{'! Full code: " + code);
         String[] codeParts = code.substring(9).split(",");
+        if(code.length() < 3) throw new IllegalArgumentException("Code needs at least 3 arguments! Full code: " + code);
         int x;
         try {
             x = Integer.parseInt(codeParts[0]);
@@ -62,8 +67,13 @@ public class WikiCommandRecipeIntegration{
      */
     private static void addAutomaticCraftingRecipe(String code, List<LocatedStack> locatedStacks, List<LocatedTexture> locatedTextures, int x, int y) throws IllegalArgumentException{
         String key = code.substring(4, code.length() - 1);
-        RecipeRetrievalEvent recipeEvent = new RecipeRetrievalEvent(key);
-        MinecraftForge.EVENT_BUS.post(recipeEvent);
+        CraftingRetrievalEvent recipeEvent = new CraftingRetrievalEvent(key);
+        IRecipe autoMappedRecipe = autoMappedRecipes.get(key);
+        if(autoMappedRecipe != null) {
+            recipeEvent.recipe = autoMappedRecipe;
+        } else {
+            MinecraftForge.EVENT_BUS.post(recipeEvent);
+        }
         if(recipeEvent.recipe instanceof ShapedRecipes) {
             ShapedRecipes recipe = (ShapedRecipes)recipeEvent.recipe;
             for(int i = 0; i < recipe.recipeHeight; i++) {
@@ -154,8 +164,6 @@ public class WikiCommandRecipeIntegration{
     public static void addFurnaceRecipe(String code, List<LocatedStack> locatedStacks, List<LocatedTexture> locatedTextures) throws IllegalArgumentException{
         String[] codeParts = code.substring(8).split(",");
         if(codeParts.length != 3) throw new IllegalArgumentException("Code needs to contain 3 parts: x, y, and the recipe. It now contains " + codeParts.length + ". Full code: " + code);
-        String[] recipe = codeParts[code.length() - 1].split("}");
-        if(recipe.length != 2) throw new IllegalArgumentException("Recipe needs to contain 2 parts: ',input}output]'. It now contains " + recipe.length + ". Full code: " + code);
         int x;
         try {
             x = Integer.parseInt(codeParts[0]);
@@ -168,14 +176,31 @@ public class WikiCommandRecipeIntegration{
         } catch(NumberFormatException e) {
             throw new IllegalArgumentException("The second parameter (the y coordinate) contains an invalid number. Check for spaces or invalid characters! Full Code: " + code);
         }
-        locatedTextures.add(new LocatedTexture(TextureSupplier.getTexture(Paths.WIKI_PATH + "wiki/texture/GuiFurnace.png"), x, y, (int)(82 / GuiWiki.TEXT_SCALE), (int)(54 / GuiWiki.TEXT_SCALE)));
+        locatedTextures.add(new LocatedTexture(TextureSupplier.getTexture(Paths.WIKI_PATH + "texture/GuiFurnace.png"), x, y, (int)(82 / GuiWiki.TEXT_SCALE), (int)(54 / GuiWiki.TEXT_SCALE)));
         x = (int)(x * GuiWiki.TEXT_SCALE);
         y = (int)(y * GuiWiki.TEXT_SCALE);
-        ItemStack inputStack = WikiUtils.getStackFromName(recipe[0]);
+        ItemStack inputStack = null;
+        ItemStack resultStack = null;
+        if(codeParts[2].startsWith("key=")) {
+            String resultStackCode = codeParts[2].substring(4, codeParts[2].length() - 1);
+            inputStack = autoMappedFurnaceRecipes.get(resultStackCode);
+            if(inputStack != null) {
+                resultStack = WikiUtils.getStackFromName(resultStackCode);
+            } else {
+                FurnaceRetrievalEvent recipeEvent = new FurnaceRetrievalEvent(resultStackCode);
+                MinecraftForge.EVENT_BUS.post(recipeEvent);
+                inputStack = recipeEvent.inputStack;
+                resultStack = recipeEvent.resultStack;
+            }
+        } else {
+            String[] recipe = codeParts[2].split("}");
+            if(recipe.length != 2) throw new IllegalArgumentException("Recipe needs to contain 2 parts: ',input}output]'. It now contains " + recipe.length + ". Full code: " + code);
+            inputStack = WikiUtils.getStackFromName(recipe[0]);
+            resultStack = WikiUtils.getStackFromName(recipe[1]);
+        }
         if(inputStack != null) {
             locatedStacks.add(new LocatedStack(inputStack, x + STACKS_X_OFFSET, y + STACKS_Y_OFFSET));
         }
-        ItemStack resultStack = WikiUtils.getStackFromName(recipe[1]);
         if(resultStack != null) {
             locatedStacks.add(new LocatedStack(resultStack, x + STACKS_X_OFFSET + 60, y + STACKS_Y_OFFSET + 18));
         }

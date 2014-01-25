@@ -11,11 +11,11 @@ import net.minecraftforge.event.Event;
  * the 'recipe' field to the ShapelessRecipes of the piston recipe. Instead of searching for the instance of this recipe, you can keep a 
  * reference to it when you register the recipe (GameRegistry#addShapedRecipe(ItemStack, Object...) returns an IRecipe).
  */
-public class RecipeRetrievalEvent extends Event{
+public class CraftingRetrievalEvent extends Event{
     public IRecipe recipe; //Only pass ShapedRecipes, ShapedOreRecipe or ShapelessRecipes (or I'll throw an exception, mhoehaha!)
     public final String key;
 
-    public RecipeRetrievalEvent(String key){
+    public CraftingRetrievalEvent(String key){
         this.key = key;
     }
 }

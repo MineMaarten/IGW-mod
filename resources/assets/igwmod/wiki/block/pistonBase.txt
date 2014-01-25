@@ -1,5 +1,5 @@
 [crafting{200,50,www,cic,crc,w=block/wood.oak,c=block/stonebrick,i=item/ingotIron,r=item/redstone}block/pistonBase]
-[crafting{200,180,key=piston}]
+[crafting{200,180,key=block/pistonBase}]
 Crafting recipe test:
 And automatic generated:
 Pistons always face the player when placed.
