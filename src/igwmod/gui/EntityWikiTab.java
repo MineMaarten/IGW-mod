@@ -61,6 +61,11 @@ public class EntityWikiTab implements IWikiTab{
     }
 
     @Override
+    public int pagesPerScroll(){
+        return 1;
+    }
+
+    @Override
     public void renderForeground(GuiWiki gui, int mouseX, int mouseY){
         // TODO Auto-generated method stub
 

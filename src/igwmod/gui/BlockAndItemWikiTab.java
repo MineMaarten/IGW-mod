@@ -66,6 +66,11 @@ public class BlockAndItemWikiTab implements IWikiTab{
     }
 
     @Override
+    public int pagesPerScroll(){
+        return 2;
+    }
+
+    @Override
     public void renderForeground(GuiWiki gui, int mouseX, int mouseY){
         if(drawingStack != null) {
             if(drawingStack.getItem() instanceof ItemBlock) {

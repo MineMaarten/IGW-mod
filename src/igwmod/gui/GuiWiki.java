@@ -15,7 +15,7 @@ import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.renderer.InventoryEffectRenderer;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
@@ -42,7 +42,7 @@ import cpw.mods.fml.client.FMLClientHandler;
  * Derived from Vanilla's GuiContainerCreative
  */
 
-public class GuiWiki extends InventoryEffectRenderer{
+public class GuiWiki extends GuiContainer{
     private static String currentFile = "";
     private static List<String> fileInfo = new ArrayList<String>();
 
@@ -52,6 +52,7 @@ public class GuiWiki extends InventoryEffectRenderer{
 
     private static int currentWikiPagePage = 0;
     private static List<IPageLink> visibleWikiPages = new ArrayList<IPageLink>();
+    private static int matchingWikiPages;
 
     private final List<LocatedStack> locatedStacks = new ArrayList<LocatedStack>();
     private final List<LocatedString> locatedStrings = new ArrayList<LocatedString>();
@@ -102,6 +103,7 @@ public class GuiWiki extends InventoryEffectRenderer{
         for(int i = 0; i < visibleTabs.size(); i++) {
             if(x <= 33 + guiLeft && x >= 1 + guiLeft && y >= 8 + guiTop + i * 35 && y <= 43 + guiTop + i * 35) {
                 currentTab = visibleTabs.get(i);
+                updateSearch();
                 break;
             }
         }
@@ -181,68 +183,42 @@ public class GuiWiki extends InventoryEffectRenderer{
      */
     @Override
     protected void keyTyped(char par1, int par2){
-        if(searchField.textboxKeyTyped(par1, par2)) //{
-        updateSearch();
-        //    } else {
-        super.keyTyped(par1, par2);
-        //  }
+        if(searchField.textboxKeyTyped(par1, par2)) {
+            updateSearch();
+        } else {
+            super.keyTyped(par1, par2);
+        }
     }
 
     private void updateSearch(){
         List<IPageLink> pages = currentTab.getPages(null);//request all pages.
+
         if(pages != null) {
             List<Integer> matchingIndexes = new ArrayList<Integer>();
             for(int i = 0; i < pages.size(); i++) {
-                if(pages.get(i).getName().contains(searchField.getText())) matchingIndexes.add(i);
+                if(pages.get(i).getName().toLowerCase().contains(searchField.getText().toLowerCase())) {
+                    matchingIndexes.add(i);
+                }
             }
-            int[] indexes = new int[matchingIndexes.size()];
+            matchingWikiPages = matchingIndexes.size();
+            int firstListedPageIndex = (int)(getScrollStates() * currentScroll + 0.5F) * currentTab.pagesPerScroll();
+            int[] indexes = new int[Math.min(Math.min(matchingIndexes.size() - firstListedPageIndex, matchingIndexes.size()), currentTab.pagesPerTab())];
             for(int i = 0; i < indexes.length; i++) {
-                indexes[i] = matchingIndexes.get(i);
+                indexes[i] = matchingIndexes.get(firstListedPageIndex + i);
             }
             visibleWikiPages = currentTab.getPages(indexes);
+        } else {
+            visibleWikiPages = new ArrayList<IPageLink>();
+            matchingWikiPages = 0;
         }
         ((ContainerBlockWiki)inventorySlots).updateStacks(locatedStacks, visibleWikiPages);
-    }
-
-    //split from above for custom search tabs
-    private void updateFilteredItems(ContainerBlockWiki containercreative){
-        /*  Iterator iterator = containercreative.itemList.iterator();
-          String s = searchField.getText().toLowerCase();
-
-          while(iterator.hasNext()) {
-              ItemStack itemstack = (ItemStack)iterator.next();
-              boolean flag = false;
-              Iterator iterator1 = itemstack.getTooltip(mc.thePlayer, mc.gameSettings.advancedItemTooltips).iterator();
-
-              while(true) {
-                  if(iterator1.hasNext()) {
-                      String s1 = (String)iterator1.next();
-
-                      if(!s1.toLowerCase().contains(s)) {
-                          continue;
-                      }
-
-                      flag = true;
-                  }
-
-                  if(!flag) {
-                      iterator.remove();
-                  }
-
-                  break;
-              }
-          }
-
-          currentScroll = 0.0F;
-          containercreative.scrollTo(0.0F);*/
     }
 
     /**
      * returns (if you are not on the inventoryTab) and (the flag isn't set) and( you have more than 1 page of items)
      */
     private boolean needsScrollBars(){
-        // return curSection == EnumWikiSection.BLOCK_AND_ITEM ? ((ContainerBlockWiki)inventorySlots).hasMoreThan1PageOfItemsInList() : filteredEntityList.size() > 4;
-        return false;
+        return matchingWikiPages > currentTab.pagesPerTab();
     }
 
     /**
@@ -251,49 +227,35 @@ public class GuiWiki extends InventoryEffectRenderer{
     @Override
     public void handleMouseInput(){
         super.handleMouseInput();
-        /* int i = Mouse.getEventDWheel();
+        int i = Mouse.getEventDWheel();
 
-         if(i != 0 && needsScrollBars()) {
-             int j = curSection == EnumWikiSection.BLOCK_AND_ITEM ? ((ContainerBlockWiki)inventorySlots).itemList.size() / 8 - 9 + 1 : filteredEntityList.size() - 4 + 1;
+        if(i != 0 && needsScrollBars()) {
+            int j = getScrollStates();
 
-             if(i > 0) {
-                 i = 1;
-             }
+            if(i > 0) {
+                i = 1;
+            }
 
-             if(i < 0) {
-                 i = -1;
-             }
+            if(i < 0) {
+                i = -1;
+            }
 
-             currentScroll = (float)(currentScroll - (double)i / (double)j);
+            currentScroll = (float)(currentScroll - (double)i / (double)j);
 
-             if(currentScroll < 0.0F) {
-                 currentScroll = 0.0F;
-             }
+            if(currentScroll < 0.0F) {
+                currentScroll = 0.0F;
+            }
 
-             if(currentScroll > 1.0F) {
-                 currentScroll = 1.0F;
-             }
+            if(currentScroll > 1.0F) {
+                currentScroll = 1.0F;
+            }
 
-             if(curSection == EnumWikiSection.BLOCK_AND_ITEM) {
-                 ((ContainerBlockWiki)inventorySlots).scrollTo(currentScroll);
-             } else {
-                 scrollEntityListTo(currentScroll);
-             }
-         }*/
+            updateSearch();
+        }
     }
 
-    private void scrollEntityListTo(float scroll){
-        /*        int scrollPossibilities = filteredEntityList.size() - 4 + 1;
-                int currentIndex = (int)(scroll * scrollPossibilities + 0.5D);
-
-                if(currentIndex < 0) {
-                    currentIndex = 0;
-                }
-
-                shownEntityList.clear();
-                for(int i = currentIndex; i < currentIndex + 4 && i < filteredEntityList.size(); i++) {
-                    shownEntityList.add(filteredEntityList.get(i));
-                }*/
+    private int getScrollStates(){
+        return (1 + matchingWikiPages - currentTab.pagesPerTab()) / currentTab.pagesPerScroll();
     }
 
     /**
@@ -330,9 +292,7 @@ public class GuiWiki extends InventoryEffectRenderer{
             if(currentScroll > 1.0F) {
                 currentScroll = 1.0F;
             }
-
-            //    ((ContainerBlockWiki)inventorySlots).scrollTo(currentScroll);
-            scrollEntityListTo(currentScroll);
+            updateSearch();
         }
 
         super.drawScreen(par1, par2, partialTicks);

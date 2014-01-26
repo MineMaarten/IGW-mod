@@ -42,6 +42,8 @@ public interface IWikiTab{
      */
     public int pagesPerTab();
 
+    public int pagesPerScroll();
+
     public void renderForeground(GuiWiki gui, int mouseX, int mouseY);
 
     public void renderBackground(GuiWiki gui, int mouseX, int mouseY);

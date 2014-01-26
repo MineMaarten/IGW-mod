@@ -15,17 +15,30 @@ import net.minecraft.item.ItemStack;
 class ContainerBlockWiki extends Container{
 
     public void updateStacks(List<LocatedStack> stacks, List<IPageLink> pageLinks){
-        InventoryBasic inventory = new InventoryBasic("tmp", true, 45);
+        int invSize = stacks.size();
+        for(IPageLink link : pageLinks)
+            if(link instanceof LocatedStack) invSize++;
+        InventoryBasic inventory = new InventoryBasic("tmp", true, invSize);
         inventorySlots = new ArrayList();
         inventoryItemStacks = new ArrayList();
         for(int i = 0; i < stacks.size(); i++) {
-            addSlotToContainer(new Slot(inventory, i, stacks.get(i).x, stacks.get(i).y));
+            addSlotToContainer(new Slot(inventory, i, stacks.get(i).x, stacks.get(i).y){
+                @Override
+                public boolean isItemValid(ItemStack par1ItemStack){
+                    return false;
+                }
+            });
             inventory.setInventorySlotContents(i, stacks.get(i).stack);
         }
         for(int i = 0; i < pageLinks.size(); i++) {
             if(pageLinks.get(i) instanceof LocatedStack) {
                 LocatedStack stack = (LocatedStack)pageLinks.get(i);
-                addSlotToContainer(new Slot(inventory, stacks.size() + i, stack.x, stack.y));
+                addSlotToContainer(new Slot(inventory, stacks.size() + i, stack.x, stack.y){
+                    @Override
+                    public boolean isItemValid(ItemStack par1ItemStack){
+                        return false;
+                    }
+                });
                 inventory.setInventorySlotContents(stacks.size() + i, stack.stack);
             }
         }

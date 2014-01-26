@@ -9,6 +9,7 @@ public class NEIWikiLinkConfig implements IConfigureNEI{
     public void loadConfig(){
         // API.addKeyBind("igwWiki", Keyboard.KEY_I);
         GuiContainerManager.addInputHandler(new WikiLinkInputHandler());
+        GuiContainerManager.addTooltipHandler(new TooltipHandler());
     }
 
     @Override

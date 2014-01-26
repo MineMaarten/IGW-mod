@@ -4,6 +4,7 @@ import igwmod.api.WikiRegistry;
 import igwmod.gui.BlockAndItemWikiTab;
 import igwmod.gui.EntityWikiTab;
 import igwmod.lib.Constants;
+import igwmod.lib.Log;
 import igwmod.lib.Paths;
 import igwmod.render.TooltipOverlayHandler;
 
@@ -92,5 +93,7 @@ public class IGWMod{
             String blockCode = WikiUtils.getNameFromStack(entry.getValue());
             if(!WikiCommandRecipeIntegration.autoMappedFurnaceRecipes.containsKey(blockCode)) WikiCommandRecipeIntegration.autoMappedFurnaceRecipes.put(blockCode, new ItemStack(entry.getKey().get(0), 1, entry.getKey().get(1)));
         }
+
+        Log.info("Registered " + WikiRegistry.getItemAndBlockPageEntries().size() + " Block & Item page entries.");
     }
 }
