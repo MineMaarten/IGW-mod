@@ -15,31 +15,36 @@ import net.minecraft.item.ItemStack;
 class ContainerBlockWiki extends Container{
 
     public void updateStacks(List<LocatedStack> stacks, List<IPageLink> pageLinks){
-        int invSize = stacks.size();
+        int invSize = 0;
+        for(LocatedStack stack : stacks)
+            if(stack.y >= GuiWiki.MIN_TEXT_Y * GuiWiki.TEXT_SCALE && 16 + stack.y <= GuiWiki.MAX_TEXT_Y * GuiWiki.TEXT_SCALE) invSize++;
         for(IPageLink link : pageLinks)
             if(link instanceof LocatedStack) invSize++;
         InventoryBasic inventory = new InventoryBasic("tmp", true, invSize);
         inventorySlots = new ArrayList();
         inventoryItemStacks = new ArrayList();
-        for(int i = 0; i < stacks.size(); i++) {
-            addSlotToContainer(new Slot(inventory, i, stacks.get(i).x, stacks.get(i).y){
-                @Override
-                public boolean isItemValid(ItemStack par1ItemStack){
-                    return false;
-                }
-            });
-            inventory.setInventorySlotContents(i, stacks.get(i).stack);
-        }
-        for(int i = 0; i < pageLinks.size(); i++) {
-            if(pageLinks.get(i) instanceof LocatedStack) {
-                LocatedStack stack = (LocatedStack)pageLinks.get(i);
-                addSlotToContainer(new Slot(inventory, stacks.size() + i, stack.x, stack.y){
+        int curSlot = 0;
+        for(LocatedStack stack : stacks) {
+            if(stack.y >= GuiWiki.MIN_TEXT_Y * GuiWiki.TEXT_SCALE && 16 + stack.y <= GuiWiki.MAX_TEXT_Y * GuiWiki.TEXT_SCALE) {
+                addSlotToContainer(new Slot(inventory, curSlot, stack.x, stack.y){
                     @Override
                     public boolean isItemValid(ItemStack par1ItemStack){
                         return false;
                     }
                 });
-                inventory.setInventorySlotContents(stacks.size() + i, stack.stack);
+                inventory.setInventorySlotContents(curSlot++, stack.stack);
+            }
+        }
+        for(IPageLink pageLink : pageLinks) {
+            if(pageLink instanceof LocatedStack) {
+                LocatedStack stack = (LocatedStack)pageLink;
+                addSlotToContainer(new Slot(inventory, curSlot, stack.x, stack.y){
+                    @Override
+                    public boolean isItemValid(ItemStack par1ItemStack){
+                        return false;
+                    }
+                });
+                inventory.setInventorySlotContents(curSlot++, stack.stack);
             }
         }
     }
@@ -57,14 +62,9 @@ class ContainerBlockWiki extends Container{
      */
     @Override
     public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2){
-        if(par2 >= inventorySlots.size() - 2 && par2 < inventorySlots.size()) {
-            Slot slot = (Slot)inventorySlots.get(par2);
-
-            if(slot != null && slot.getHasStack()) {
-                slot.putStack((ItemStack)null);
-            }
-        }
-
         return null;
     }
+
+    @Override
+    public void putStackInSlot(int par1, ItemStack par2ItemStack){} //override this to do nothing, as NEI tries to place items in this container which makes it crash.
 }

@@ -23,9 +23,10 @@ import cpw.mods.fml.client.FMLClientHandler;
 
 public class InfoSupplier{
     private static HashMap<String, ResourceLocation> infoMap = new HashMap<String, ResourceLocation>();
-    private static final int MAX_TEXT_X = 450;
+    private static final int MAX_TEXT_X = 430;
     private static int currentTextColor;
     private static String curPrefix = "";
+    private static String curLink = "";
 
     /**
      * Returns a wikipage for an object name.
@@ -60,6 +61,7 @@ public class InfoSupplier{
     public static void analyseInfo(FontRenderer fontRenderer, List<String> fileInfo, List<IReservedSpace> reservedSpaces, List<LocatedString> locatedStrings, List<LocatedStack> locatedStacks, List<LocatedTexture> locatedTextures){
         currentTextColor = 0xFF000000;
         curPrefix = "";
+        curLink = "";
         locatedStacks.clear();
         locatedStrings.clear();
         locatedTextures.clear();
@@ -97,6 +99,7 @@ public class InfoSupplier{
             while(currentWord < sentenceWords.length) {
                 int curTextColor = currentTextColor;
                 String prefix = curPrefix;
+                String link = curLink;
                 boolean newLine = false;
                 while(true) {
                     if(currentWord >= sentenceWords.length || fontRenderer.getStringWidth(textPart) + currentX > MAX_TEXT_X) {
@@ -137,7 +140,7 @@ public class InfoSupplier{
                     }
                     if(shouldBreak) break;
                 }
-                locatedStrings.add(new LocatedString(prefix + textPart, currentX, currentY, curTextColor, false));
+                locatedStrings.add(link.equals("") ? new LocatedString(prefix + textPart, currentX, currentY, curTextColor, false) : new LocatedString(prefix + textPart, currentX, currentY, false, link));
                 if(newLine) currentY += fontRenderer.FONT_HEIGHT + 1;
                 currentX = newX;
                 textPart = "";
@@ -197,18 +200,21 @@ public class InfoSupplier{
     }
 
     private static void decomposeInLineTemplate(String code) throws IllegalArgumentException{
-        // if(!code.endsWith("]")) throw new IllegalArgumentException("Code doesn't end with an ']'! Full code: " + code.substring(1));
-        //  code = code.substring(1, code.length() - 1);//strip away the [ and ]
+        if(!code.endsWith("}")) throw new IllegalArgumentException("Code misses a '}' at the end! Full code: " + code);
         if(code.startsWith("color{")) {
             colorCommand(code);
-        }
-        if(code.startsWith("prefix{")) {
+        } else if(code.startsWith("prefix{")) {
             prefixCommand(code);
+        } else if(code.startsWith("link{")) {
+            curLink = code.substring(5, code.length() - 1);
+            if(curLink.startsWith("block/") || curLink.startsWith("item/") || curLink.startsWith("entity/")) {
+                curLink = "igwmod:wiki/" + curLink;
+            }
         }
     }
 
     private static void colorCommand(String code) throws IllegalArgumentException{
-        if(!code.endsWith("}")) throw new IllegalArgumentException("Code misses a '}' at the end! Full code: " + code);
+
         String colorCode = code.substring(6, code.length() - 1);
         if(colorCode.startsWith("0x")) colorCode = colorCode.substring(2);
         try {
@@ -219,7 +225,6 @@ public class InfoSupplier{
     }
 
     private static void prefixCommand(String code) throws IllegalArgumentException{
-        if(!code.endsWith("}")) throw new IllegalArgumentException("Code misses a '}' at the end! Full code: " + code);
         String prefixCode = code.substring(7, code.length() - 1);
         curPrefix = "";
         for(int i = 0; i < prefixCode.length(); i++) {

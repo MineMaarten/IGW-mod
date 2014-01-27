@@ -2,13 +2,10 @@ package igwmod.gui;
 
 import java.awt.Rectangle;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
-import cpw.mods.fml.client.FMLClientHandler;
 
 public class LocatedTexture implements IReservedSpace, IWidged{
-    private static Minecraft mc = FMLClientHandler.instance().getClient();
     public ResourceLocation texture;
     public int x, y, width, heigth;
 
@@ -27,18 +24,40 @@ public class LocatedTexture implements IReservedSpace, IWidged{
 
     @Override
     public void render(GuiWiki gui, int mouseX, int mouseY){
-        mc.getTextureManager().bindTexture(texture);
+        gui.mc.getTextureManager().bindTexture(texture);
         drawTexture(x, y, width, heigth);
     }
 
-    public static void drawTexture(int x, int y, int width, int height){
+    public static void drawTexture(int x, int y, int width, int heigth){
+        int minYCap = Math.max(0, GuiWiki.MIN_TEXT_Y - y);
+        int maxYCap = Math.min(heigth, GuiWiki.MAX_TEXT_Y - y);
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV(x, y + height, 0, 0.0, 1.0);
-        tessellator.addVertexWithUV(x + width, y + height, 0, 1.0, 1.0);
-        tessellator.addVertexWithUV(x + width, y, 0, 1.0, 0.0);
-        tessellator.addVertexWithUV(x, y, 0, 0.0, 0.0);
+        tessellator.addVertexWithUV(x, y + maxYCap, 0, 0.0, (float)maxYCap / heigth);//TODO render at right Z level
+        tessellator.addVertexWithUV(x + width, y + maxYCap, 0, 1.0, (float)maxYCap / heigth);
+        tessellator.addVertexWithUV(x + width, y + minYCap, 0, 1, (float)minYCap / heigth);
+        tessellator.addVertexWithUV(x, y + minYCap, 0, 0, (float)minYCap / heigth);
         tessellator.draw();
         // this.drawTexturedModalRect(x, y, 0, 0, 16, 16);
+    }
+
+    @Override
+    public void setX(int x){
+        this.x = x;
+    }
+
+    @Override
+    public void setY(int y){
+        this.y = y;
+    }
+
+    @Override
+    public int getX(){
+        return x;
+    }
+
+    @Override
+    public int getY(){
+        return y;
     }
 }

@@ -99,7 +99,7 @@ public class BlockAndItemWikiTab implements IWikiTab{
 
     @Override
     public void onPageChange(GuiWiki gui, String pageName, Object... metadata){
-        if(metadata[0] instanceof ItemStack) {
+        if(metadata.length > 0 && metadata[0] instanceof ItemStack) {
             drawingStack = (ItemStack)metadata[0];
         }
     }

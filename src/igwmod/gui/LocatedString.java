@@ -9,7 +9,8 @@ import cpw.mods.fml.client.FMLClientHandler;
 public class LocatedString implements IPageLink{
     protected static FontRenderer fontRenderer = FMLClientHandler.instance().getClient().fontRenderer;
     private final String string;
-    private final int x, y;
+    private int x;
+    private int y;
     private int color;
     private final boolean shadow;
     private String linkAddress;
@@ -47,16 +48,27 @@ public class LocatedString implements IPageLink{
     }
 
     @Override
-    public void onMouseClick(GuiWiki gui, int x, int y){
-        if(getReservedSpace().contains(x, y)) {
-            gui.setCurrentFile(linkAddress);
+    public boolean onMouseClick(GuiWiki gui, int x, int y){
+        if(linkAddress != null) {
+            if(getMouseSpace().contains(x, y)) {
+                gui.setCurrentFile(linkAddress);
+                return true;
+            }
         }
+        return false;
+    }
+
+    private Rectangle getMouseSpace(){
+        return new Rectangle((int)(x * GuiWiki.TEXT_SCALE), (int)(y * GuiWiki.TEXT_SCALE), (int)(fontRenderer.getStringWidth(string) * GuiWiki.TEXT_SCALE), (int)(fontRenderer.FONT_HEIGHT * GuiWiki.TEXT_SCALE));
     }
 
     @Override
     public void render(GuiWiki gui, int mouseX, int mouseY){
         if(getLinkAddress() != null) {
-            fontRenderer.drawString(EnumChatFormatting.UNDERLINE + string, x, y, getReservedSpace().contains(mouseX, mouseY) ? 0xFFFFFF00 : 0xFF3333FF, shadow);
+            Rectangle mouseSpace = getMouseSpace();
+            mouseSpace.x += gui.guiLeft;
+            mouseSpace.y += gui.guiTop;
+            fontRenderer.drawString(EnumChatFormatting.UNDERLINE + string, x, y, mouseSpace.contains(mouseX, mouseY) ? 0xFFFFFF00 : 0xFF3333FF, shadow);
         } else {
             fontRenderer.drawString(string, x, y, color, shadow);
         }
@@ -80,5 +92,25 @@ public class LocatedString implements IPageLink{
     @Override
     public String toString(){
         return x + ", " + y + ", string: " + string;
+    }
+
+    @Override
+    public void setX(int x){
+        this.x = x;
+    }
+
+    @Override
+    public void setY(int y){
+        this.y = y;
+    }
+
+    @Override
+    public int getX(){
+        return x;
+    }
+
+    @Override
+    public int getY(){
+        return y;
     }
 }

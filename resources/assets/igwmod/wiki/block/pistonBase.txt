@@ -1,9 +1,9 @@
 [crafting{200,50,www,cic,crc,w=block/wood.oak,c=block/stonebrick,i=item/ingotIron,r=item/redstone}block/pistonBase]
-[crafting{200,180,key=block/pistonBase}]
+[crafting{200,580,key=block/pistonBase}]
 Crafting recipe test:
 And automatic generated:
 Pistons always face the player when placed.
-Pistons are redstone powered. When powered, their wooden surface extends outwards by 1 block, pushing up to a maximum of 12 blocks.[1][2]
+Pistons are redstone powered. When powered, their wooden surface extends outwards by 1 block, pushing up to a maximum of 12 blocks.
 When going back to the unpowered state, the regular piston does not pull any block back (Blocks affected by gravity still fall back down).
 Its wooden surface can also push players, mobs and other entities on the floor by 1 block if they are in the way. However, if there is no space for the player/mob/entity to be pushed, the extended piston head will just pass through them without harm(unless the block the player is being pushed towards is a staircase/slab). The piston can still push a mob or player off a one block wide walkway, which can be coupled with a pressure plate for a fairly effective trap.
 The extended piston head is considered solid and transparent (just like glass). If a piston head extends into a player/mob this way, they will not suffocate, and the player/mob can move out of it but not back into it.
