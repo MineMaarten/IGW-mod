@@ -23,7 +23,7 @@ import cpw.mods.fml.client.FMLClientHandler;
 
 public class InfoSupplier{
     private static HashMap<String, ResourceLocation> infoMap = new HashMap<String, ResourceLocation>();
-    private static final int MAX_TEXT_X = 430;
+    private static final int MAX_TEXT_X = 475;
     private static int currentTextColor;
     private static String curPrefix = "";
     private static String curLink = "";
@@ -90,68 +90,62 @@ public class InfoSupplier{
 
         int currentY = 20;
         for(int k = 0; k < fileInfo.size(); k++) {
-            String line = fileInfo.get(k);
+            String line = " " + fileInfo.get(k);
             String[] sentenceWords = line.split(" ");
             int currentWord = 0;
             int currentX = 0;
             String textPart = "";
             int newX = 0;
-            while(currentWord < sentenceWords.length) {
+            while(currentWord < sentenceWords.length || sentenceWords.length == 0) {
                 int curTextColor = currentTextColor;
                 String prefix = curPrefix;
                 String link = curLink;
                 boolean newLine = false;
                 while(true) {
-                    if(currentWord >= sentenceWords.length || fontRenderer.getStringWidth(textPart) + currentX > MAX_TEXT_X) {
+                    String potentialString = currentWord >= sentenceWords.length ? "" : textPart + (textPart.equals("") ? "" : " ") + sentenceWords[currentWord];
+                    if(currentWord >= sentenceWords.length || fontRenderer.getStringWidth(prefix + potentialString) + currentX > MAX_TEXT_X && fontRenderer.getStringWidth(prefix + sentenceWords[currentWord]) <= MAX_TEXT_X - 200) {
                         newLine = true;
                         newX = 0;
                         break;
                     }
-                    String potentialString = textPart + (textPart.equals("") ? "" : " ") + sentenceWords[currentWord];
-                    newX = getNewXFromIntersection(new Rectangle(currentX, currentY, fontRenderer.getStringWidth(potentialString), fontRenderer.FONT_HEIGHT), reservedSpaces, locatedStacks, locatedTextures);
-                    if(textPart.equals("") && newX <= MAX_TEXT_X) {
+                    newX = getNewXFromIntersection(new Rectangle(currentX, currentY, fontRenderer.getStringWidth(prefix + potentialString), fontRenderer.FONT_HEIGHT), reservedSpaces, locatedStacks, locatedTextures);
+                    if(textPart.equals("") && fontRenderer.getStringWidth(prefix + potentialString) + newX <= MAX_TEXT_X) {
                         currentX = newX;
                     } else if(newX != currentX) {
                         break;
                     }
                     currentWord++;
                     textPart = potentialString;
-                    boolean shouldBreak = false;
+                    boolean foundCode = false;
                     if(currentWord < sentenceWords.length) {
                         String potentialCode = sentenceWords[currentWord];
-                        for(int i = 0; i < potentialCode.length(); i++) {
-                            if(potentialCode.charAt(i) == '[') {
-                                for(int j = i; j < potentialCode.length(); j++) {
-                                    if(potentialCode.charAt(j) == ']') {
-                                        try {
-                                            sentenceWords[currentWord] = potentialCode.substring(0, i) + potentialCode.substring(j + 1, potentialCode.length());
-                                            decomposeInLineTemplate(potentialCode.substring(i + 1, j));
-                                            newX += fontRenderer.getStringWidth(textPart + " ");
-                                            shouldBreak = true;
-                                        } catch(IllegalArgumentException e) {
-                                            fileInfo.add(EnumChatFormatting.RED + e.getMessage());
-                                            Log.warning(e.getMessage());
-                                        }
-                                        break;
-                                    }
-                                }
+                        int i = potentialCode.indexOf('[');
+                        int j = potentialCode.indexOf(']');
+                        while(i != -1 && j != -1) {
+                            try {
+                                sentenceWords[currentWord] = potentialCode.substring(0, i) + potentialCode.substring(j + 1, potentialCode.length());
+                                decomposeInLineTemplate(potentialCode.substring(i + 1, j));
+                                newX += fontRenderer.getStringWidth(textPart + " ");
+                                foundCode = true;
+                            } catch(IllegalArgumentException e) {
+                                fileInfo.add(EnumChatFormatting.RED + e.getMessage());
+                                Log.warning(e.getMessage());
                             }
+                            potentialCode = sentenceWords[currentWord];
+                            i = potentialCode.indexOf('[');
+                            j = potentialCode.indexOf(']');
                         }
+                        if(foundCode) break;
                     }
-                    if(shouldBreak) break;
                 }
                 locatedStrings.add(link.equals("") ? new LocatedString(prefix + textPart, currentX, currentY, curTextColor, false) : new LocatedString(prefix + textPart, currentX, currentY, false, link));
                 if(newLine) currentY += fontRenderer.FONT_HEIGHT + 1;
                 currentX = newX;
                 textPart = "";
+                if(sentenceWords.length == 0) break;
             }
-            currentY += fontRenderer.FONT_HEIGHT + 1;
+            // currentY += fontRenderer.FONT_HEIGHT + 1;
         }
-
-        for(LocatedString string : locatedStrings) {
-            //     Log.info(string.toString());
-        }
-
     }
 
     private static int getNewXFromIntersection(Rectangle rect, List<IReservedSpace> reservedSpaces, List<LocatedStack> locatedStacks, List<LocatedTexture> locatedTextures){
@@ -228,7 +222,7 @@ public class InfoSupplier{
         String prefixCode = code.substring(7, code.length() - 1);
         curPrefix = "";
         for(int i = 0; i < prefixCode.length(); i++) {
-            curPrefix += "\u00a7" + prefixCode.charAt(i);
+            if(prefixCode.charAt(i) != 'r') curPrefix += "\u00a7" + prefixCode.charAt(i);
         }
     }
 
@@ -243,6 +237,6 @@ public class InfoSupplier{
         } catch(NumberFormatException e) {
             throw new IllegalArgumentException("The code contains an invalid number! Check for spaces or invalid characters. Full code: " + code);
         }
-        return new LocatedTexture(TextureSupplier.getTexture(codeArguments[4]), coords[0], coords[1], coords[2], coords[3]);
+        return new LocatedTexture(TextureSupplier.getTexture(codeArguments[4].substring(0, codeArguments[4].length() - 1)), coords[0], coords[1], coords[2], coords[3]);
     }
 }

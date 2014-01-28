@@ -8,10 +8,10 @@ import igwmod.api.ItemWikiEvent;
 import igwmod.lib.Paths;
 import igwmod.lib.Textures;
 
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiTextField;
@@ -19,15 +19,11 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -60,7 +56,6 @@ public class GuiWiki extends GuiContainer{
 
     private static final ResourceLocation scrollbarTexture = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
 
-    /** Amount scrolled in Creative mode inventory (0 = top, 1 = bottom) */
     private static float currentPageLinkScroll;
     private static float currentPageScroll;
     private static int currentPageTranslation;
@@ -74,8 +69,8 @@ public class GuiWiki extends GuiContainer{
     private static GuiTextField searchField;
 
     private static final int PAGE_LINK_SCROLL_X = 80;
-    private static final int PAGE_LINK_SCROLL_HEIGHT = 162;
-    private static final int PAGE_LINK_SCROLL_Y = 66;
+    private static final int PAGE_LINK_SCROLL_HEIGHT = 214;
+    private static final int PAGE_LINK_SCROLL_Y = 14;
 
     private static final int PAGE_SCROLL_X = 240;
     private static final int PAGE_SCROLL_HEIGHT = 230;
@@ -94,20 +89,21 @@ public class GuiWiki extends GuiContainer{
         if(currentTab == null) currentTab = wikiTabs.get(0);
     }
 
-    /**
-     * Adds the buttons (and other controls) to the screen in question.
-     */
     @Override
     public void initGui(){
         super.initGui();
         buttonList.clear();
         Keyboard.enableRepeatEvents(true);
-        searchField = new GuiTextField(fontRenderer, guiLeft + 40, guiTop + 52, 53, fontRenderer.FONT_HEIGHT);
+
+        String lastSearch = "";
+        if(searchField != null) lastSearch = searchField.getText();
+        searchField = new GuiTextField(fontRenderer, guiLeft + 40, guiTop + currentTab.getSearchBarAndScrollStartY(), 53, fontRenderer.FONT_HEIGHT);
         searchField.setMaxStringLength(15);
         searchField.setEnableBackgroundDrawing(true);
         searchField.setVisible(true);
         searchField.setFocused(false);
         searchField.setCanLoseFocus(true);
+        searchField.setText(lastSearch);
         updateSearch();
     }
 
@@ -137,6 +133,7 @@ public class GuiWiki extends GuiContainer{
             if(x <= 33 + guiLeft && x >= 1 + guiLeft && y >= 8 + guiTop + i * 35 && y <= 43 + guiTop + i * 35) {
                 currentTab = visibleTabs.get(i);
                 updateSearch();
+                initGui();//update the textfield location.
                 break;
             }
         }
@@ -251,9 +248,6 @@ public class GuiWiki extends GuiContainer{
         return Math.max(maxTranslation - currentPageTranslation - MAX_TEXT_Y, 0);
     }
 
-    /**
-     * returns (if you are not on the inventoryTab) and (the flag isn't set) and( you have more than 1 page of items)
-     */
     private boolean needsPageLinkScrollBars(){
         return matchingWikiPages > currentTab.pagesPerTab();
     }
@@ -262,9 +256,6 @@ public class GuiWiki extends GuiContainer{
         return getMaxPageTranslation() > 0;
     }
 
-    /**
-     * Handles mouse input.
-     */
     @Override
     public void handleMouseInput(){
         super.handleMouseInput();
@@ -318,9 +309,9 @@ public class GuiWiki extends GuiContainer{
         lastMouseX = mouseX;
         boolean leftClicking = Mouse.isButtonDown(0);
         int pageLinkScrollX1 = guiLeft + PAGE_LINK_SCROLL_X;
-        int pageLinkScrollY1 = guiTop + PAGE_LINK_SCROLL_Y;
+        int pageLinkScrollY1 = guiTop + PAGE_LINK_SCROLL_Y + currentTab.getSearchBarAndScrollStartY();
         int pageLinkScrollX2 = pageLinkScrollX1 + 14;
-        int pageLinkScrollY2 = pageLinkScrollY1 + PAGE_LINK_SCROLL_HEIGHT;
+        int pageLinkScrollY2 = pageLinkScrollY1 + PAGE_LINK_SCROLL_HEIGHT - currentTab.getSearchBarAndScrollStartY();
 
         int pageScrollX1 = guiLeft + PAGE_SCROLL_X;
         int pageScrollY1 = guiTop + PAGE_SCROLL_Y;
@@ -328,9 +319,9 @@ public class GuiWiki extends GuiContainer{
         int pageScrollY2 = pageScrollY1 + PAGE_SCROLL_HEIGHT;
 
         if(!wasClicking && leftClicking) {
-            //  if(mouseX >= pageLinkScrollX1 && mouseY >= pageLinkScrollY1 && mouseX < pageLinkScrollX2 && mouseY < pageLinkScrollY2) {
-            //      isScrollingPageLink = needsPageLinkScrollBars();
-            /*   } else*/if(mouseX >= pageScrollX1 && mouseY >= pageScrollY1 && mouseX < pageScrollX2 && mouseY < pageScrollY2) {
+            if(mouseX >= pageLinkScrollX1 && mouseY >= pageLinkScrollY1 && mouseX < pageLinkScrollX2 && mouseY < pageLinkScrollY2) {
+                isScrollingPageLink = needsPageLinkScrollBars();
+            } else if(mouseX >= pageScrollX1 && mouseY >= pageScrollY1 && mouseX < pageScrollX2 && mouseY < pageScrollY2) {
                 isScrollingPage = needsPageScrollBars();
             }
         }
@@ -371,45 +362,6 @@ public class GuiWiki extends GuiContainer{
         GL11.glDisable(GL11.GL_LIGHTING);
     }
 
-    @Override
-    protected void drawItemStackTooltip(ItemStack par1ItemStack, int par2, int par3){
-        List list = par1ItemStack.getTooltip(mc.thePlayer, mc.gameSettings.advancedItemTooltips);
-        CreativeTabs creativetabs = par1ItemStack.getItem().getCreativeTab();
-
-        if(creativetabs == null && par1ItemStack.itemID == Item.enchantedBook.itemID) {
-            Map map = EnchantmentHelper.getEnchantments(par1ItemStack);
-
-            if(map.size() == 1) {
-                Enchantment enchantment = Enchantment.enchantmentsList[((Integer)map.keySet().iterator().next()).intValue()];
-                CreativeTabs[] acreativetabs = CreativeTabs.creativeTabArray;
-                int k = acreativetabs.length;
-
-                for(int l = 0; l < k; ++l) {
-                    CreativeTabs creativetabs1 = acreativetabs[l];
-
-                    if(creativetabs1.func_111226_a(enchantment.type)) {
-                        creativetabs = creativetabs1;
-                        break;
-                    }
-                }
-            }
-        }
-
-        if(creativetabs != null) {
-            list.add(1, "" + EnumChatFormatting.BOLD + EnumChatFormatting.BLUE + I18n.getString(creativetabs.getTranslatedTabLabel()));
-        }
-
-        for(int i1 = 0; i1 < list.size(); ++i1) {
-            if(i1 == 0) {
-                list.set(i1, "\u00a7" + Integer.toHexString(par1ItemStack.getRarity().rarityColor) + (String)list.get(i1));
-            } else {
-                list.set(i1, EnumChatFormatting.GRAY + (String)list.get(i1));
-            }
-        }
-
-        func_102021_a(list, par2, par3);
-    }
-
     /**
      * Draw the background layer for the GuiContainer (everything behind the items)
      */
@@ -431,6 +383,10 @@ public class GuiWiki extends GuiContainer{
             drawTexturedModalRect(guiLeft, guiTop + 214, 0, 70, 33, 22);
         }
 
+        //draw the pagelink scrollbar
+        drawTexturedModalRect(guiLeft + PAGE_LINK_SCROLL_X - 1, guiTop + PAGE_LINK_SCROLL_Y + currentTab.getSearchBarAndScrollStartY() - 1, PAGE_SCROLL_X - 1, PAGE_SCROLL_Y - 1, 14, PAGE_LINK_SCROLL_HEIGHT - currentTab.getSearchBarAndScrollStartY() - 1);
+        drawTexturedModalRect(guiLeft + PAGE_LINK_SCROLL_X - 1, guiTop + PAGE_LINK_SCROLL_Y + PAGE_LINK_SCROLL_HEIGHT - 2, PAGE_SCROLL_X - 1, PAGE_SCROLL_Y + PAGE_SCROLL_HEIGHT - 2, 14, 1);
+
         //Draw the text field.
         searchField.drawTextBox();
 
@@ -448,6 +404,7 @@ public class GuiWiki extends GuiContainer{
         for(LocatedTexture texture : locatedTextures) {
             texture.render(this, mouseX, mouseY);
         }
+
         GL11.glPopMatrix();
 
         //Draw wiki tab images.
@@ -465,9 +422,10 @@ public class GuiWiki extends GuiContainer{
             link.render(this, mouseX, mouseY);
         }
 
-        //Draw the scroll bars.
+        GL11.glColor4d(1, 1, 1, 1);
+        //Draw the scroll bar widgets.
         mc.getTextureManager().bindTexture(scrollbarTexture);
-        drawTexturedModalRect(PAGE_LINK_SCROLL_X, PAGE_LINK_SCROLL_Y + (int)((PAGE_LINK_SCROLL_Y + PAGE_LINK_SCROLL_HEIGHT - PAGE_LINK_SCROLL_Y - 17) * currentPageLinkScroll), 232 + (needsPageLinkScrollBars() ? 0 : 12), 0, 12, 15);
+        drawTexturedModalRect(PAGE_LINK_SCROLL_X, PAGE_LINK_SCROLL_Y + currentTab.getSearchBarAndScrollStartY() + (int)((PAGE_LINK_SCROLL_HEIGHT - currentTab.getSearchBarAndScrollStartY() - 17) * currentPageLinkScroll), 232 + (needsPageLinkScrollBars() ? 0 : 12), 0, 12, 15);
         drawTexturedModalRect(PAGE_SCROLL_X, PAGE_SCROLL_Y + (int)((PAGE_SCROLL_Y + PAGE_SCROLL_HEIGHT - PAGE_SCROLL_Y - 17) * currentPageScroll), 232 + (needsPageScrollBars() ? 0 : 12), 0, 12, 15);
 
         GL11.glEnable(GL11.GL_LIGHTING);
@@ -527,6 +485,8 @@ public class GuiWiki extends GuiContainer{
 
     private void updateWikiPage(){
         List<IReservedSpace> reservedSpaces = currentTab.getReservedSpaces();
+        if(reservedSpaces == null) reservedSpaces = new ArrayList<IReservedSpace>();
+        reservedSpaces.add(new ReservedSpace(new Rectangle(0, 0, 200, Integer.MAX_VALUE)));
         InfoSupplier.analyseInfo(fontRenderer, fileInfo, reservedSpaces, locatedStrings, locatedStacks, locatedTextures);
         ((ContainerBlockWiki)inventorySlots).updateStacks(locatedStacks, visibleWikiPages);
         currentPageTranslation = 0;
@@ -538,66 +498,13 @@ public class GuiWiki extends GuiContainer{
         currentTab.renderBackground(this, mouseX, mouseY);
         GL11.glPushMatrix();
         GL11.glTranslated(guiLeft, guiTop, 0);
-        GL11.glScaled(TEXT_SCALE, TEXT_SCALE, 1);
         for(LocatedString locatedString : locatedStrings) {
-            if(locatedString.getY() > MIN_TEXT_Y && locatedString.getReservedSpace().height + locatedString.getY() < MAX_TEXT_Y) {
+            if(locatedString.getY() > MIN_TEXT_Y && locatedString.getReservedSpace().height + locatedString.getY() <= MAX_TEXT_Y) {
                 locatedString.render(this, mouseX, mouseY);
             }
         }
         GL11.glPopMatrix();
 
-    }
-
-    /*
-        private void drawSelectedStack(){
-            if(drawingStack != null) {
-                if(itemRenderer == null) {
-                    itemRenderer = new RenderItem(){
-                        @Override
-                        public boolean shouldBob(){
-                            return false;
-                        }
-                    };
-                    itemRenderer.setRenderManager(RenderManager.instance);
-                }
-                if(renderedEntityItem == null) renderedEntityItem = new EntityItem(FMLClientHandler.instance().getClient().theWorld);
-                if(renderedEntityItem.getEntityItem() != drawingStack) renderedEntityItem.setEntityItemStack(drawingStack);
-                GL11.glPushMatrix();
-                GL11.glTranslated(0, 0, -1);
-                itemRenderer.doRenderItem(renderedEntityItem, 0, 0, 0, -TickHandler.ticksExisted, 0);
-                GL11.glPopMatrix();
-            }
-        }*/
-
-    /**
-     * Renders the creative inventory hovering text if mouse is over it. Returns true if did render or false otherwise.
-     * Params: current creative tab to be checked, current mouse x position, current mouse y position.
-     */
-    protected boolean renderCreativeInventoryHoveringText(CreativeTabs par1CreativeTabs, int par2, int par3){
-        int k = par1CreativeTabs.getTabColumn();
-        int l = 28 * k;
-        byte b0 = 0;
-
-        if(k == 5) {
-            l = xSize - 28 + 2;
-        } else if(k > 0) {
-            l += k;
-        }
-
-        int i1;
-
-        if(par1CreativeTabs.isTabInFirstRow()) {
-            i1 = b0 - 32;
-        } else {
-            i1 = b0 + ySize;
-        }
-
-        if(isPointInRegion(l + 3, i1 + 3, 23, 27, par2, par3)) {
-            drawCreativeTabHoveringText(I18n.getString(par1CreativeTabs.getTranslatedTabLabel()), par2, par3);
-            return true;
-        } else {
-            return false;
-        }
     }
 
     private List<IWikiTab> getVisibleTabs(){
@@ -613,7 +520,7 @@ public class GuiWiki extends GuiContainer{
             List<IPageLink> links = tab.getPages(null);
             if(links != null) {
                 for(IPageLink link : links) {
-                    if(link.getLinkAddress().equals(page)) return tab;
+                    if(page.equals(link.getLinkAddress())) return tab;
                 }
             }
         }

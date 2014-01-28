@@ -3,6 +3,7 @@ package igwmod;
 import igwmod.api.WikiRegistry;
 import igwmod.gui.BlockAndItemWikiTab;
 import igwmod.gui.EntityWikiTab;
+import igwmod.gui.IGWWikiTab;
 import igwmod.lib.Constants;
 import igwmod.lib.Log;
 import igwmod.lib.Paths;
@@ -13,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -48,10 +51,9 @@ public class IGWMod{
 
         ConfigHandler.init(event.getSuggestedConfigurationFile());
 
-        for(int i = 0; i < 5; i++)
-            WikiRegistry.registerWikiTab(new BlockAndItemWikiTab());
-        for(int i = 0; i < 2; i++)
-            WikiRegistry.registerWikiTab(new EntityWikiTab());
+        WikiRegistry.registerWikiTab(new IGWWikiTab());
+        WikiRegistry.registerWikiTab(new BlockAndItemWikiTab());
+        WikiRegistry.registerWikiTab(new EntityWikiTab());
 
     }
 
@@ -74,6 +76,11 @@ public class IGWMod{
         for(ItemStack stack : allCreativeStacks) {
             List<String> info = InfoSupplier.getInfo(Paths.WIKI_PATH + stack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/"));
             if(info != null) WikiRegistry.registerBlockAndItemPageEntry(stack);
+        }
+
+        //Register all entities that have (default) pages to the entity page. (Y u no use generics Mojang?!)
+        for(Map.Entry<String, Class<? extends Entity>> entry : (Set<Map.Entry<String, Class<? extends Entity>>>)EntityList.stringToClassMapping.entrySet()) {
+            if(InfoSupplier.getInfo(Paths.WIKI_PATH + "entity/" + entry.getKey()) != null) WikiRegistry.registerEntityPageEntry(entry.getValue());
         }
 
         //Add automatically generated crafting recipe key mappings.

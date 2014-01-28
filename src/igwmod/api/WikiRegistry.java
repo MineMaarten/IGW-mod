@@ -2,39 +2,68 @@ package igwmod.api;
 
 import igwmod.gui.GuiWiki;
 import igwmod.gui.IWikiTab;
+import igwmod.lib.Paths;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.item.ItemStack;
 
 public class WikiRegistry{
 
-    //Not using a map here, because ItemStacks aren't comparable.
-    private static List<ItemStack> itemAndBlockPageEntryKeys = new ArrayList<ItemStack>();
-    private static List<String> itemAndBlockPageEntryValues = new ArrayList<String>();
+    private static List<Map.Entry<String, ItemStack>> itemAndBlockPageEntries = new ArrayList<Map.Entry<String, ItemStack>>();
+    private static Map<Class<? extends Entity>, String> entityPageEntries = new HashMap<Class<? extends Entity>, String>();
 
     public static void registerWikiTab(IWikiTab tab){
         GuiWiki.wikiTabs.add(tab);
     }
 
     public static void registerBlockAndItemPageEntry(ItemStack stack){
-        registerBlockAndItemPageEntry(stack, stack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/"));
+        registerBlockAndItemPageEntry(stack, Paths.WIKI_PATH + stack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/"));
     }
 
     public static void registerBlockAndItemPageEntry(ItemStack stack, String page){
-        itemAndBlockPageEntryKeys.add(stack);
-        itemAndBlockPageEntryValues.add(page);
+        itemAndBlockPageEntries.add(new AbstractMap.SimpleEntry(page, stack));
+    }
+
+    public static void registerEntityPageEntry(Class<? extends Entity> entityClass){
+        registerEntityPageEntry(entityClass, Paths.WIKI_PATH + "entity/" + EntityList.classToStringMapping.get(entityClass));
+    }
+
+    public static void registerEntityPageEntry(Class<? extends Entity> entityClass, String page){
+        entityPageEntries.put(entityClass, page);
     }
 
     public static String getPageForItemStack(ItemStack stack){
-        for(int i = 0; i < itemAndBlockPageEntryKeys.size(); i++) {
-            if(itemAndBlockPageEntryKeys.get(i).isItemEqual(stack)) return itemAndBlockPageEntryValues.get(i);
+        for(Map.Entry<String, ItemStack> entry : itemAndBlockPageEntries) {
+            if(entry.getValue().isItemEqual(stack)) return entry.getKey();
         }
         return null;
     }
 
+    public static String getPageForEntityClass(Class<? extends Entity> entityClass){
+        return entityPageEntries.get(entityClass);
+    }
+
     public static List<ItemStack> getItemAndBlockPageEntries(){
-        return itemAndBlockPageEntryKeys;
+        List<ItemStack> entries = new ArrayList<ItemStack>();
+        for(Map.Entry<String, ItemStack> entry : itemAndBlockPageEntries) {
+            entries.add(entry.getValue());
+        }
+        return entries;
+    }
+
+    public static List<Class<? extends Entity>> getEntityPageEntries(){
+        List<Class<? extends Entity>> entries = new ArrayList<Class<? extends Entity>>();
+        for(Class<? extends Entity> entityClass : entityPageEntries.keySet()) {
+            entries.add(entityClass);
+        }
+        return entries;
+
     }
 }

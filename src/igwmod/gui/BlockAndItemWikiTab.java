@@ -3,7 +3,6 @@ package igwmod.gui;
 import igwmod.api.WikiRegistry;
 import igwmod.lib.Textures;
 
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,8 +38,7 @@ public class BlockAndItemWikiTab implements IWikiTab{
     @Override
     public List<IReservedSpace> getReservedSpaces(){
         List<IReservedSpace> reservedSpaces = new ArrayList<IReservedSpace>();
-        reservedSpaces.add(new ReservedSpace(new Rectangle(0, 0, 200, Integer.MAX_VALUE)));
-        reservedSpaces.add(new LocatedTexture(Textures.GUI_ITEMS_AND_BLOCKS, 40, 65, 53, 162));
+        reservedSpaces.add(new LocatedTexture(Textures.GUI_ITEMS_AND_BLOCKS, 40, 65, 36, 162));
         return reservedSpaces;
     }
 
@@ -68,6 +66,11 @@ public class BlockAndItemWikiTab implements IWikiTab{
     @Override
     public int pagesPerScroll(){
         return 2;
+    }
+
+    @Override
+    public int getSearchBarAndScrollStartY(){
+        return 52;
     }
 
     @Override
