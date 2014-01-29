@@ -6,6 +6,7 @@ If you are a modder or a wiki page writer and want to know how to add content, m
 -Fix bug: Can't put two commands right after eachother (needs a space in between)
 -Fix bug: Rotating block renderer doesn't work for special rendered blocks (TileEntitySpecialRenderer and a few others).
 -Add API mechanics. This will probably a NEI like method, with classloading a 'NEIxxxPlugin'.
+-Add better localization support.
 -Add documentation about how to do things codewise.
 -Add Vanilla info.
 -Add tooltip to capped strings (The 'Dev: Item & Bl..." string on the left for example).

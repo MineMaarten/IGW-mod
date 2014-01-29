@@ -64,17 +64,23 @@ public class IGWMod{
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event){
-        lookForItemPages();
+        addDefaultKeys();
     }
 
-    private void lookForItemPages(){
+    private void addDefaultKeys(){
         //Register all basic items that have (default) pages to the item and blocks page.
         List<ItemStack> allCreativeStacks = new ArrayList<ItemStack>();
         for(Item item : Item.itemsList) {
-            if(item != null) item.getSubItems(item.itemID, item.getCreativeTab(), allCreativeStacks);
+            if(item != null) {
+                try {
+                    item.getSubItems(item.itemID, item.getCreativeTab(), allCreativeStacks);
+                } catch(Exception e) {
+                    //ForgeMultipart throws a NPE when Item#getSubItems() gets called.
+                }
+            }
         }
         for(ItemStack stack : allCreativeStacks) {
-            List<String> info = InfoSupplier.getInfo(Paths.WIKI_PATH + stack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/"));
+            List<String> info = InfoSupplier.getInfo(Paths.WIKI_PATH + WikiUtils.getNameFromStack(stack));
             if(info != null) WikiRegistry.registerBlockAndItemPageEntry(stack);
         }
 
@@ -102,5 +108,6 @@ public class IGWMod{
         }
 
         Log.info("Registered " + WikiRegistry.getItemAndBlockPageEntries().size() + " Block & Item page entries.");
+        Log.info("Registered " + WikiRegistry.getEntityPageEntries().size() + " Entity page entries.");
     }
 }
