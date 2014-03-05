@@ -14,6 +14,7 @@ public class IGWWikiTab extends BaseWikiTab{
             pageEntries.add("devIntro");
             pageEntries.add("devItemAndBlock");
             pageEntries.add("devPageCommands");
+            pageEntries.add("devForModders");
         }
     }
 

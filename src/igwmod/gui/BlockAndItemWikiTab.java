@@ -77,7 +77,7 @@ public class BlockAndItemWikiTab implements IWikiTab{
     public void renderForeground(GuiWiki gui, int mouseX, int mouseY){
         if(drawingStack != null) {
             if(drawingStack.getItem() instanceof ItemBlock) {
-                gui.renderRotatingBlockIntoGUI(gui, drawingStack, 60, 20, 2.9F);
+                gui.renderRotatingBlockIntoGUI(gui, drawingStack, 55, 24, 2.9F);
             } else {
                 GL11.glPushMatrix();
                 GL11.glTranslated(60 - 8, 20 - 8, 0);

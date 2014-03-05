@@ -15,6 +15,8 @@ public class WikiLinkInputHandler implements IContainerInputHandler{
         if("igwmod.keys.wiki".equals(KeybindingHandler.instance().getKeyName(keyCode))) {
             ItemStack hoveredStack = GuiContainerManager.getManager(gui).getStackMouseOver();
             if(hoveredStack != null) {
+                hoveredStack = hoveredStack.copy();
+                hoveredStack.stackSize = 1;
                 GuiWiki guiWiki = new GuiWiki();
                 FMLCommonHandler.instance().showGuiScreen(guiWiki);
                 guiWiki.setCurrentFile(hoveredStack);

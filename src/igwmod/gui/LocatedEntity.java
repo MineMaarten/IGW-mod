@@ -1,26 +1,19 @@
 package igwmod.gui;
 
-import igwmod.lib.Log;
 import igwmod.lib.Paths;
+import igwmod.lib.Util;
 
 import java.awt.Rectangle;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
-import net.minecraft.world.World;
-import cpw.mods.fml.client.FMLClientHandler;
 
 public class LocatedEntity implements IReservedSpace, IPageLink{
-    private Entity entity;
+    private final Entity entity;
     private int x, y;
 
     public LocatedEntity(Class<? extends Entity> clazz, int x, int y){
-        try {
-            entity = clazz.getConstructor(World.class).newInstance(FMLClientHandler.instance().getClient().theWorld);
-        } catch(Exception e) {
-            Log.error("[LocatedEntity.java] An entity class doesn't have a constructor with a single World parameter! Entity = " + clazz.getName());
-            e.printStackTrace();
-        }
+        entity = Util.getEntityForClass(clazz);
         this.x = x;
         this.y = y;
     }

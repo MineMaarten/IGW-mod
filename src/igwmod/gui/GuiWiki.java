@@ -13,16 +13,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -31,8 +30,6 @@ import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.client.FMLClientHandler;
 
 /**
  * Derived from Vanilla's GuiContainerCreative
@@ -183,6 +180,8 @@ public class GuiWiki extends GuiContainer{
         currentTabPage = getPageNumberForTab(currentTab);
         currentTab.onPageChange(this, file, metadata);
         updateWikiPage();
+        updateSearch();
+        initGui();//update the textfield location.
     }
 
     /**
@@ -358,8 +357,8 @@ public class GuiWiki extends GuiContainer{
         }
 
         super.drawScreen(mouseX, mouseY, partialTicks);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glDisable(GL11.GL_LIGHTING);
+        //  GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        //GL11.glDisable(GL11.GL_LIGHTING);
     }
 
     /**
@@ -391,36 +390,18 @@ public class GuiWiki extends GuiContainer{
         searchField.drawTextBox();
 
         drawWikiPage(mouseX, mouseY);
+
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY){
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-        // Draw the wiki page images.
-        GL11.glColor4d(1, 1, 1, 1);
-        GL11.glPushMatrix();
-        GL11.glScaled(TEXT_SCALE, TEXT_SCALE, 1);
-        for(LocatedTexture texture : locatedTextures) {
-            texture.render(this, mouseX, mouseY);
-        }
-
-        GL11.glPopMatrix();
-
-        //Draw wiki tab images.
-        List<IReservedSpace> reservedSpaces = currentTab.getReservedSpaces();
-        if(reservedSpaces != null) {
-            for(IReservedSpace space : reservedSpaces) {
-                if(space instanceof LocatedTexture) {
-                    ((LocatedTexture)space).render(this, mouseX, mouseY);
-                }
-            }
-        }
-
-        //render the wiki links
-        for(IPageLink link : visibleWikiPages) {
-            link.render(this, mouseX, mouseY);
-        }
+        /*
+                //render the wiki links
+                for(IPageLink link : visibleWikiPages) {
+                    link.render(this, mouseX, mouseY);
+                }*/
 
         GL11.glColor4d(1, 1, 1, 1);
         //Draw the scroll bar widgets.
@@ -429,18 +410,6 @@ public class GuiWiki extends GuiContainer{
         drawTexturedModalRect(PAGE_SCROLL_X, PAGE_SCROLL_Y + (int)((PAGE_SCROLL_Y + PAGE_SCROLL_HEIGHT - PAGE_SCROLL_Y - 17) * currentPageScroll), 232 + (needsPageScrollBars() ? 0 : 12), 0, 12, 15);
 
         GL11.glEnable(GL11.GL_LIGHTING);
-
-        GL11.glPushMatrix();
-        GL11.glTranslated(0, 4, 0);
-        List<IWikiTab> visibleTabs = getVisibleTabs();
-        for(IWikiTab tab : visibleTabs) {
-            ItemStack drawingStack = tab.renderTabIcon(this);
-            if(drawingStack != null) {
-                renderRotatingBlockIntoGUI(this, drawingStack, 11, 10, 1.5F);
-            }
-            GL11.glTranslated(0, 35, 0);
-        }
-        GL11.glPopMatrix();
 
         //draw the tab page browse text if necessary
         if(hasMultipleTabPages()) {
@@ -494,7 +463,6 @@ public class GuiWiki extends GuiContainer{
     }
 
     private void drawWikiPage(int mouseX, int mouseY){
-
         currentTab.renderBackground(this, mouseX, mouseY);
         GL11.glPushMatrix();
         GL11.glTranslated(guiLeft, guiTop, 0);
@@ -502,6 +470,43 @@ public class GuiWiki extends GuiContainer{
             if(locatedString.getY() > MIN_TEXT_Y && locatedString.getReservedSpace().height + locatedString.getY() <= MAX_TEXT_Y) {
                 locatedString.render(this, mouseX, mouseY);
             }
+        }
+
+        // Draw the wiki page images.
+        GL11.glColor4d(1, 1, 1, 1);
+        GL11.glPushMatrix();
+        GL11.glScaled(TEXT_SCALE, TEXT_SCALE, 1);
+        for(LocatedTexture texture : locatedTextures) {
+            texture.render(this, mouseX, mouseY);
+        }
+
+        GL11.glPopMatrix();
+
+        //Draw wiki tab images.
+        List<IReservedSpace> reservedSpaces = currentTab.getReservedSpaces();
+        if(reservedSpaces != null) {
+            for(IReservedSpace space : reservedSpaces) {
+                if(space instanceof LocatedTexture) {
+                    ((LocatedTexture)space).render(this, mouseX, mouseY);
+                }
+            }
+        }
+
+        GL11.glPushMatrix();
+        GL11.glTranslated(0, 4, 0);
+        List<IWikiTab> visibleTabs = getVisibleTabs();
+        for(IWikiTab tab : visibleTabs) {
+            ItemStack drawingStack = tab.renderTabIcon(this);
+            if(drawingStack != null) {
+                renderRotatingBlockIntoGUI(this, drawingStack, 11, 10, 1.5F);
+            }
+            GL11.glTranslated(0, 35, 0);
+        }
+        GL11.glPopMatrix();
+
+        //render the wiki links
+        for(IPageLink link : visibleWikiPages) {
+            link.render(this, mouseX, mouseY);
         }
         GL11.glPopMatrix();
 
@@ -553,32 +558,82 @@ public class GuiWiki extends GuiContainer{
      * @param zLevel
      * @param scale
      */
+    /*
     public void renderRotatingBlockIntoGUI(GuiWiki gui, ItemStack stack, int x, int y, float scale){
 
-        RenderBlocks renderBlocks = new RenderBlocks();
+     RenderBlocks renderBlocks = new RenderBlocks();
 
-        Block block = Block.blocksList[stack.itemID];
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+     Block block = Block.blocksList[stack.itemID];
+     FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+     GL11.glPushMatrix();
+     GL11.glTranslatef(x - 2, y + 3, -3.0F + gui.zLevel);
+     GL11.glScalef(10.0F, 10.0F, 10.0F);
+     GL11.glTranslatef(1.0F, 0.5F, 1.0F);
+     GL11.glScalef(1.0F * scale, 1.0F * scale, -1.0F);
+     GL11.glRotatef(210.0F, 1.0F, 0.0F, 0.0F);
+     GL11.glRotatef(-TickHandler.ticksExisted, 0.0F, 1.0F, 0.0F);
+
+     int var10 = Item.itemsList[stack.itemID].getColorFromItemStack(stack, 0);
+     float var16 = (var10 >> 16 & 255) / 255.0F;
+     float var12 = (var10 >> 8 & 255) / 255.0F;
+     float var13 = (var10 & 255) / 255.0F;
+
+     GL11.glColor4f(var16, var12, var13, 1.0F);
+
+     GL11.glRotatef(-90.0F, 0.0F, 1.0F, 0.0F);
+     renderBlocks.useInventoryTint = true;
+     renderBlocks.renderBlockAsItem(block, stack.getItemDamage(), 1.0F);
+     renderBlocks.useInventoryTint = true;
+     GL11.glPopMatrix();
+    }*/
+
+    private static RenderItem renderItem = new RenderItem(){
+        @Override
+        public boolean shouldBob(){
+            return false;
+        }
+    };
+    private static EntityItem entityItem;
+
+    public void renderRotatingBlockIntoGUI(GuiWiki gui, ItemStack stack, int x, int y, float scale){
+        if(entityItem == null) {
+            entityItem = new EntityItem(gui.mc.theWorld);
+            renderItem.setRenderManager(RenderManager.instance);
+        }
+        entityItem.setEntityItemStack(stack);
+
         GL11.glPushMatrix();
-        GL11.glTranslatef(x - 2, y + 3, -3.0F + gui.zLevel);
-        GL11.glScalef(10.0F, 10.0F, 10.0F);
-        GL11.glTranslatef(1.0F, 0.5F, 1.0F);
-        GL11.glScalef(1.0F * scale, 1.0F * scale, -1.0F);
-        GL11.glRotatef(210.0F, 1.0F, 0.0F, 0.0F);
-        GL11.glRotatef(-TickHandler.ticksExisted, 0.0F, 1.0F, 0.0F);
-
-        int var10 = Item.itemsList[stack.itemID].getColorFromItemStack(stack, 0);
-        float var16 = (var10 >> 16 & 255) / 255.0F;
-        float var12 = (var10 >> 8 & 255) / 255.0F;
-        float var13 = (var10 & 255) / 255.0F;
-
-        GL11.glColor4f(var16, var12, var13, 1.0F);
-
-        GL11.glRotatef(-90.0F, 0.0F, 1.0F, 0.0F);
-        renderBlocks.useInventoryTint = true;
-        renderBlocks.renderBlockAsItem(block, stack.getItemDamage(), 1.0F);
-        renderBlocks.useInventoryTint = true;
+        GL11.glTranslated(x + 1, y + 13, 20);
+        GL11.glScaled(40 * scale, 40 * scale, -40 * scale);
+        GL11.glRotated(180, 1, 0, 0);
+        GL11.glRotated(30, 1, 0, 0);
+        GL11.glTranslated(0.1, 0.1, gui.zLevel);
+        GL11.glRotated(-TickHandler.ticksExisted, 0, 1, 0);
+        renderItem.doRenderItem(entityItem, 0.0, 0.0, 0, 0, 0);
         GL11.glPopMatrix();
-    }
+        /* RenderBlocks renderBlocks = new RenderBlocks();
 
+         Block block = Block.blocksList[stack.itemID];
+         FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+         GL11.glPushMatrix();
+         GL11.glTranslatef(x - 2, y + 3, -3.0F + gui.zLevel);
+         GL11.glScalef(10.0F, 10.0F, 10.0F);
+         GL11.glTranslatef(1.0F, 0.5F, 1.0F);
+         GL11.glScalef(1.0F * scale, 1.0F * scale, -1.0F);
+         GL11.glRotatef(210.0F, 1.0F, 0.0F, 0.0F);
+         GL11.glRotatef(-TickHandler.ticksExisted, 0.0F, 1.0F, 0.0F);
+
+         int var10 = Item.itemsList[stack.itemID].getColorFromItemStack(stack, 0);
+         float var16 = (var10 >> 16 & 255) / 255.0F;
+         float var12 = (var10 >> 8 & 255) / 255.0F;
+         float var13 = (var10 & 255) / 255.0F;
+
+         GL11.glColor4f(var16, var12, var13, 1.0F);
+
+         GL11.glRotatef(-90.0F, 0.0F, 1.0F, 0.0F);
+         renderBlocks.useInventoryTint = true;
+         renderBlocks.renderBlockAsItem(block, stack.getItemDamage(), 1.0F);
+         renderBlocks.useInventoryTint = true;
+         GL11.glPopMatrix();*/
+    }
 }

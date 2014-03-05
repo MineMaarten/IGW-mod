@@ -6,7 +6,7 @@ Allows inclusion of images. It doesn't matter where in the .txt file you put thi
 [prefix{n}]crafting{x,y,key=keyName} [prefix{}]
 Allows the inclusion of crafting recipes. It automatically places down an image and fills in the recipe items. To do this it needs a key. Keys can be handled in two ways:
  
-You can use an IGW item name as key (for instance 'block/pistonBase'), and IGW-Mod will use the first recipe registered that has the specified item as output. This works for every normal crafting recipe (shaped, shapeless, Vanilla, modded). There is a problem though with items with multiple crafting recipes. If you look at wool for example, you'll see that you can create wool of a certain color by combining either 8 blocks of wool with a dye to get 8, or 1 wool combined with a dye to get 1. Only the first recipe added can be displayed by using "block/cloth.gray" as key.
+You can use an IGW item name as key (for instance 'block/pistonBase'), and IGW-Mod will use the first recipe registered that has the specified item as output. This works for every normal crafting recipe (shaped, shapeless, Vanilla, modded). There is a problem though with items that have multiple crafting recipes. If you look at wool for example, you'll see that you can create wool of a certain color by combining either 8 blocks of wool with a dye to get 8, or 1 wool combined with a dye to get 1. Only the first recipe added can be displayed by using "block/cloth.gray" as key.
 
 For this problem you'll need a little bit of code. For modders: Look at the CraftingRetrievalEvent.java. This will allow you to use any key for a specific recipe.
 
@@ -16,7 +16,7 @@ If there's no way of adding the recipe in with this command, you can use the nex
 c=block/stonebrick,i=item/ingotIron,
 r=item/redstone}block/pistonBase [prefix{}]
 Allows the inclusion of a custom crafting recipe.
-x,y = x,y location of the recipe (like with the image command). The following three parameters is the crafting pattern. In this example the recipe of a Piston is drawn, and the following crafting pattern was chosen:
+x,y = x,y location of the recipe (like with the image command). The following three parameters are the crafting pattern. In this example the recipe of a Piston is drawn, and the following crafting pattern was chosen:
 
 www
 cic

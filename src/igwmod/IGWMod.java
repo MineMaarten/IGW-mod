@@ -9,6 +9,8 @@ import igwmod.lib.Log;
 import igwmod.lib.Paths;
 import igwmod.render.TooltipOverlayHandler;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,12 +28,13 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid = Constants.MOD_ID, name = "In-Game Wiki Mod", version = "0.1.0")
+@Mod(modid = Constants.MOD_ID, name = "In-Game Wiki Mod", version = "1.0.0")
 public class IGWMod{
     @Instance(Constants.MOD_ID)
     public IGWMod instance;
@@ -109,5 +112,36 @@ public class IGWMod{
 
         Log.info("Registered " + WikiRegistry.getItemAndBlockPageEntries().size() + " Block & Item page entries.");
         Log.info("Registered " + WikiRegistry.getEntityPageEntries().size() + " Entity page entries.");
+    }
+
+    @EventHandler
+    public void processIMCRequests(FMLInterModComms.IMCEvent event){
+        List<FMLInterModComms.IMCMessage> messages = event.getMessages();
+        for(FMLInterModComms.IMCMessage message : messages) {
+            try {
+                Class clazz = Class.forName(message.key);
+                try {
+                    Method method = clazz.getMethod(message.getStringValue());
+                    try {
+                        method.invoke(null);
+                        Log.info("Successfully gave " + message.getSender() + " a nudge! Happy to be doing business!");
+                    } catch(IllegalAccessException e) {
+                        Log.error(message.getSender() + " tried to register to IGW. Failed because the method can NOT be accessed: " + message.getStringValue());
+                    } catch(IllegalArgumentException e) {
+                        Log.error(message.getSender() + " tried to register to IGW. Failed because the method has arguments or it isn't static: " + message.getStringValue());
+                    } catch(InvocationTargetException e) {
+                        Log.error(message.getSender() + " tried to register to IGW. Failed because the method threw an exception: " + message.getStringValue());
+                        e.printStackTrace();
+                    }
+                } catch(NoSuchMethodException e) {
+                    Log.error(message.getSender() + " tried to register to IGW. Failed because the method can NOT be found: " + message.getStringValue());
+                } catch(SecurityException e) {
+                    Log.error(message.getSender() + " tried to register to IGW. Failed because the method can NOT be accessed: " + message.getStringValue());
+                }
+            } catch(ClassNotFoundException e) {
+                Log.error(message.getSender() + " tried to register to IGW. Failed because the class can NOT be found: " + message.key);
+            }
+
+        }
     }
 }
