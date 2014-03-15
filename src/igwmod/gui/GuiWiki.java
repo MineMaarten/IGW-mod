@@ -5,6 +5,7 @@ import igwmod.TickHandler;
 import igwmod.api.BlockWikiEvent;
 import igwmod.api.EntityWikiEvent;
 import igwmod.api.ItemWikiEvent;
+import igwmod.api.WikiRegistry;
 import igwmod.lib.Paths;
 import igwmod.lib.Textures;
 
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -63,6 +65,8 @@ public class GuiWiki extends GuiContainer{
     private boolean wasClicking;
     private int lastMouseX;
 
+    private GuiButton previousButton, nextButton;
+
     private static GuiTextField searchField;
 
     private static final int PAGE_LINK_SCROLL_X = 80;
@@ -102,6 +106,34 @@ public class GuiWiki extends GuiContainer{
         searchField.setCanLoseFocus(true);
         searchField.setText(lastSearch);
         updateSearch();
+
+        previousButton = new GuiButton(0, guiLeft + 40, guiTop + 4, 25, 10, "<--");
+        nextButton = new GuiButton(1, guiLeft + 68, guiTop + 4, 25, 10, "-->");
+        previousButton.enabled = BrowseHistory.canGoPrevious();
+        nextButton.enabled = BrowseHistory.canGoNext();
+        buttonList.add(previousButton);
+        buttonList.add(nextButton);
+    }
+
+    @Override
+    public void actionPerformed(GuiButton button){
+        BrowseHistory history;
+        if(button.id == 0) {
+            history = BrowseHistory.previous();
+        } else {
+            history = BrowseHistory.next();
+        }
+        currentFile = history.link;
+        fileInfo = InfoSupplier.getInfo(currentFile);
+        if(fileInfo == null) fileInfo = Arrays.asList("No info available about this topic. IGW-Mod is currently looking for " + currentFile.replace("igwmod:", "igwmod/assets/") + ".txt.");
+        currentTab = history.tab;
+        currentTabPage = getPageNumberForTab(currentTab);
+        currentTab.onPageChange(this, currentFile, history.meta);
+        updateWikiPage();
+        updateSearch();
+        initGui();//update the textfield location.
+        currentPageScroll = history.scroll;
+        updatePageScrolling();
     }
 
     /**
@@ -166,12 +198,15 @@ public class GuiWiki extends GuiContainer{
     }
 
     public void setCurrentFile(ItemStack stack){
-        ItemWikiEvent wikiEvent = new ItemWikiEvent(stack, Paths.WIKI_PATH + stack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/"));
+        String defaultName = WikiRegistry.getPageForItemStack(stack);
+        if(defaultName == null) defaultName = Paths.WIKI_PATH + stack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/");
+        ItemWikiEvent wikiEvent = new ItemWikiEvent(stack, defaultName);
         MinecraftForge.EVENT_BUS.post(wikiEvent);
         setCurrentFile(wikiEvent.pageOpened, stack);
     }
 
     public void setCurrentFile(String file, Object... metadata){
+        BrowseHistory.updateHistory(currentPageScroll);
         currentFile = file;
         fileInfo = InfoSupplier.getInfo(currentFile);
         if(fileInfo == null) fileInfo = Arrays.asList("No info available about this topic. IGW-Mod is currently looking for " + currentFile.replace("igwmod:", "igwmod/assets/") + ".txt.");
@@ -181,6 +216,7 @@ public class GuiWiki extends GuiContainer{
         currentTab.onPageChange(this, file, metadata);
         updateWikiPage();
         updateSearch();
+        BrowseHistory.addHistory(file, currentTab, metadata);
         initGui();//update the textfield location.
     }
 
@@ -397,12 +433,6 @@ public class GuiWiki extends GuiContainer{
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY){
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-        /*
-                //render the wiki links
-                for(IPageLink link : visibleWikiPages) {
-                    link.render(this, mouseX, mouseY);
-                }*/
-
         GL11.glColor4d(1, 1, 1, 1);
         //Draw the scroll bar widgets.
         mc.getTextureManager().bindTexture(scrollbarTexture);
@@ -418,11 +448,45 @@ public class GuiWiki extends GuiContainer{
 
         //Draw the wiki page stacks.
         for(LocatedStack locatedStack : locatedStacks) {
-            locatedStack.render(this, mouseX, mouseY);
+            locatedStack.renderBackground(this, mouseX, mouseY);
         }
 
         //draw the wikipage
         currentTab.renderForeground(this, mouseX, mouseY);
+
+        GL11.glPushMatrix();
+        GL11.glTranslated(guiLeft, guiTop, 0);
+        for(LocatedString locatedString : locatedStrings) {
+            if(locatedString.getY() > MIN_TEXT_Y && locatedString.getReservedSpace().height + locatedString.getY() <= MAX_TEXT_Y) {
+                locatedString.renderForeground(this, mouseX, mouseY);
+            }
+        }
+        GL11.glPopMatrix();
+
+        // Draw the wiki page images.
+        GL11.glColor4d(1, 1, 1, 1);
+        GL11.glPushMatrix();
+        GL11.glScaled(TEXT_SCALE, TEXT_SCALE, 1);
+        for(LocatedTexture texture : locatedTextures) {
+            texture.renderForeground(this, mouseX, mouseY);
+        }
+
+        GL11.glPopMatrix();
+
+        //Draw wiki tab images.
+        List<IReservedSpace> reservedSpaces = currentTab.getReservedSpaces();
+        if(reservedSpaces != null) {
+            for(IReservedSpace space : reservedSpaces) {
+                if(space instanceof LocatedTexture) {
+                    ((LocatedTexture)space).renderForeground(this, mouseX, mouseY);
+                }
+            }
+        }
+
+        //render the wiki links
+        for(IPageLink link : visibleWikiPages) {
+            link.renderForeground(this, mouseX, mouseY);
+        }
 
         drawTooltips(mouseX, mouseY);
 
@@ -468,7 +532,7 @@ public class GuiWiki extends GuiContainer{
         GL11.glTranslated(guiLeft, guiTop, 0);
         for(LocatedString locatedString : locatedStrings) {
             if(locatedString.getY() > MIN_TEXT_Y && locatedString.getReservedSpace().height + locatedString.getY() <= MAX_TEXT_Y) {
-                locatedString.render(this, mouseX, mouseY);
+                locatedString.renderBackground(this, mouseX, mouseY);
             }
         }
 
@@ -477,7 +541,7 @@ public class GuiWiki extends GuiContainer{
         GL11.glPushMatrix();
         GL11.glScaled(TEXT_SCALE, TEXT_SCALE, 1);
         for(LocatedTexture texture : locatedTextures) {
-            texture.render(this, mouseX, mouseY);
+            texture.renderBackground(this, mouseX, mouseY);
         }
 
         GL11.glPopMatrix();
@@ -487,7 +551,7 @@ public class GuiWiki extends GuiContainer{
         if(reservedSpaces != null) {
             for(IReservedSpace space : reservedSpaces) {
                 if(space instanceof LocatedTexture) {
-                    ((LocatedTexture)space).render(this, mouseX, mouseY);
+                    ((LocatedTexture)space).renderBackground(this, mouseX, mouseY);
                 }
             }
         }
@@ -506,7 +570,7 @@ public class GuiWiki extends GuiContainer{
 
         //render the wiki links
         for(IPageLink link : visibleWikiPages) {
-            link.render(this, mouseX, mouseY);
+            link.renderBackground(this, mouseX, mouseY);
         }
         GL11.glPopMatrix();
 
@@ -521,6 +585,14 @@ public class GuiWiki extends GuiContainer{
     }
 
     private IWikiTab getTabForPage(String page){
+        if(currentTab != null) {//give the current tab the highest priority.
+            List<IPageLink> links = currentTab.getPages(null);
+            if(links != null) {
+                for(IPageLink link : links) {
+                    if(page.equals(link.getLinkAddress())) return currentTab;
+                }
+            }
+        }
         for(IWikiTab tab : wikiTabs) {
             List<IPageLink> links = tab.getPages(null);
             if(links != null) {

@@ -23,10 +23,13 @@ public class LocatedTexture implements IReservedSpace, IWidged{
     }
 
     @Override
-    public void render(GuiWiki gui, int mouseX, int mouseY){
+    public void renderBackground(GuiWiki gui, int mouseX, int mouseY){
         gui.mc.getTextureManager().bindTexture(texture);
         drawTexture(x, y, width, heigth);
     }
+
+    @Override
+    public void renderForeground(GuiWiki gui, int mouseX, int mouseY){}
 
     public static void drawTexture(int x, int y, int width, int heigth){
         int minYCap = Math.max(0, GuiWiki.MIN_TEXT_Y - y);

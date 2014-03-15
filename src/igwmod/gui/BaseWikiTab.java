@@ -16,11 +16,11 @@ public abstract class BaseWikiTab implements IWikiTab{
         List<IPageLink> pages = new ArrayList<IPageLink>();
         if(pageIndexes == null) {
             for(int i = 0; i < pageEntries.size(); i++) {
-                pages.add(new LocatedString(getPageName(pageEntries.get(i)), 80, 38 + 11 * i, false, getPageLocation(pageEntries.get(i))));
+                pages.add(new LocatedString(getPageName(pageEntries.get(i)), 80, 64 + 11 * i, false, getPageLocation(pageEntries.get(i))));
             }
         } else {
             for(int i = 0; i < pageIndexes.length; i++) {
-                pages.add(new LocatedString(getPageName(pageEntries.get(pageIndexes[i])), 80, 38 + 11 * i, false, getPageLocation(pageEntries.get(pageIndexes[i]))).capTextWidth(77));
+                pages.add(new LocatedString(getPageName(pageEntries.get(pageIndexes[i])), 80, 64 + 11 * i, false, getPageLocation(pageEntries.get(pageIndexes[i]))).capTextWidth(77));
             }
         }
         return pages;
@@ -28,7 +28,7 @@ public abstract class BaseWikiTab implements IWikiTab{
 
     @Override
     public int pagesPerTab(){
-        return 38;
+        return 36;
     }
 
     @Override
@@ -38,7 +38,7 @@ public abstract class BaseWikiTab implements IWikiTab{
 
     @Override
     public int getSearchBarAndScrollStartY(){
-        return 6;
+        return 18;
     }
 
     @Override

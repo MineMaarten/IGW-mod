@@ -9,7 +9,6 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
@@ -17,7 +16,6 @@ import org.lwjgl.opengl.GL11;
 
 public class BlockAndItemWikiTab implements IWikiTab{
     private static RenderItem itemRenderer;
-    private static EntityItem renderedEntityItem;
     private static ItemStack drawingStack;
 
     static {
@@ -38,7 +36,7 @@ public class BlockAndItemWikiTab implements IWikiTab{
     @Override
     public List<IReservedSpace> getReservedSpaces(){
         List<IReservedSpace> reservedSpaces = new ArrayList<IReservedSpace>();
-        reservedSpaces.add(new LocatedTexture(Textures.GUI_ITEMS_AND_BLOCKS, 40, 65, 36, 162));
+        reservedSpaces.add(new LocatedTexture(Textures.GUI_ITEMS_AND_BLOCKS, 40, 74, 36, 144));
         return reservedSpaces;
     }
 
@@ -48,11 +46,11 @@ public class BlockAndItemWikiTab implements IWikiTab{
         List<IPageLink> pages = new ArrayList<IPageLink>();
         if(indexes == null) {
             for(int i = 0; i < itemStacks.size(); i++) {
-                pages.add(new LocatedStack(itemStacks.get(i), 41 + i % 2 * 18, 66 + i / 2 * 18));
+                pages.add(new LocatedStack(itemStacks.get(i), 41 + i % 2 * 18, 75 + i / 2 * 18));
             }
         } else {
             for(int i = 0; i < indexes.length; i++) {
-                pages.add(new LocatedStack(itemStacks.get(indexes[i]), 41 + i % 2 * 18, 66 + i / 2 * 18));
+                pages.add(new LocatedStack(itemStacks.get(indexes[i]), 41 + i % 2 * 18, 75 + i / 2 * 18));
             }
         }
         return pages;
@@ -60,7 +58,7 @@ public class BlockAndItemWikiTab implements IWikiTab{
 
     @Override
     public int pagesPerTab(){
-        return 18;
+        return 16;
     }
 
     @Override
@@ -70,17 +68,17 @@ public class BlockAndItemWikiTab implements IWikiTab{
 
     @Override
     public int getSearchBarAndScrollStartY(){
-        return 52;
+        return 61;
     }
 
     @Override
     public void renderForeground(GuiWiki gui, int mouseX, int mouseY){
         if(drawingStack != null) {
             if(drawingStack.getItem() instanceof ItemBlock) {
-                gui.renderRotatingBlockIntoGUI(gui, drawingStack, 55, 24, 2.9F);
+                gui.renderRotatingBlockIntoGUI(gui, drawingStack, 55, 33, 2.8F);
             } else {
                 GL11.glPushMatrix();
-                GL11.glTranslated(60 - 8, 20 - 8, 0);
+                GL11.glTranslated(49, 20, 0);
                 GL11.glScaled(2.2, 2.2, 2.2);
                 itemRenderer.renderItemAndEffectIntoGUI(gui.fontRenderer, gui.mc.getTextureManager(), drawingStack, 0, 0);
                 GL11.glPopMatrix();
@@ -89,16 +87,10 @@ public class BlockAndItemWikiTab implements IWikiTab{
     }
 
     @Override
-    public void renderBackground(GuiWiki gui, int mouseX, int mouseY){
-        // TODO Auto-generated method stub
-
-    }
+    public void renderBackground(GuiWiki gui, int mouseX, int mouseY){}
 
     @Override
-    public void onMouseClick(GuiWiki gui, int mouseX, int mouseY, int mouseKey){
-        // TODO Auto-generated method stub
-
-    }
+    public void onMouseClick(GuiWiki gui, int mouseX, int mouseY, int mouseKey){}
 
     @Override
     public void onPageChange(GuiWiki gui, String pageName, Object... metadata){

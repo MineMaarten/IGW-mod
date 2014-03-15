@@ -12,4 +12,6 @@ public class Constants{
     //  public static final String INTERNET_UPDATE_CONFIG_KEY = "Update pages via internet";
     //  public static final String USE_OFFLINE_WIKIPAGES_KEY = "Use offline wikipages";
     public static final int DEFAULT_KEYBIND_OPEN_GUI = Keyboard.KEY_I;
+
+    public static final int TEXTURE_MAP_ID = 15595;
 }

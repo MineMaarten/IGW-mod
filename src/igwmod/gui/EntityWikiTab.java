@@ -77,20 +77,17 @@ public class EntityWikiTab implements IWikiTab{
 
     @Override
     public int getSearchBarAndScrollStartY(){
-        return 52;
+        return 61;
     }
 
     @Override
-    public void renderForeground(GuiWiki gui, int mouseX, int mouseY){
-        // TODO Auto-generated method stub
-
-    }
+    public void renderForeground(GuiWiki gui, int mouseX, int mouseY){}
 
     @Override
     public void renderBackground(GuiWiki gui, int mouseX, int mouseY){
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         // RenderHelper.enableStandardItemLighting();
-        if(curEntity != null) drawEntity(curEntity, gui.guiLeft + 65, gui.guiTop + 40, 0.7F, 0);
+        if(curEntity != null) drawEntity(curEntity, gui.guiLeft + 65, gui.guiTop + 49, 0.7F, 0);
         //  GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     }
 

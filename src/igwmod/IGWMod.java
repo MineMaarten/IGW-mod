@@ -34,7 +34,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid = Constants.MOD_ID, name = "In-Game Wiki Mod", version = "1.0.0")
+@Mod(modid = Constants.MOD_ID, name = "In-Game Wiki Mod", version = "1.0.1")
 public class IGWMod{
     @Instance(Constants.MOD_ID)
     public IGWMod instance;

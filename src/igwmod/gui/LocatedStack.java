@@ -27,7 +27,10 @@ public class LocatedStack implements IReservedSpace, IPageLink{
     }
 
     @Override
-    public void render(GuiWiki gui, int mouseX, int mouseY){} //Rendering will be done by the GuiContainer.
+    public void renderBackground(GuiWiki gui, int mouseX, int mouseY){} //Rendering will be done by the GuiContainer.
+
+    @Override
+    public void renderForeground(GuiWiki gui, int mouseX, int mouseY){}
 
     @Override
     public String getName(){

@@ -13,6 +13,7 @@ import java.util.Map;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 public class WikiRegistry{
 
@@ -41,9 +42,20 @@ public class WikiRegistry{
 
     public static String getPageForItemStack(ItemStack stack){
         for(Map.Entry<String, ItemStack> entry : itemAndBlockPageEntries) {
+            if(entry.getValue().isItemEqual(stack) && areTagsEqual(entry.getValue(), stack)) return entry.getKey();
+        }
+        for(Map.Entry<String, ItemStack> entry : itemAndBlockPageEntries) {
             if(entry.getValue().isItemEqual(stack)) return entry.getKey();
         }
         return null;
+    }
+
+    private static boolean areTagsEqual(ItemStack stack1, ItemStack stack2){
+        NBTTagCompound tag1 = stack1.getTagCompound();
+        NBTTagCompound tag2 = stack2.getTagCompound();
+        if(tag1 == null && tag2 == null) return true;
+        if(tag1 != null && tag2 == null || tag1 == null && tag2 != null) return false;
+        return tag1.equals(tag2);
     }
 
     public static String getPageForEntityClass(Class<? extends Entity> entityClass){
