@@ -4,7 +4,7 @@ import igwmod.lib.Constants;
 import codechicken.nei.api.IConfigureNEI;
 import codechicken.nei.forge.GuiContainerManager;
 
-public class NEIWikiLinkConfig implements IConfigureNEI{
+public class NEIIGWModConfig implements IConfigureNEI{
     @Override
     public void loadConfig(){
         // API.addKeyBind("igwWiki", Keyboard.KEY_I);
