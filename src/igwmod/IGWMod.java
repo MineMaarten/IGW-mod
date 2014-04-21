@@ -12,10 +12,13 @@ import igwmod.render.TooltipOverlayHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
@@ -23,7 +26,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
-import cpw.mods.fml.client.registry.KeyBindingRegistry;
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -31,26 +36,30 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 
 @Mod(modid = Constants.MOD_ID, name = "In-Game Wiki Mod", version = "1.0.1")
 public class IGWMod{
     @Instance(Constants.MOD_ID)
     public IGWMod instance;
+    public KeyBinding openInterfaceKey;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event){
 
-        TickRegistry.registerTickHandler(new TickHandler(), Side.CLIENT);
+        FMLCommonHandler.instance().bus().register(new TickHandler());
 
-        TickRegistry.registerTickHandler(new TooltipOverlayHandler(), Side.CLIENT);
+        FMLCommonHandler.instance().bus().register(new TooltipOverlayHandler());
 
         //Not being used, as it doesn't really add anything...
         // MinecraftForge.EVENT_BUS.register(new HighlightHandler());
 
-        //We don't need a proxy here, because this is a client-only mod.
-        KeyBindingRegistry.registerKeyBinding(KeybindingHandler.instance());
+        //We don't need a proxy here, since this is a client-only mod.
+
+        openInterfaceKey = new KeyBinding("igwmod.keys.wiki", Constants.DEFAULT_KEYBIND_OPEN_GUI, "igwmod.keys.category");//TODO blend keybinding category in normal
+        ClientRegistry.registerKeyBinding(openInterfaceKey);
+        FMLCommonHandler.instance().bus().register(this);//subscribe to key events.
 
         ConfigHandler.init(event.getSuggestedConfigurationFile());
 
@@ -70,18 +79,26 @@ public class IGWMod{
         addDefaultKeys();
     }
 
+    @SubscribeEvent
+    public void onKeyBind(KeyInputEvent event){
+        if(openInterfaceKey.isPressed() && FMLClientHandler.instance().getClient().inGameHasFocus) {
+            TickHandler.openWikiGui();
+        }
+    }
+
     private void addDefaultKeys(){
         //Register all basic items that have (default) pages to the item and blocks page.
         List<ItemStack> allCreativeStacks = new ArrayList<ItemStack>();
-        for(Item item : Item.itemsList) {
-            if(item != null) {
-                try {
-                    item.getSubItems(item.itemID, item.getCreativeTab(), allCreativeStacks);
-                } catch(Exception e) {
-                    //ForgeMultipart throws a NPE when Item#getSubItems() gets called.
-                }
+
+        Iterator iterator = Item.itemRegistry.iterator();
+        while(iterator.hasNext()) {
+            Item item = (Item)iterator.next();
+
+            if(item != null && item.getCreativeTab() != null) {
+                item.getSubItems(item, (CreativeTabs)null, allCreativeStacks);
             }
         }
+
         for(ItemStack stack : allCreativeStacks) {
             List<String> info = InfoSupplier.getInfo(Paths.WIKI_PATH + WikiUtils.getNameFromStack(stack));
             if(info != null) WikiRegistry.registerBlockAndItemPageEntry(stack);
@@ -101,13 +118,9 @@ public class IGWMod{
         }
 
         //Add automatically generated furnace recipe key mappings.
-        for(Map.Entry<Integer, ItemStack> entry : (Set<Map.Entry<Integer, ItemStack>>)FurnaceRecipes.smelting().getSmeltingList().entrySet()) {
+        for(Map.Entry<ItemStack, ItemStack> entry : (Set<Map.Entry<ItemStack, ItemStack>>)FurnaceRecipes.smelting().getSmeltingList().entrySet()) {
             String blockCode = WikiUtils.getNameFromStack(entry.getValue());
-            if(!WikiCommandRecipeIntegration.autoMappedFurnaceRecipes.containsKey(blockCode)) WikiCommandRecipeIntegration.autoMappedFurnaceRecipes.put(blockCode, new ItemStack(entry.getKey(), 1, 0));
-        }
-        for(Map.Entry<List<Integer>, ItemStack> entry : FurnaceRecipes.smelting().getMetaSmeltingList().entrySet()) {
-            String blockCode = WikiUtils.getNameFromStack(entry.getValue());
-            if(!WikiCommandRecipeIntegration.autoMappedFurnaceRecipes.containsKey(blockCode)) WikiCommandRecipeIntegration.autoMappedFurnaceRecipes.put(blockCode, new ItemStack(entry.getKey().get(0), 1, entry.getKey().get(1)));
+            if(!WikiCommandRecipeIntegration.autoMappedFurnaceRecipes.containsKey(blockCode)) WikiCommandRecipeIntegration.autoMappedFurnaceRecipes.put(blockCode, entry.getKey());
         }
 
         Log.info("Registered " + WikiRegistry.getItemAndBlockPageEntries().size() + " Block & Item page entries.");

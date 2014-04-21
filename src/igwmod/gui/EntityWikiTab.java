@@ -87,7 +87,7 @@ public class EntityWikiTab implements IWikiTab{
     public void renderBackground(GuiWiki gui, int mouseX, int mouseY){
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         // RenderHelper.enableStandardItemLighting();
-        if(curEntity != null) drawEntity(curEntity, gui.guiLeft + 65, gui.guiTop + 49, 0.7F, 0);
+        if(curEntity != null) drawEntity(curEntity, gui.getGuiLeft() + 65, gui.getGuiTop() + 49, 0.7F, 0);
         //  GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     }
 

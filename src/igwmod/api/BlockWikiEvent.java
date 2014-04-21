@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
+import cpw.mods.fml.client.FMLClientHandler;
 
 /**
  * This event will be fired when a player opens the wiki GUI while looking at a block in the world. Your job as subscriber is to change the
@@ -11,8 +12,9 @@ import net.minecraftforge.event.world.WorldEvent;
  * assets/igwmod/wiki/block/drawnStack.getUnlocalizedName()>.
  */
 public class BlockWikiEvent extends WorldEvent{
-    public final int x, y, z, blockId, idPicked, metadata;
+    public final int x, y, z, metadata;
     public final Block block;
+    public final ItemStack itemStackPicked;
     public ItemStack drawnStack; //ItemStack that is drown in the top left corner of the GUI.
     public String pageOpened; //current page (ResourceLocation) this gui will go to. It contains the default location, but can be changed.
 
@@ -21,11 +23,10 @@ public class BlockWikiEvent extends WorldEvent{
         this.x = x;
         this.y = y;
         this.z = z;
-        blockId = world.getBlockId(x, y, z);
         metadata = world.getBlockMetadata(x, y, z);
-        block = Block.blocksList[blockId];
-        idPicked = block.idPicked(world, x, y, z);
-        drawnStack = new ItemStack(idPicked != 0 ? idPicked : blockId, 1, metadata);
+        block = world.getBlock(x, y, z);
+        itemStackPicked = block.getPickBlock(FMLClientHandler.instance().getClient().objectMouseOver, world, x, y, z);
+        drawnStack = itemStackPicked != null ? itemStackPicked : new ItemStack(block, 1, metadata);
     }
 
 }

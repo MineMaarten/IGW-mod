@@ -1,24 +1,19 @@
 package igwmod.render;
+
 import igwmod.ConfigHandler;
 import igwmod.TickHandler;
-
-import java.util.EnumSet;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 
-public class TooltipOverlayHandler implements ITickHandler{
+public class TooltipOverlayHandler{
 
-    @Override
-    public void tickStart(EnumSet<TickType> type, Object... tickData){}
-
-    @Override
-    public void tickEnd(EnumSet<TickType> type, Object... tickData){//tickData[0] = partialTicks
-        if(TickHandler.showTooltip() && ConfigHandler.shouldShowTooltip && FMLClientHandler.instance().getClient().inGameHasFocus) {
+    @SubscribeEvent
+    public void tickEnd(TickEvent.RenderTickEvent event){
+        if(event.phase == TickEvent.Phase.END && TickHandler.showTooltip() && ConfigHandler.shouldShowTooltip && FMLClientHandler.instance().getClient().inGameHasFocus) {
             Minecraft mc = FMLClientHandler.instance().getClient();
             ScaledResolution sr = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
             FontRenderer fontRenderer = FMLClientHandler.instance().getClient().fontRenderer;
@@ -28,15 +23,4 @@ public class TooltipOverlayHandler implements ITickHandler{
             fontRenderer.drawString(moreInfo, sr.getScaledWidth() / 2 - fontRenderer.getStringWidth(moreInfo) / 2, sr.getScaledHeight() / 2 - 10, 0xFFFFFFFF);
         }
     }
-
-    @Override
-    public EnumSet<TickType> ticks(){
-        return EnumSet.of(TickType.RENDER);
-    }
-
-    @Override
-    public String getLabel(){
-        return "In-Game Wiki mod tooltip render handler";
-    }
-
 }

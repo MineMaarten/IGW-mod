@@ -1,7 +1,7 @@
 package igwmod.api;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.event.Event;
+import cpw.mods.fml.common.eventhandler.Event;
 
 /**
  * Event fired when the player opens the IGW GUI by looking at an item in another GUI and pressing 'i' or when the player

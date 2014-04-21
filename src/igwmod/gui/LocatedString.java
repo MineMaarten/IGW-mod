@@ -90,7 +90,7 @@ public class LocatedString extends Gui implements IPageLink{
         GL11.glScaled(GuiWiki.TEXT_SCALE, GuiWiki.TEXT_SCALE, 1);
         if(getLinkAddress() != null) {
             Rectangle mouseSpace = getMouseSpace();
-            fontRenderer.drawString(EnumChatFormatting.UNDERLINE + cappedText, x, y, mouseSpace.contains(mouseX - gui.guiLeft, mouseY - gui.guiTop) ? 0xFFFFFF00 : 0xFF3333FF, shadow);
+            fontRenderer.drawString(EnumChatFormatting.UNDERLINE + cappedText, x, y, mouseSpace.contains(mouseX - gui.getGuiLeft(), mouseY - gui.getGuiTop()) ? 0xFFFFFF00 : 0xFF3333FF, shadow);
         } else {
             fontRenderer.drawString(cappedText, x, y, color, shadow);
         }
@@ -99,8 +99,8 @@ public class LocatedString extends Gui implements IPageLink{
 
     @Override
     public void renderForeground(GuiWiki gui, int mouseX, int mouseY){
-        if(!cappedText.equals(string) && getMouseSpace().contains(mouseX - gui.guiLeft, mouseY - gui.guiTop)) {
-            drawCreativeTabHoveringText(string, mouseX - gui.guiLeft, mouseY - gui.guiTop);
+        if(!cappedText.equals(string) && getMouseSpace().contains(mouseX - gui.getGuiLeft(), mouseY - gui.getGuiTop())) {
+            drawCreativeTabHoveringText(string, mouseX - gui.getGuiLeft(), mouseY - gui.getGuiTop());
         }
     }
 

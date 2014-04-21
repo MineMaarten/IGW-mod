@@ -1,26 +1,21 @@
 package igwmod.lib;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import cpw.mods.fml.common.FMLLog;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Log{
-    private static Logger logger = Logger.getLogger(Constants.MOD_ID);
-
-    static {
-        logger.setParent(FMLLog.getLogger());
-    }
+    private static Logger logger = LogManager.getLogger(Constants.MOD_ID);
 
     public static void info(String message){
         logger.log(Level.INFO, message);
     }
 
     public static void error(String message){
-        logger.log(Level.SEVERE, message);
+        logger.log(Level.ERROR, message);
     }
 
     public static void warning(String message){
-        logger.log(Level.WARNING, message);
+        logger.log(Level.WARN, message);
     }
 }

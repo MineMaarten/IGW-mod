@@ -15,8 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.resources.Resource;
-import net.minecraft.client.resources.ResourceManager;
+import net.minecraft.client.resources.IResource;
+import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -39,12 +39,11 @@ public class InfoSupplier{
             infoMap.put(objectName, new ResourceLocation(objectName));
         }
         try {
-            BufferedReader br;
-            ResourceManager manager = FMLClientHandler.instance().getClient().getResourceManager();
+            IResourceManager manager = FMLClientHandler.instance().getClient().getResourceManager();
             ResourceLocation location = infoMap.get(objectName);
-            Resource resource = manager.getResource(location);
+            IResource resource = manager.getResource(location);
             InputStream stream = resource.getInputStream();
-            br = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+            BufferedReader br = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
             List<String> textList = new ArrayList<String>();
             String line = br.readLine();
             while(line != null) {

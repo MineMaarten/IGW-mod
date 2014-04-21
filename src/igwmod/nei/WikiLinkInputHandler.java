@@ -1,11 +1,10 @@
 package igwmod.nei;
 
+/*
 import igwmod.KeybindingHandler;
 import igwmod.gui.GuiWiki;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
-import codechicken.nei.forge.GuiContainerManager;
-import codechicken.nei.forge.IContainerInputHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class WikiLinkInputHandler implements IContainerInputHandler{
@@ -56,3 +55,4 @@ public class WikiLinkInputHandler implements IContainerInputHandler{
     @Override
     public void onMouseDragged(GuiContainer gui, int mousex, int mousey, int button, long heldTime){}
 }
+*/

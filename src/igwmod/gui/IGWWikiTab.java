@@ -2,8 +2,8 @@ package igwmod.gui;
 
 import igwmod.ConfigHandler;
 import igwmod.lib.Paths;
-import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
 public class IGWWikiTab extends BaseWikiTab{
@@ -25,12 +25,12 @@ public class IGWWikiTab extends BaseWikiTab{
 
     @Override
     public ItemStack renderTabIcon(GuiWiki gui){
-        return new ItemStack(Block.wood);
+        return new ItemStack(Blocks.log);
     }
 
     @Override
     protected String getPageName(String pageEntry){
-        return I18n.getString("igwtab.entry." + pageEntry);
+        return I18n.format("igwtab.entry." + pageEntry);
     }
 
     @Override

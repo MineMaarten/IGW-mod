@@ -1,8 +1,7 @@
 package igwmod.nei;
 
+/*
 import igwmod.lib.Constants;
-import codechicken.nei.api.IConfigureNEI;
-import codechicken.nei.forge.GuiContainerManager;
 
 public class NEIIGWModConfig implements IConfigureNEI{
     @Override
@@ -22,3 +21,4 @@ public class NEIIGWModConfig implements IConfigureNEI{
         return Constants.MOD_VERSION;
     }
 }
+*/

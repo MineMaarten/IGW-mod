@@ -1,7 +1,7 @@
 package igwmod.api;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.event.Event;
+import cpw.mods.fml.common.eventhandler.Event;
 
 public class FurnaceRetrievalEvent extends Event{
     public ItemStack inputStack;

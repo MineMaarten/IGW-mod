@@ -1,16 +1,18 @@
 package igwmod.render;
+
 import igwmod.TickHandler;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
-import net.minecraftforge.event.ForgeSubscribe;
 
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class HighlightHandler{
     private float alpha;
     private static final float ALPHA_INCREASE = 0.005F;
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void onBlockHighlight(DrawBlockHighlightEvent event){
         if(TickHandler.showTooltip()) {
             alpha += ALPHA_INCREASE;

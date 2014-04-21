@@ -1,5 +1,6 @@
 package igwmod.nei;
 
+/*
 import igwmod.WikiUtils;
 
 import java.util.List;
@@ -7,7 +8,6 @@ import java.util.List;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
-import codechicken.nei.forge.IContainerTooltipHandler;
 
 public class TooltipHandler implements IContainerTooltipHandler{
 
@@ -23,8 +23,8 @@ public class TooltipHandler implements IContainerTooltipHandler{
         return currenttip;
     }
 
-    /** @return tooltipString */
     public String getTooltipString(){
         return null;
     }
 }
+*/

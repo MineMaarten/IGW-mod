@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -98,7 +99,7 @@ public class GuiWiki extends GuiContainer{
 
         String lastSearch = "";
         if(searchField != null) lastSearch = searchField.getText();
-        searchField = new GuiTextField(fontRenderer, guiLeft + 40, guiTop + currentTab.getSearchBarAndScrollStartY(), 53, fontRenderer.FONT_HEIGHT);
+        searchField = new GuiTextField(fontRendererObj, guiLeft + 40, guiTop + currentTab.getSearchBarAndScrollStartY(), 53, fontRendererObj.FONT_HEIGHT);
         searchField.setMaxStringLength(15);
         searchField.setEnableBackgroundDrawing(true);
         searchField.setVisible(true);
@@ -113,6 +114,18 @@ public class GuiWiki extends GuiContainer{
         nextButton.enabled = BrowseHistory.canGoNext();
         buttonList.add(previousButton);
         buttonList.add(nextButton);
+    }
+
+    public FontRenderer getFontRenderer(){
+        return fontRendererObj;
+    }
+
+    public int getGuiLeft(){
+        return guiLeft;
+    }
+
+    public int getGuiTop(){
+        return guiTop;
     }
 
     @Override
@@ -278,7 +291,7 @@ public class GuiWiki extends GuiContainer{
             maxTranslation = Math.max(maxTranslation, texture.y + texture.heigth);
         }
         for(LocatedString string : locatedStrings) {
-            maxTranslation = Math.max(maxTranslation, string.getY() + fontRenderer.FONT_HEIGHT);
+            maxTranslation = Math.max(maxTranslation, string.getY() + fontRendererObj.FONT_HEIGHT);
         }
         return Math.max(maxTranslation - currentPageTranslation - MAX_TEXT_Y, 0);
     }
@@ -443,7 +456,7 @@ public class GuiWiki extends GuiContainer{
 
         //draw the tab page browse text if necessary
         if(hasMultipleTabPages()) {
-            fontRenderer.drawString(currentTabPage + 1 + "/" + getTotalTabPages(), 10, 221, 0xFF000000);
+            fontRendererObj.drawString(currentTabPage + 1 + "/" + getTotalTabPages(), 10, 221, 0xFF000000);
         }
 
         //Draw the wiki page stacks.
@@ -500,11 +513,11 @@ public class GuiWiki extends GuiContainer{
         List<IWikiTab> visibleTabs = getVisibleTabs();
         for(int i = 0; i < visibleTabs.size(); i++) {
             if(x <= 33 + guiLeft && x >= 1 + guiLeft && y >= 4 + guiTop + i * 35 && y <= 39 + guiTop + i * 35) {
-                drawCreativeTabHoveringText(I18n.getString(visibleTabs.get(i).getName()), x - guiLeft, y - guiTop);
+                drawCreativeTabHoveringText(I18n.format(visibleTabs.get(i).getName()), x - guiLeft, y - guiTop);
             }
         }
         if(hasMultipleTabPages() && x < 33 + guiLeft && x >= 1 + guiLeft && y >= 214 + guiTop && y <= 236 + guiTop) {
-            func_102021_a(Arrays.asList(new String[]{I18n.getString("igwmod.tooltip.tabPageBrowse.next"), I18n.getString("igwmod.tooltip.tabPageBrowse.previous")}), x - guiLeft, y - guiTop);
+            func_146283_a(Arrays.asList(new String[]{I18n.format("igwmod.tooltip.tabPageBrowse.next"), I18n.format("igwmod.tooltip.tabPageBrowse.previous")}), x - guiLeft, y - guiTop);
         }
         /*
         if(curSection == EnumWikiSection.ENTITIES) {
@@ -520,7 +533,7 @@ public class GuiWiki extends GuiContainer{
         List<IReservedSpace> reservedSpaces = currentTab.getReservedSpaces();
         if(reservedSpaces == null) reservedSpaces = new ArrayList<IReservedSpace>();
         reservedSpaces.add(new ReservedSpace(new Rectangle(0, 0, 200, Integer.MAX_VALUE)));
-        InfoSupplier.analyseInfo(fontRenderer, fileInfo, reservedSpaces, locatedStrings, locatedStacks, locatedTextures);
+        InfoSupplier.analyseInfo(fontRendererObj, fileInfo, reservedSpaces, locatedStrings, locatedStacks, locatedTextures);
         ((ContainerBlockWiki)inventorySlots).updateStacks(locatedStacks, visibleWikiPages);
         currentPageTranslation = 0;
         currentPageScroll = 0;
@@ -681,7 +694,7 @@ public class GuiWiki extends GuiContainer{
         GL11.glRotated(30, 1, 0, 0);
         GL11.glTranslated(0.1, 0.1, gui.zLevel);
         GL11.glRotated(-TickHandler.ticksExisted, 0, 1, 0);
-        renderItem.doRenderItem(entityItem, 0.0, 0.0, 0, 0, 0);
+        renderItem.doRender(entityItem, 0.0, 0.0, 0, 0, 0);
         GL11.glPopMatrix();
         /* RenderBlocks renderBlocks = new RenderBlocks();
 
