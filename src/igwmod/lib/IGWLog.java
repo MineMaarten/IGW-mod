@@ -4,7 +4,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Log{
+public class IGWLog{
     private static Logger logger = LogManager.getLogger(Constants.MOD_ID);
 
     public static void info(String message){

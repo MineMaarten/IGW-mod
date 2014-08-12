@@ -5,7 +5,7 @@ import igwmod.api.FurnaceRetrievalEvent;
 import igwmod.gui.GuiWiki;
 import igwmod.gui.LocatedStack;
 import igwmod.gui.LocatedTexture;
-import igwmod.lib.Log;
+import igwmod.lib.IGWLog;
 import igwmod.lib.Paths;
 
 import java.util.HashMap;
@@ -50,7 +50,7 @@ public class WikiCommandRecipeIntegration{
         } catch(NumberFormatException e) {
             throw new IllegalArgumentException("The second parameter (the y coordinate) contains an invalid number. Check for spaces or invalid characters! Full Code: " + code);
         }
-        locatedTextures.add(new LocatedTexture(TextureSupplier.getTexture(Paths.WIKI_PATH + "texture/GuiCrafting.png"), x, y, (int)(116 / GuiWiki.TEXT_SCALE), (int)(54 / GuiWiki.TEXT_SCALE)));
+        locatedTextures.add(new LocatedTexture(TextureSupplier.getTexture(Paths.MOD_ID + "textures/GuiCrafting.png"), x, y, (int)(116 / GuiWiki.TEXT_SCALE), (int)(54 / GuiWiki.TEXT_SCALE)));
 
         if(code.contains("key=")) {
             if(codeParts.length != 3) throw new IllegalArgumentException("An RecipeRetrievalEvent crafting code can only have 3 parameters: x, y and the key! Full Code: " + code);
@@ -93,7 +93,7 @@ public class WikiCommandRecipeIntegration{
                 recipeHeight = ReflectionHelper.findField(ShapedOreRecipe.class, "height").getInt(recipe);
                 recipeWidth = ReflectionHelper.findField(ShapedOreRecipe.class, "width").getInt(recipe);
             } catch(Exception e) {
-                Log.error("Something went wrong while trying to get the width and height fields from ShapedOreRecipe!");
+                IGWLog.error("Something went wrong while trying to get the width and height fields from ShapedOreRecipe!");
                 e.printStackTrace();
             }
             for(int i = 0; i < recipeHeight; i++) {
@@ -176,7 +176,7 @@ public class WikiCommandRecipeIntegration{
         } catch(NumberFormatException e) {
             throw new IllegalArgumentException("The second parameter (the y coordinate) contains an invalid number. Check for spaces or invalid characters! Full Code: " + code);
         }
-        locatedTextures.add(new LocatedTexture(TextureSupplier.getTexture(Paths.WIKI_PATH + "texture/GuiFurnace.png"), x, y, (int)(82 / GuiWiki.TEXT_SCALE), (int)(54 / GuiWiki.TEXT_SCALE)));
+        locatedTextures.add(new LocatedTexture(TextureSupplier.getTexture(Paths.MOD_ID + "textures/GuiFurnace.png"), x, y, (int)(82 / GuiWiki.TEXT_SCALE), (int)(54 / GuiWiki.TEXT_SCALE)));
         x = (int)(x * GuiWiki.TEXT_SCALE);
         y = (int)(y * GuiWiki.TEXT_SCALE);
         ItemStack inputStack = null;

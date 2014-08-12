@@ -6,7 +6,6 @@ import igwmod.api.BlockWikiEvent;
 import igwmod.api.EntityWikiEvent;
 import igwmod.api.ItemWikiEvent;
 import igwmod.api.WikiRegistry;
-import igwmod.lib.Paths;
 import igwmod.lib.Textures;
 
 import java.awt.Rectangle;
@@ -198,21 +197,21 @@ public class GuiWiki extends GuiContainer{
 
     public void setCurrentFile(World world, int x, int y, int z){
         BlockWikiEvent wikiEvent = new BlockWikiEvent(world, x, y, z);
-        wikiEvent.pageOpened = Paths.WIKI_PATH + wikiEvent.drawnStack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/");
+        wikiEvent.pageOpened = wikiEvent.drawnStack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/");
         MinecraftForge.EVENT_BUS.post(wikiEvent);
         setCurrentFile(wikiEvent.pageOpened, wikiEvent.drawnStack);
     }
 
     public void setCurrentFile(Entity entity){
         EntityWikiEvent wikiEvent = new EntityWikiEvent(entity);
-        wikiEvent.pageOpened = Paths.WIKI_PATH + "entity/" + EntityList.getEntityString(entity);
+        wikiEvent.pageOpened = "entity/" + EntityList.getEntityString(entity);
         MinecraftForge.EVENT_BUS.post(wikiEvent);
         setCurrentFile(wikiEvent.pageOpened, entity);
     }
 
     public void setCurrentFile(ItemStack stack){
         String defaultName = WikiRegistry.getPageForItemStack(stack);
-        if(defaultName == null) defaultName = Paths.WIKI_PATH + stack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/");
+        if(defaultName == null) defaultName = stack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/");
         ItemWikiEvent wikiEvent = new ItemWikiEvent(stack, defaultName);
         MinecraftForge.EVENT_BUS.post(wikiEvent);
         setCurrentFile(wikiEvent.pageOpened, stack);
@@ -222,7 +221,7 @@ public class GuiWiki extends GuiContainer{
         BrowseHistory.updateHistory(currentPageScroll);
         currentFile = file;
         fileInfo = InfoSupplier.getInfo(currentFile);
-        if(fileInfo == null) fileInfo = Arrays.asList("No info available about this topic. IGW-Mod is currently looking for " + currentFile.replace("igwmod:", "igwmod/assets/") + ".txt.");
+        if(fileInfo == null) fileInfo = Arrays.asList("No info available about this topic. IGW-Mod is currently looking for assets/igwmod/en_US/" + currentFile + ".txt.");
         IWikiTab tab = getTabForPage(currentFile);
         if(tab != null) currentTab = tab;
         currentTabPage = getPageNumberForTab(currentTab);

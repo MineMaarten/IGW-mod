@@ -1,6 +1,6 @@
 package igwmod.updater;
 
-import igwmod.lib.Log;
+import igwmod.lib.IGWLog;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,7 +40,7 @@ public class PageDownloader{
 
     //Based on http://stackoverflow.com/questions/938958/how-should-i-extract-compressed-folders-in-java
     private static void unZip(File zipFile, String location){
-        Log.info("Unzipping files at " + location);
+        IGWLog.info("Unzipping files at " + location);
         try {
             String destinationname = location + ".jar";
             byte[] buf = new byte[1024];
@@ -53,7 +53,7 @@ public class PageDownloader{
             ZipInputStream modZip = new ZipInputStream(new FileInputStream(destinationname));
             ZipEntry modFile = modZip.getNextEntry();
             while(modFile != null) {
-                Log.info("Copying over mod file: " + modFile.getName());
+                IGWLog.info("Copying over mod file: " + modFile.getName());
                 fileoutputstream.putNextEntry(modFile);
                 while((n = modZip.read(buf, 0, 1024)) > -1) {
                     fileoutputstream.write(buf, 0, n);
@@ -71,12 +71,12 @@ public class PageDownloader{
                 entryName = entryName.replace('/', File.separatorChar);
                 entryName = entryName.replace('\\', File.separatorChar);
                 if(entryName.contains("IGW-mod-master\\resources\\assets\\igwmod\\wiki")) {
-                    Log.info("unzipping: " + entryName);
+                    IGWLog.info("unzipping: " + entryName);
                     String target = entryName.replace("IGW-mod-master\\resources\\", "");
                     File newFile = new File(target);
                     if(zipentry.isDirectory()) {
                         if(!newFile.mkdirs()) {
-                            Log.warning("not good!");
+                            IGWLog.warning("not good!");
                             //break;
                         }
                         zipentry = zipinputstream.getNextEntry();
@@ -99,10 +99,10 @@ public class PageDownloader{
 
             tempFile.renameTo(new File(destinationname));
 
-            Log.info("Done unzipping!");
+            IGWLog.info("Done unzipping!");
 
         } catch(IOException ex) {
-            Log.error("An error has occured while trying to unzip");
+            IGWLog.error("An error has occured while trying to unzip");
             ex.printStackTrace();
         }
     }

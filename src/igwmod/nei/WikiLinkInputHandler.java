@@ -1,26 +1,22 @@
 package igwmod.nei;
 
-/*
-import igwmod.KeybindingHandler;
-import igwmod.gui.GuiWiki;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.item.ItemStack;
-import cpw.mods.fml.common.FMLCommonHandler;
+import codechicken.nei.guihook.IContainerInputHandler;
 
 public class WikiLinkInputHandler implements IContainerInputHandler{
 
     @Override
     public boolean keyTyped(GuiContainer gui, char keyChar, int keyCode){
-        if("igwmod.keys.wiki".equals(KeybindingHandler.instance().getKeyName(keyCode))) {
-            ItemStack hoveredStack = GuiContainerManager.getManager(gui).getStackMouseOver();
-            if(hoveredStack != null) {
-                hoveredStack = hoveredStack.copy();
-                hoveredStack.stackSize = 1;
-                GuiWiki guiWiki = new GuiWiki();
-                FMLCommonHandler.instance().showGuiScreen(guiWiki);
-                guiWiki.setCurrentFile(hoveredStack);
-            }
-        }
+        /* if("igwmod.keys.wiki".equals(KeybindingHandler.instance().getKeyName(keyCode))) {
+             ItemStack hoveredStack = GuiContainerManager.getManager(gui).getStackMouseOver();
+             if(hoveredStack != null) {
+                 hoveredStack = hoveredStack.copy();
+                 hoveredStack.stackSize = 1;
+                 GuiWiki guiWiki = new GuiWiki();
+                 FMLCommonHandler.instance().showGuiScreen(guiWiki);
+                 guiWiki.setCurrentFile(hoveredStack);
+             }
+         }*/
 
         return false;
     }
@@ -55,4 +51,3 @@ public class WikiLinkInputHandler implements IContainerInputHandler{
     @Override
     public void onMouseDragged(GuiContainer gui, int mousex, int mousey, int button, long heldTime){}
 }
-*/

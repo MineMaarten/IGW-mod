@@ -4,7 +4,8 @@ import igwmod.gui.IReservedSpace;
 import igwmod.gui.LocatedStack;
 import igwmod.gui.LocatedString;
 import igwmod.gui.LocatedTexture;
-import igwmod.lib.Log;
+import igwmod.lib.IGWLog;
+import igwmod.lib.Paths;
 
 import java.awt.Rectangle;
 import java.io.BufferedReader;
@@ -34,7 +35,12 @@ public class InfoSupplier{
      * @return
      */
     public static List<String> getInfo(String objectName){
-        objectName = objectName + ".txt";
+        return getInfo(objectName, FMLClientHandler.instance().getCurrentLanguage());
+    }
+
+    public static List<String> getInfo(String objectName, String language){
+        String oldObjectName = objectName;
+        objectName = Paths.WIKI_PATH + language + "/" + objectName + ".txt";
         if(!infoMap.containsKey(objectName)) {
             infoMap.put(objectName, new ResourceLocation(objectName));
         }
@@ -53,6 +59,7 @@ public class InfoSupplier{
             br.close();
             return textList;
         } catch(Exception e) {
+            if(!language.equals("en_US")) return getInfo(oldObjectName, "en_US");
             return null;
         }
     }
@@ -78,7 +85,7 @@ public class InfoSupplier{
                                 }
                             } catch(IllegalArgumentException e) {
                                 fileInfo.add(EnumChatFormatting.RED + e.getMessage());
-                                Log.warning(e.getMessage());
+                                IGWLog.warning(e.getMessage());
                             }
                             break;
                         }
@@ -128,7 +135,7 @@ public class InfoSupplier{
                                 foundCode = true;
                             } catch(IllegalArgumentException e) {
                                 fileInfo.add(EnumChatFormatting.RED + e.getMessage());
-                                Log.warning(e.getMessage());
+                                IGWLog.warning(e.getMessage());
                             }
                             potentialCode = sentenceWords[currentWord];
                             i = potentialCode.indexOf('[');

@@ -1,6 +1,5 @@
 package igwmod.gui;
 
-import igwmod.lib.Paths;
 import igwmod.lib.Util;
 
 import java.awt.Rectangle;
@@ -83,7 +82,7 @@ public class LocatedEntity extends Gui implements IReservedSpace, IPageLink{
 
     @Override
     public String getLinkAddress(){
-        return Paths.WIKI_PATH + "entity/" + EntityList.getEntityString(entity);
+        return "entity/" + EntityList.getEntityString(entity);
     }
 
     protected void drawCreativeTabHoveringText(String par1Str, int par2, int par3){

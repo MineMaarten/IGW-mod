@@ -1,7 +1,6 @@
 package igwmod.gui;
 
 import igwmod.ConfigHandler;
-import igwmod.lib.Paths;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -35,6 +34,6 @@ public class IGWWikiTab extends BaseWikiTab{
 
     @Override
     protected String getPageLocation(String pageEntry){
-        return Paths.WIKI_PATH + "igwtab/" + pageEntry;
+        return "igwtab/" + pageEntry;
     }
 }

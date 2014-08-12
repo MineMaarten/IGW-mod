@@ -11,7 +11,4 @@ An other plan that I (MineMaarten) am going to fulfill is that I'll implement th
 
 [prefix{n}]To do: [prefix{}]
 -Fix bug: Can't put two commands right after eachother (needs a space in between)
--Add better localization support.
 -Add Vanilla info.
--Add tooltip to capped strings (The 'Dev: Item & Bl..." string on the left for example).
--Refactoring :S

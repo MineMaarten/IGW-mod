@@ -1,5 +1,5 @@
-[image{270,190,32,32,igwmod:wiki/texture/GuiInfo.png}]
-[image{200,90,80,80,igwmod:wiki/texture/GuiInfo.png}]
+[image{270,190,32,32,igwmod:textures/GuiInfo.png}]
+[image{200,90,80,80,igwmod:textures/GuiInfo.png}]
 
 Note: The following page is just an example of what you can do with this mod.
 

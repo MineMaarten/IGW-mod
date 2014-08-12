@@ -9,7 +9,7 @@ public class Util{
         try {
             return entityClass.getConstructor(World.class).newInstance(FMLClientHandler.instance().getClient().theWorld);
         } catch(Exception e) {
-            Log.error("[LocatedEntity.java] An entity class doesn't have a constructor with a single World parameter! Entity = " + entityClass.getName());
+            IGWLog.error("[LocatedEntity.java] An entity class doesn't have a constructor with a single World parameter! Entity = " + entityClass.getName());
             e.printStackTrace();
             return null;
         }
