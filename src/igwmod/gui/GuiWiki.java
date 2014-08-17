@@ -173,6 +173,7 @@ public class GuiWiki extends GuiContainer{
         for(int i = 0; i < visibleTabs.size(); i++) {
             if(x <= 33 + guiLeft && x >= 1 + guiLeft && y >= 8 + guiTop + i * 35 && y <= 43 + guiTop + i * 35) {
                 currentTab = visibleTabs.get(i);
+                currentPageLinkScroll = 0;
                 updateSearch();
                 initGui();//update the textfield location.
                 break;

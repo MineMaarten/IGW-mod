@@ -1,6 +1,7 @@
 [prefix{l}]There are several commands you can use to enhance the wikipage. All commands need to go between '[ ]'. Then there's the following list of commands that can be put between these brackets:
 
 [prefix{n}]image{x,y,width,height,imageLocation} [prefix{}]
+[prefix{n}]image{x,y,width,height,scale,imageLocation} [prefix{}]
 Allows inclusion of images. It doesn't matter where in the .txt file you put this command, it will be placed at the given x and y. The imageLocation is a location that would be familiar to mod devs as being a ResourceLocation. This means that you need to put the image in "assets/modName/" folder. for example, you've created an image and put it in "assets/igwmod/wiki/test.png". To access it with the image command, use "igwmod:wiki/test.png" as imageLocation. So basically "assets/" stripped off, the modname first and then a ':'. 
 
 [prefix{n}]crafting{x,y,key=keyName} [prefix{}]
@@ -77,4 +78,4 @@ prefix{} --> Reset
 [prefix{n}]link{linkAddress} [prefix{}]
 This command is used to link to other pages by adding in clickable text. If you want to give a group of words a link, do a link command with the link in front of this group, and do a link{} (yes an empty link) afterwards.
 
-The linkAddress can be either the full (ResourceLocation, with the "igwmod:") path to the address, or when it concerns an item/block/entity you can do simply link{block/pistonBase} to refer to the Piston's wikipage.
+You can simply do link{block/pistonBase} to refer to the Piston's wikipage. The link address is relative to assets/igwmod/wiki/<language>/

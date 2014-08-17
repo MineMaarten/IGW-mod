@@ -1,22 +1,28 @@
 package igwmod.nei;
 
+import igwmod.IGWMod;
+import igwmod.gui.GuiWiki;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.item.ItemStack;
+import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.guihook.IContainerInputHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
 
-public class WikiLinkInputHandler implements IContainerInputHandler{
+public class IGWInputHandler implements IContainerInputHandler{
 
     @Override
     public boolean keyTyped(GuiContainer gui, char keyChar, int keyCode){
-        /* if("igwmod.keys.wiki".equals(KeybindingHandler.instance().getKeyName(keyCode))) {
-             ItemStack hoveredStack = GuiContainerManager.getManager(gui).getStackMouseOver();
-             if(hoveredStack != null) {
-                 hoveredStack = hoveredStack.copy();
-                 hoveredStack.stackSize = 1;
-                 GuiWiki guiWiki = new GuiWiki();
-                 FMLCommonHandler.instance().showGuiScreen(guiWiki);
-                 guiWiki.setCurrentFile(hoveredStack);
-             }
-         }*/
+        if(IGWMod.openInterfaceKey.getKeyCode() == keyCode) {
+            GuiContainerManager.getManager(gui);
+            ItemStack hoveredStack = GuiContainerManager.getStackMouseOver(gui);
+            if(hoveredStack != null) {
+                hoveredStack = hoveredStack.copy();
+                hoveredStack.stackSize = 1;
+                GuiWiki guiWiki = new GuiWiki();
+                FMLCommonHandler.instance().showGuiScreen(guiWiki);
+                guiWiki.setCurrentFile(hoveredStack);
+            }
+        }
 
         return false;
     }

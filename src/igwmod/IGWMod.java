@@ -44,7 +44,7 @@ import cpw.mods.fml.relauncher.Side;
 public class IGWMod{
     @Instance(Constants.MOD_ID)
     public IGWMod instance;
-    public KeyBinding openInterfaceKey;
+    public static KeyBinding openInterfaceKey;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event){

@@ -8,7 +8,7 @@ public class NEIIGWModConfig implements IConfigureNEI{
     @Override
     public void loadConfig(){
         // API.addKeyBind("igwWiki", Keyboard.KEY_I);
-        GuiContainerManager.addInputHandler(new WikiLinkInputHandler());
+        GuiContainerManager.addInputHandler(new IGWInputHandler());
         GuiContainerManager.addTooltipHandler(new TooltipHandler());
     }
 

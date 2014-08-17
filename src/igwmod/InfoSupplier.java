@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -97,7 +98,27 @@ public class InfoSupplier{
         int currentY = 20;
         for(int k = 0; k < fileInfo.size(); k++) {
             String line = " " + fileInfo.get(k);
-            String[] sentenceWords = line.split(" ");
+
+            List<String> sentenceWordList = new ArrayList<String>(Arrays.asList(line.split(" ")));
+            for(int i = 0; i < sentenceWordList.size(); i++) {
+                String word = sentenceWordList.get(i);
+                int index = word.indexOf("[");
+                int otherIndex = word.indexOf("]");
+                if(otherIndex > 0) {
+                    otherIndex++;
+                }
+                if(index == -1) {
+                    index = otherIndex;
+                } else if(otherIndex != -1) {
+                    index = Math.min(index, otherIndex);
+                }
+                if(index > 0 && index < word.length() - 1) {
+                    sentenceWordList.set(i, word.substring(0, index));
+                    sentenceWordList.add(i + 1, word.substring(index));
+                }
+            }
+            String[] sentenceWords = sentenceWordList.toArray(new String[sentenceWordList.size()]);
+
             int currentWord = 0;
             int currentX = 0;
             String textPart = "";
@@ -207,9 +228,6 @@ public class InfoSupplier{
             prefixCommand(code);
         } else if(code.startsWith("link{")) {
             curLink = code.substring(5, code.length() - 1);
-            if(curLink.startsWith("block/") || curLink.startsWith("item/") || curLink.startsWith("entity/")) {
-                curLink = "igwmod:wiki/" + curLink;
-            }
         }
     }
 
@@ -235,14 +253,20 @@ public class InfoSupplier{
     private static LocatedTexture getImageFromCode(String code) throws IllegalArgumentException{
         if(!code.startsWith("image{")) throw new IllegalArgumentException("The code needs to start with 'image{'! Full code: " + code);
         String[] codeArguments = code.substring(6).split(",");
-        if(codeArguments.length != 5) throw new IllegalArgumentException("The code needs to contain 5 parameters: x, y, width, height, texture location. It now contains " + codeArguments.length + ". Full code: " + code);
+        if(codeArguments.length != 5 && codeArguments.length != 6) throw new IllegalArgumentException("The code needs to contain 5 or 6 parameters: x, y, width, height, [scale,] , texture location. It now contains " + codeArguments.length + ". Full code: " + code);
         int[] coords = new int[4];
         try {
             for(int i = 0; i < 4; i++)
                 coords[i] = Integer.parseInt(codeArguments[i]);
+            if(codeArguments.length == 6) {
+                double scale = Double.parseDouble(codeArguments[4]);
+                coords[2] = (int)(coords[2] * scale);
+                coords[3] = (int)(coords[3] * scale);
+            }
         } catch(NumberFormatException e) {
             throw new IllegalArgumentException("The code contains an invalid number! Check for spaces or invalid characters. Full code: " + code);
         }
-        return new LocatedTexture(TextureSupplier.getTexture(codeArguments[4].substring(0, codeArguments[4].length() - 1)), coords[0], coords[1], coords[2], coords[3]);
+
+        return new LocatedTexture(TextureSupplier.getTexture(codeArguments[codeArguments.length - 1].substring(0, codeArguments[codeArguments.length - 1].length() - 1)), coords[0], coords[1], coords[2], coords[3]);
     }
 }
