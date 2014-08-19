@@ -11,7 +11,7 @@ import net.minecraftforge.event.entity.EntityEvent;
  */
 
 public class EntityWikiEvent extends EntityEvent{
-    public String pageOpened; //current page (ResourceLocation) this gui will go to. It contains the default location, but can be changed.
+    public String pageOpened; //current page this gui will go to. It contains the default location, but can be changed.
 
     public EntityWikiEvent(Entity entity){
         super(entity);

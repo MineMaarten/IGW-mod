@@ -1,7 +1,8 @@
 package igwmod.api;
 
 import igwmod.gui.GuiWiki;
-import igwmod.gui.IWikiTab;
+import igwmod.gui.tabs.IWikiTab;
+import igwmod.gui.tabs.ServerWikiTab;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -17,9 +18,20 @@ public class WikiRegistry{
 
     private static List<Map.Entry<String, ItemStack>> itemAndBlockPageEntries = new ArrayList<Map.Entry<String, ItemStack>>();
     private static Map<Class<? extends Entity>, String> entityPageEntries = new HashMap<Class<? extends Entity>, String>();
+    public static List<IRecipeIntegrator> recipeIntegrators = new ArrayList<IRecipeIntegrator>();
 
     public static void registerWikiTab(IWikiTab tab){
-        GuiWiki.wikiTabs.add(tab);
+        if(tab instanceof ServerWikiTab) {
+            for(IWikiTab t : GuiWiki.wikiTabs) {
+                if(t instanceof ServerWikiTab) {
+                    GuiWiki.wikiTabs.remove(t);
+                    break;
+                }
+            }
+            GuiWiki.wikiTabs.add(0, tab);
+        } else {
+            GuiWiki.wikiTabs.add(tab);
+        }
     }
 
     public static void registerBlockAndItemPageEntry(ItemStack stack){
@@ -37,6 +49,10 @@ public class WikiRegistry{
 
     public static void registerEntityPageEntry(Class<? extends Entity> entityClass, String page){
         entityPageEntries.put(entityClass, page);
+    }
+
+    public static void registerRecipeIntegrator(IRecipeIntegrator recipeIntegrator){
+        recipeIntegrators.add(recipeIntegrator);
     }
 
     public static String getPageForItemStack(ItemStack stack){

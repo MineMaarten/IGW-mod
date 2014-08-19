@@ -1,4 +1,4 @@
-[crafting{200,50,www,cic,crc,w=block/wood.oak,c=block/stonebrick,i=item/ingotIron,r=item/redstone}block/pistonBase]
+[crafting{200,50,block/pistonBase,www,cic,crc,w=block/wood.oak,c=block/stonebrick,i=item/ingotIron,r=item/redstone}]
 [crafting{200,380,key=block/pistonBase}]
 
 Crafting recipe test:

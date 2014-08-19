@@ -1,5 +1,7 @@
 package igwmod;
 
+import igwmod.api.IRecipeIntegrator;
+import igwmod.api.WikiRegistry;
 import igwmod.gui.IReservedSpace;
 import igwmod.gui.LocatedStack;
 import igwmod.gui.LocatedString;
@@ -9,6 +11,8 @@ import igwmod.lib.Paths;
 
 import java.awt.Rectangle;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -22,6 +26,8 @@ import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class InfoSupplier{
     private static HashMap<String, ResourceLocation> infoMap = new HashMap<String, ResourceLocation>();
@@ -46,10 +52,17 @@ public class InfoSupplier{
             infoMap.put(objectName, new ResourceLocation(objectName));
         }
         try {
-            IResourceManager manager = FMLClientHandler.instance().getClient().getResourceManager();
-            ResourceLocation location = infoMap.get(objectName);
-            IResource resource = manager.getResource(location);
-            InputStream stream = resource.getInputStream();
+            InputStream stream;
+            if(oldObjectName.startsWith("server/")) {
+                String s = IGWMod.proxy.getSaveLocation() + "\\igwmod\\" + oldObjectName.substring(7) + ".txt";
+                stream = new FileInputStream(new File(s));
+            } else {
+                IResourceManager manager = FMLClientHandler.instance().getClient().getResourceManager();
+                ResourceLocation location = infoMap.get(objectName);
+                IResource resource = manager.getResource(location);
+                stream = resource.getInputStream();
+            }
+
             BufferedReader br = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
             List<String> textList = new ArrayList<String>();
             String line = br.readLine();
@@ -65,6 +78,7 @@ public class InfoSupplier{
         }
     }
 
+    @SideOnly(Side.CLIENT)
     public static void analyseInfo(FontRenderer fontRenderer, List<String> fileInfo, List<IReservedSpace> reservedSpaces, List<LocatedString> locatedStrings, List<LocatedStack> locatedStacks, List<LocatedTexture> locatedTextures){
         currentTextColor = 0xFF000000;
         curPrefix = "";
@@ -79,12 +93,13 @@ public class InfoSupplier{
                     for(int j = i; j < line.length(); j++) {
                         if(line.charAt(j) == ']') {
                             try {
-                                if(decomposeTemplate(line.substring(i + 1, j), locatedStacks, locatedTextures)) {
+                                if(decomposeTemplate(line.substring(i + 1, j), reservedSpaces, locatedStrings, locatedStacks, locatedTextures)) {
                                     String cutString = line.substring(0, i) + line.substring(j + 1, line.length());
                                     if(cutString.equals("")) fileInfo.remove(k--);
                                     else fileInfo.set(k, cutString);
                                 }
                             } catch(IllegalArgumentException e) {
+                                fileInfo.add(EnumChatFormatting.RED + "Problem when parsing \"" + line.substring(i + 1, j) + "\":");
                                 fileInfo.add(EnumChatFormatting.RED + e.getMessage());
                                 IGWLog.warning(e.getMessage());
                             }
@@ -204,18 +219,16 @@ public class InfoSupplier{
         return modified ? rect.x : oldX;
     }
 
-    private static boolean decomposeTemplate(String code, List<LocatedStack> locatedStacks, List<LocatedTexture> locatedTextures) throws IllegalArgumentException{
-        if(code.startsWith("image")) {
-            locatedTextures.add(getImageFromCode(code));
-            return true;
-        }
-        if(code.startsWith("crafting")) {
-            WikiCommandRecipeIntegration.addCraftingRecipe(code, locatedStacks, locatedTextures);
-            return true;
-        }
-        if(code.startsWith("furnace")) {
-            WikiCommandRecipeIntegration.addFurnaceRecipe(code, locatedStacks, locatedTextures);
-            return true;
+    private static boolean decomposeTemplate(String code, List<IReservedSpace> reservedSpaces, List<LocatedString> locatedStrings, List<LocatedStack> locatedStacks, List<LocatedTexture> locatedTextures) throws IllegalArgumentException{
+        for(IRecipeIntegrator integrator : WikiRegistry.recipeIntegrators) {
+            if(code.startsWith(integrator.getCommandKey() + "{")) {
+                String[] args = code.substring(integrator.getCommandKey().length() + 1, code.length() - 1).split(",");
+                for(int i = 0; i < args.length; i++) {
+                    args[i] = args[i].trim();
+                }
+                integrator.onCommandInvoke(args, reservedSpaces, locatedStrings, locatedStacks, locatedTextures);
+                return true;
+            }
         }
         return false;
     }
@@ -248,25 +261,5 @@ public class InfoSupplier{
         for(int i = 0; i < prefixCode.length(); i++) {
             if(prefixCode.charAt(i) != 'r') curPrefix += "\u00a7" + prefixCode.charAt(i);
         }
-    }
-
-    private static LocatedTexture getImageFromCode(String code) throws IllegalArgumentException{
-        if(!code.startsWith("image{")) throw new IllegalArgumentException("The code needs to start with 'image{'! Full code: " + code);
-        String[] codeArguments = code.substring(6).split(",");
-        if(codeArguments.length != 5 && codeArguments.length != 6) throw new IllegalArgumentException("The code needs to contain 5 or 6 parameters: x, y, width, height, [scale,] , texture location. It now contains " + codeArguments.length + ". Full code: " + code);
-        int[] coords = new int[4];
-        try {
-            for(int i = 0; i < 4; i++)
-                coords[i] = Integer.parseInt(codeArguments[i]);
-            if(codeArguments.length == 6) {
-                double scale = Double.parseDouble(codeArguments[4]);
-                coords[2] = (int)(coords[2] * scale);
-                coords[3] = (int)(coords[3] * scale);
-            }
-        } catch(NumberFormatException e) {
-            throw new IllegalArgumentException("The code contains an invalid number! Check for spaces or invalid characters. Full code: " + code);
-        }
-
-        return new LocatedTexture(TextureSupplier.getTexture(codeArguments[codeArguments.length - 1].substring(0, codeArguments[codeArguments.length - 1].length() - 1)), coords[0], coords[1], coords[2], coords[3]);
     }
 }

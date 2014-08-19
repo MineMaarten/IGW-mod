@@ -1,4 +1,4 @@
-[image{190,110,283,258,igwmod:textures/DevConcepts.png}]
+[image{190,110,0.28,igwmod:textures/DevConcepts.png}]
 Welcome to the development section of the mod. This will give you a complete documentation about how to add your own pages, and so on. What is an IGW-Mod without having documentation about the mod itself right?
 
 To begin, we need to clarify some concepts we'll use throughout this tutorial. Here's an image to explain the most used:

@@ -1,6 +1,7 @@
-package igwmod.gui;
+package igwmod.gui.tabs;
 
 import igwmod.ConfigHandler;
+import igwmod.gui.GuiWiki;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -9,6 +10,7 @@ public class IGWWikiTab extends BaseWikiTab{
 
     public IGWWikiTab(){
         pageEntries.add("intro");
+        pageEntries.add("forServers");
         if(ConfigHandler.debugMode) {
             pageEntries.add("devIntro");
             pageEntries.add("devItemAndBlock");

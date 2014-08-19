@@ -1,4 +1,9 @@
-package igwmod.gui;
+package igwmod.gui.tabs;
+
+import igwmod.gui.GuiWiki;
+import igwmod.gui.IPageLink;
+import igwmod.gui.IReservedSpace;
+import igwmod.gui.LocatedTexture;
 
 import java.util.List;
 

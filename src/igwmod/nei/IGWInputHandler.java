@@ -1,6 +1,6 @@
 package igwmod.nei;
 
-import igwmod.IGWMod;
+import igwmod.ClientProxy;
 import igwmod.gui.GuiWiki;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
@@ -12,7 +12,7 @@ public class IGWInputHandler implements IContainerInputHandler{
 
     @Override
     public boolean keyTyped(GuiContainer gui, char keyChar, int keyCode){
-        if(IGWMod.openInterfaceKey.getKeyCode() == keyCode) {
+        if(ClientProxy.openInterfaceKey.getKeyCode() == keyCode) {
             GuiContainerManager.getManager(gui);
             ItemStack hoveredStack = GuiContainerManager.getStackMouseOver(gui);
             if(hoveredStack != null) {

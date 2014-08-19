@@ -1,7 +1,12 @@
-package igwmod.gui;
+package igwmod.gui.tabs;
 
 import igwmod.TickHandler;
 import igwmod.api.WikiRegistry;
+import igwmod.gui.GuiWiki;
+import igwmod.gui.IPageLink;
+import igwmod.gui.IReservedSpace;
+import igwmod.gui.LocatedEntity;
+import igwmod.gui.LocatedTexture;
 import igwmod.lib.Textures;
 import igwmod.lib.Util;
 

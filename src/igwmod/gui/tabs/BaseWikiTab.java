@@ -1,4 +1,9 @@
-package igwmod.gui;
+package igwmod.gui.tabs;
+
+import igwmod.gui.GuiWiki;
+import igwmod.gui.IPageLink;
+import igwmod.gui.IReservedSpace;
+import igwmod.gui.LocatedString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +25,7 @@ public abstract class BaseWikiTab implements IWikiTab{
             }
         } else {
             for(int i = 0; i < pageIndexes.length; i++) {
-                pages.add(new LocatedString(getPageName(pageEntries.get(pageIndexes[i])), 80, 64 + 11 * i, false, getPageLocation(pageEntries.get(pageIndexes[i]))).capTextWidth(77));
+                pages.add(new LocatedString(getPageName(pageEntries.get(pageIndexes[i])), 80, 64 + 11 * i, false, getPageLocation(pageEntries.get(pageIndexes[i]))).capTextWidth(pagesPerTab() > pageIndexes.length ? 100 : 77));
             }
         }
         return pages;

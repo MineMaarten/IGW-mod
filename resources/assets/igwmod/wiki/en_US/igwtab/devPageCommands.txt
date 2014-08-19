@@ -1,7 +1,7 @@
 [prefix{l}]There are several commands you can use to enhance the wikipage. All commands need to go between '[ ]'. Then there's the following list of commands that can be put between these brackets:
 
-[prefix{n}]image{x,y,width,height,imageLocation} [prefix{}]
-[prefix{n}]image{x,y,width,height,scale,imageLocation} [prefix{}]
+[prefix{n}]image{x,y,imageLocation} [prefix{}]
+[prefix{n}]image{x,y,scale,imageLocation} [prefix{}]
 Allows inclusion of images. It doesn't matter where in the .txt file you put this command, it will be placed at the given x and y. The imageLocation is a location that would be familiar to mod devs as being a ResourceLocation. This means that you need to put the image in "assets/modName/" folder. for example, you've created an image and put it in "assets/igwmod/wiki/test.png". To access it with the image command, use "igwmod:wiki/test.png" as imageLocation. So basically "assets/" stripped off, the modname first and then a ':'. 
 
 [prefix{n}]crafting{x,y,key=keyName} [prefix{}]
@@ -13,9 +13,9 @@ For this problem you'll need a little bit of code. For modders: Look at the Craf
 
 If there's no way of adding the recipe in with this command, you can use the next command to 'hard code' a recipe in.
 
-[prefix{n}]crafting{x,y,www,cic,crc,w=block/wood.oak,
-c=block/stonebrick,i=item/ingotIron,
-r=item/redstone}block/pistonBase [prefix{}]
+[prefix{n}]crafting{x,y,block/pistonBase,www,cic,crc,
+w=block/wood.oak,c=block/stonebrick,i=item/ingotIron,
+r=item/redstone} [prefix{}]
 Allows the inclusion of a custom crafting recipe.
 x,y = x,y location of the recipe (like with the image command). The following three parameters are the crafting pattern. In this example the recipe of a Piston is drawn, and the following crafting pattern was chosen:
 
@@ -35,7 +35,7 @@ Then, last but not least, after the '}' you can specify the recipe output, which
 [prefix{n}]furnace{x,y,key=keyName} [prefix{}]
 Likewise with the crafting recipe variant of this command, you can embed Furnace recipes into the wikipage. It uses a similar key system as with the crafting variant: When you using an IGW-Mod item/block name, it includes the first furnace recipe it can find that has the specified block/item as output. If multiple furnace recipes with the same output exist, a modder could use the FurnaceRetrievalEvent.java.
 
-[prefix{n}]furnace{x,y,inputItem}outputItem [prefix{}]
+[prefix{n}]furnace{x,y,inputItem,outputItem} [prefix{}]
 A manual variant of the furnace recipe inclusion. inputItem and outputItem need to be IGW-Mod names (block/sand and block/glass).
 
 [prefix{n}]color{hexColor} [prefix{}]

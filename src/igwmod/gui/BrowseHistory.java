@@ -1,5 +1,7 @@
 package igwmod.gui;
 
+import igwmod.gui.tabs.IWikiTab;
+
 import java.util.ArrayList;
 import java.util.List;
 

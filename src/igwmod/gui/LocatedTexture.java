@@ -1,31 +1,81 @@
 package igwmod.gui;
 
-import java.awt.Rectangle;
+import igwmod.IGWMod;
 
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+
+import javax.imageio.ImageIO;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.opengl.GL11;
 
 public class LocatedTexture implements IReservedSpace, IWidged{
     public ResourceLocation texture;
-    public int x, y, width, heigth;
+    public int x, y, width, height;
+    private int textureId;
 
-    public LocatedTexture(ResourceLocation texture, int x, int y, int width, int heigth){
+    public LocatedTexture(ResourceLocation texture, int x, int y, int width, int height){
         this.texture = texture;
         this.x = x;
         this.y = y;
         this.width = width;
-        this.heigth = heigth;
+        this.height = height;
+
+        if(texture.getResourcePath().startsWith("server")) {
+            try {
+                BufferedImage image = ImageIO.read(new FileInputStream(new File(IGWMod.proxy.getSaveLocation() + "\\igwmod\\" + texture.getResourcePath().substring(7))));
+                DynamicTexture t = new DynamicTexture(image);
+                textureId = t.getGlTextureId();
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public LocatedTexture(ResourceLocation texture, int x, int y){
+        this(texture, x, y, 1);
+    }
+
+    public LocatedTexture(ResourceLocation texture, int x, int y, double scale){
+        this(texture, x, y, 0, 0);
+        try {
+            BufferedImage bufferedimage;
+            if(texture.getResourcePath().startsWith("server")) {
+                bufferedimage = ImageIO.read(new FileInputStream(new File(IGWMod.proxy.getSaveLocation() + "\\igwmod\\" + texture.getResourcePath().substring(7))));
+            } else {
+                IResource iresource = Minecraft.getMinecraft().getResourceManager().getResource(texture);
+                InputStream inputstream = iresource.getInputStream();
+                bufferedimage = ImageIO.read(inputstream);
+            }
+            width = (int)(bufferedimage.getWidth() * scale);
+            height = (int)(bufferedimage.getHeight() * scale);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public Rectangle getReservedSpace(){
-        return new Rectangle(x, y, width, heigth);
+        return new Rectangle(x, y, width, height);
     }
 
     @Override
     public void renderBackground(GuiWiki gui, int mouseX, int mouseY){
-        gui.mc.getTextureManager().bindTexture(texture);
-        drawTexture(x, y, width, heigth);
+        if(texture.getResourcePath().startsWith("server")) {
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
+        } else {
+            gui.mc.getTextureManager().bindTexture(texture);
+        }
+        drawTexture(x, y, width, height);
     }
 
     @Override

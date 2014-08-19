@@ -6,6 +6,7 @@ import igwmod.api.BlockWikiEvent;
 import igwmod.api.EntityWikiEvent;
 import igwmod.api.ItemWikiEvent;
 import igwmod.api.WikiRegistry;
+import igwmod.gui.tabs.IWikiTab;
 import igwmod.lib.Textures;
 
 import java.awt.Rectangle;
@@ -168,6 +169,11 @@ public class GuiWiki extends GuiContainer{
     protected void mouseClicked(int x, int y, int button){
         super.mouseClicked(x, y, button);
         searchField.mouseClicked(x, y, button);
+        if(searchField.isFocused() && button == 1) {
+            searchField.setText("");
+            currentPageLinkScroll = 0;
+            updateSearch();
+        }
 
         List<IWikiTab> visibleTabs = getVisibleTabs();
         for(int i = 0; i < visibleTabs.size(); i++) {
@@ -288,7 +294,7 @@ public class GuiWiki extends GuiContainer{
     private int getMaxPageTranslation(){
         int maxTranslation = -100000;
         for(LocatedTexture texture : locatedTextures) {
-            maxTranslation = Math.max(maxTranslation, texture.y + texture.heigth);
+            maxTranslation = Math.max(maxTranslation, texture.y + texture.height);
         }
         for(LocatedString string : locatedStrings) {
             maxTranslation = Math.max(maxTranslation, string.getY() + fontRendererObj.FONT_HEIGHT);
@@ -432,8 +438,12 @@ public class GuiWiki extends GuiContainer{
         }
 
         //draw the pagelink scrollbar
-        drawTexturedModalRect(guiLeft + PAGE_LINK_SCROLL_X - 1, guiTop + PAGE_LINK_SCROLL_Y + currentTab.getSearchBarAndScrollStartY() - 1, PAGE_SCROLL_X - 1, PAGE_SCROLL_Y - 1, 14, PAGE_LINK_SCROLL_HEIGHT - currentTab.getSearchBarAndScrollStartY() - 1);
-        drawTexturedModalRect(guiLeft + PAGE_LINK_SCROLL_X - 1, guiTop + PAGE_LINK_SCROLL_Y + PAGE_LINK_SCROLL_HEIGHT - 2, PAGE_SCROLL_X - 1, PAGE_SCROLL_Y + PAGE_SCROLL_HEIGHT - 2, 14, 1);
+        if(needsPageLinkScrollBars()) {
+            drawTexturedModalRect(guiLeft + PAGE_LINK_SCROLL_X - 1, guiTop + PAGE_LINK_SCROLL_Y + currentTab.getSearchBarAndScrollStartY() - 1, PAGE_SCROLL_X - 1, PAGE_SCROLL_Y - 1, 14, PAGE_LINK_SCROLL_HEIGHT - currentTab.getSearchBarAndScrollStartY() - 1);
+            drawTexturedModalRect(guiLeft + PAGE_LINK_SCROLL_X - 1, guiTop + PAGE_LINK_SCROLL_Y + PAGE_LINK_SCROLL_HEIGHT - 2, PAGE_SCROLL_X - 1, PAGE_SCROLL_Y + PAGE_SCROLL_HEIGHT - 2, 14, 1);
+        } else {
+            drawVerticalLine(guiLeft + PAGE_LINK_SCROLL_X + 13, guiTop + PAGE_LINK_SCROLL_Y + currentTab.getSearchBarAndScrollStartY(), PAGE_LINK_SCROLL_HEIGHT + 20, 0xFF888888);
+        }
 
         //Draw the text field.
         searchField.drawTextBox();
@@ -448,8 +458,11 @@ public class GuiWiki extends GuiContainer{
 
         GL11.glColor4d(1, 1, 1, 1);
         //Draw the scroll bar widgets.
+
         mc.getTextureManager().bindTexture(scrollbarTexture);
-        drawTexturedModalRect(PAGE_LINK_SCROLL_X, PAGE_LINK_SCROLL_Y + currentTab.getSearchBarAndScrollStartY() + (int)((PAGE_LINK_SCROLL_HEIGHT - currentTab.getSearchBarAndScrollStartY() - 17) * currentPageLinkScroll), 232 + (needsPageLinkScrollBars() ? 0 : 12), 0, 12, 15);
+        if(needsPageLinkScrollBars()) {
+            drawTexturedModalRect(PAGE_LINK_SCROLL_X, PAGE_LINK_SCROLL_Y + currentTab.getSearchBarAndScrollStartY() + (int)((PAGE_LINK_SCROLL_HEIGHT - currentTab.getSearchBarAndScrollStartY() - 17) * currentPageLinkScroll), 232 + (needsPageLinkScrollBars() ? 0 : 12), 0, 12, 15);
+        }
         drawTexturedModalRect(PAGE_SCROLL_X, PAGE_SCROLL_Y + (int)((PAGE_SCROLL_Y + PAGE_SCROLL_HEIGHT - PAGE_SCROLL_Y - 17) * currentPageScroll), 232 + (needsPageScrollBars() ? 0 : 12), 0, 12, 15);
 
         GL11.glEnable(GL11.GL_LIGHTING);
@@ -543,11 +556,6 @@ public class GuiWiki extends GuiContainer{
         currentTab.renderBackground(this, mouseX, mouseY);
         GL11.glPushMatrix();
         GL11.glTranslated(guiLeft, guiTop, 0);
-        for(LocatedString locatedString : locatedStrings) {
-            if(locatedString.getY() > MIN_TEXT_Y && locatedString.getReservedSpace().height + locatedString.getY() <= MAX_TEXT_Y) {
-                locatedString.renderBackground(this, mouseX, mouseY);
-            }
-        }
 
         // Draw the wiki page images.
         GL11.glColor4d(1, 1, 1, 1);
@@ -558,6 +566,13 @@ public class GuiWiki extends GuiContainer{
         }
 
         GL11.glPopMatrix();
+
+        for(LocatedString locatedString : locatedStrings) {
+            if(locatedString.getY() > MIN_TEXT_Y && locatedString.getReservedSpace().height + locatedString.getY() <= MAX_TEXT_Y) {
+                locatedString.renderBackground(this, mouseX, mouseY);
+            }
+        }
+        GL11.glColor4d(1, 1, 1, 1);
 
         //Draw wiki tab images.
         List<IReservedSpace> reservedSpaces = currentTab.getReservedSpaces();

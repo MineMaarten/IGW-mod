@@ -1,5 +1,6 @@
 package igwmod.gui;
 
+import igwmod.gui.tabs.EntityWikiTab;
 import igwmod.lib.Util;
 
 import java.awt.Rectangle;
