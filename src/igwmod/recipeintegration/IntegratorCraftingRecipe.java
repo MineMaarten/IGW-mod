@@ -6,6 +6,7 @@ import igwmod.api.CraftingRetrievalEvent;
 import igwmod.api.IRecipeIntegrator;
 import igwmod.gui.GuiWiki;
 import igwmod.gui.IReservedSpace;
+import igwmod.gui.IWidget;
 import igwmod.gui.LocatedStack;
 import igwmod.gui.LocatedString;
 import igwmod.gui.LocatedTexture;
@@ -38,7 +39,7 @@ public class IntegratorCraftingRecipe implements IRecipeIntegrator{
     }
 
     @Override
-    public void onCommandInvoke(String[] arguments, List<IReservedSpace> reservedSpaces, List<LocatedString> locatedStrings, List<LocatedStack> locatedStacks, List<LocatedTexture> locatedTextures) throws IllegalArgumentException{
+    public void onCommandInvoke(String[] arguments, List<IReservedSpace> reservedSpaces, List<LocatedString> locatedStrings, List<LocatedStack> locatedStacks, List<IWidget> locatedTextures) throws IllegalArgumentException{
         if(arguments.length < 3) throw new IllegalArgumentException("Code needs at least 3 arguments!");
         int x;
         try {
@@ -67,7 +68,7 @@ public class IntegratorCraftingRecipe implements IRecipeIntegrator{
      * @param y 
      * @param x 
      */
-    private void addAutomaticCraftingRecipe(String code, List<LocatedStack> locatedStacks, List<LocatedTexture> locatedTextures, int x, int y) throws IllegalArgumentException{
+    private void addAutomaticCraftingRecipe(String code, List<LocatedStack> locatedStacks, List<IWidget> locatedTextures, int x, int y) throws IllegalArgumentException{
         String key = code.substring(4);
         CraftingRetrievalEvent recipeEvent = new CraftingRetrievalEvent(key);
         IRecipe autoMappedRecipe = autoMappedRecipes.get(key);
@@ -100,10 +101,12 @@ public class IntegratorCraftingRecipe implements IRecipeIntegrator{
             }
             for(int i = 0; i < recipeHeight; i++) {
                 for(int j = 0; j < recipeWidth; j++) {
-                    Object ingredient = recipe.getInput()[i * 3 + j];
-                    ItemStack ingredientStack = ingredient instanceof ItemStack ? (ItemStack)ingredient : ((List<ItemStack>)ingredient).get(0);
-                    if(ingredientStack != null) {
-                        locatedStacks.add(new LocatedStack(ingredientStack, x + STACKS_X_OFFSET + j * 18, y + STACKS_Y_OFFSET + i * 18));
+                    Object ingredient = recipe.getInput()[i * recipeWidth + j];
+                    if(ingredient != null) {
+                        ItemStack ingredientStack = ingredient instanceof ItemStack ? (ItemStack)ingredient : ((List<ItemStack>)ingredient).get(0);
+                        if(ingredientStack != null) {
+                            locatedStacks.add(new LocatedStack(ingredientStack, x + STACKS_X_OFFSET + j * 18, y + STACKS_Y_OFFSET + i * 18));
+                        }
                     }
                 }
             }
@@ -128,7 +131,7 @@ public class IntegratorCraftingRecipe implements IRecipeIntegrator{
         }
     }
 
-    private void addManualCraftingRecipe(String[] codeParts, List<LocatedStack> locatedStacks, List<LocatedTexture> locatedTextures, int x, int y) throws IllegalArgumentException{
+    private void addManualCraftingRecipe(String[] codeParts, List<LocatedStack> locatedStacks, List<IWidget> locatedTextures, int x, int y) throws IllegalArgumentException{
         String[] ingredients = new String[codeParts.length - 3];
         for(int i = 3; i < codeParts.length; i++)
             ingredients[i - 3] = codeParts[i];
@@ -152,4 +155,5 @@ public class IntegratorCraftingRecipe implements IRecipeIntegrator{
             locatedStacks.add(new LocatedStack(resultStack, x + RESULT_STACK_X_OFFSET, y + RESULT_STACK_Y_OFFSET));
         }
     }
+
 }

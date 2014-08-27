@@ -18,7 +18,7 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-public class LocatedTexture implements IReservedSpace, IWidged{
+public class LocatedTexture implements IReservedSpace, IWidget{
     public ResourceLocation texture;
     public int x, y, width, height;
     private int textureId;
@@ -112,5 +112,10 @@ public class LocatedTexture implements IReservedSpace, IWidged{
     @Override
     public int getY(){
         return y;
+    }
+
+    @Override
+    public int getHeight(){
+        return height;
     }
 }

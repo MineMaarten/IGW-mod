@@ -61,4 +61,9 @@ public class LocatedStack implements IReservedSpace, IPageLink{
     public int getY(){
         return y;
     }
+
+    @Override
+    public int getHeight(){
+        return 16;
+    }
 }

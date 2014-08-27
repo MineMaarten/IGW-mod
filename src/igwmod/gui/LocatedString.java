@@ -5,8 +5,12 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiConfirmOpenLink;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -15,7 +19,7 @@ import org.lwjgl.opengl.GL12;
 
 import cpw.mods.fml.client.FMLClientHandler;
 
-public class LocatedString extends Gui implements IPageLink{
+public class LocatedString extends Gui implements IPageLink, GuiYesNoCallback{
     protected static FontRenderer fontRenderer = FMLClientHandler.instance().getClient().fontRenderer;
     private final String string;
     private String cappedText;
@@ -24,6 +28,7 @@ public class LocatedString extends Gui implements IPageLink{
     private int color;
     private final boolean shadow;
     private String linkAddress;
+    private GuiScreen parentGui;
 
     /**
      * A constructor for linked located strings. Color doesn't matter as these will always be the same for linked strings.
@@ -73,11 +78,22 @@ public class LocatedString extends Gui implements IPageLink{
     public boolean onMouseClick(GuiWiki gui, int x, int y){
         if(linkAddress != null) {
             if(getMouseSpace().contains(x, y)) {
-                gui.setCurrentFile(linkAddress);
+                if(linkAddress.contains("www")) {
+                    parentGui = Minecraft.getMinecraft().currentScreen;
+                    Minecraft.getMinecraft().displayGuiScreen(new GuiConfirmOpenLink(this, linkAddress, 0, false));
+                } else {
+                    gui.setCurrentFile(linkAddress);
+                }
                 return true;
             }
         }
         return false;
+    }
+
+    @Override
+    public void confirmClicked(boolean result, int value){
+        if(result) igwmod.lib.Util.openBrowser(linkAddress);
+        Minecraft.getMinecraft().displayGuiScreen(parentGui);
     }
 
     private Rectangle getMouseSpace(){
@@ -219,6 +235,11 @@ public class LocatedString extends Gui implements IPageLink{
             RenderHelper.enableStandardItemLighting();
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         }
+    }
+
+    @Override
+    public int getHeight(){
+        return fontRenderer.FONT_HEIGHT;
     }
 
 }

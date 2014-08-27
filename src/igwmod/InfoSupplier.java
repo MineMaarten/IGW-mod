@@ -3,9 +3,9 @@ package igwmod;
 import igwmod.api.IRecipeIntegrator;
 import igwmod.api.WikiRegistry;
 import igwmod.gui.IReservedSpace;
+import igwmod.gui.IWidget;
 import igwmod.gui.LocatedStack;
 import igwmod.gui.LocatedString;
-import igwmod.gui.LocatedTexture;
 import igwmod.lib.IGWLog;
 import igwmod.lib.Paths;
 
@@ -79,7 +79,7 @@ public class InfoSupplier{
     }
 
     @SideOnly(Side.CLIENT)
-    public static void analyseInfo(FontRenderer fontRenderer, List<String> fileInfo, List<IReservedSpace> reservedSpaces, List<LocatedString> locatedStrings, List<LocatedStack> locatedStacks, List<LocatedTexture> locatedTextures){
+    public static void analyseInfo(FontRenderer fontRenderer, List<String> fileInfo, List<IReservedSpace> reservedSpaces, List<LocatedString> locatedStrings, List<LocatedStack> locatedStacks, List<IWidget> locatedTextures){
         currentTextColor = 0xFF000000;
         curPrefix = "";
         curLink = "";
@@ -190,7 +190,7 @@ public class InfoSupplier{
         }
     }
 
-    private static int getNewXFromIntersection(Rectangle rect, List<IReservedSpace> reservedSpaces, List<LocatedStack> locatedStacks, List<LocatedTexture> locatedTextures){
+    private static int getNewXFromIntersection(Rectangle rect, List<IReservedSpace> reservedSpaces, List<LocatedStack> locatedStacks, List<IWidget> locatedTextures){
         int oldX = rect.x;
         boolean modified = false;
         for(IReservedSpace reservedSpace : reservedSpaces) {
@@ -208,18 +208,20 @@ public class InfoSupplier{
                 modified = true;
             }
         }
-        for(LocatedTexture locatedTexture : locatedTextures) {
-            Rectangle space = locatedTexture.getReservedSpace();
-            if(space.x + space.width > rect.x && space.intersects(rect)) {
-                // rect = new Rectangle(rect.x, rect.y, space.x + space.width - rect.x, rect.height);
-                rect = new Rectangle(space.x + space.width, rect.y, rect.width, rect.height);
-                modified = true;
+        for(IWidget locatedTexture : locatedTextures) {
+            if(locatedTexture instanceof IReservedSpace) {
+                Rectangle space = ((IReservedSpace)locatedTexture).getReservedSpace();
+                if(space.x + space.width > rect.x && space.intersects(rect)) {
+                    // rect = new Rectangle(rect.x, rect.y, space.x + space.width - rect.x, rect.height);
+                    rect = new Rectangle(space.x + space.width, rect.y, rect.width, rect.height);
+                    modified = true;
+                }
             }
         }
         return modified ? rect.x : oldX;
     }
 
-    private static boolean decomposeTemplate(String code, List<IReservedSpace> reservedSpaces, List<LocatedString> locatedStrings, List<LocatedStack> locatedStacks, List<LocatedTexture> locatedTextures) throws IllegalArgumentException{
+    private static boolean decomposeTemplate(String code, List<IReservedSpace> reservedSpaces, List<LocatedString> locatedStrings, List<LocatedStack> locatedStacks, List<IWidget> locatedTextures) throws IllegalArgumentException{
         for(IRecipeIntegrator integrator : WikiRegistry.recipeIntegrators) {
             if(code.startsWith(integrator.getCommandKey() + "{")) {
                 String[] args = code.substring(integrator.getCommandKey().length() + 1, code.length() - 1).split(",");

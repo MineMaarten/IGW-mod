@@ -1,9 +1,9 @@
 package igwmod.api;
 
 import igwmod.gui.IReservedSpace;
+import igwmod.gui.IWidget;
 import igwmod.gui.LocatedStack;
 import igwmod.gui.LocatedString;
-import igwmod.gui.LocatedTexture;
 
 import java.util.List;
 
@@ -28,5 +28,5 @@ public interface IRecipeIntegrator{
      * @param locatedTextures If you add a recipe handler, add a texture here as underlay for the items.
      * @throws IllegalArgumentException throw this when the wiki writer tries to give illegal arguments. It won't crash the game, instead it will display the error on the generated page.
      */
-    public void onCommandInvoke(String[] arguments, List<IReservedSpace> reservedSpaces, List<LocatedString> locatedStrings, List<LocatedStack> locatedStacks, List<LocatedTexture> locatedTextures) throws IllegalArgumentException;
+    public void onCommandInvoke(String[] arguments, List<IReservedSpace> reservedSpaces, List<LocatedString> locatedStrings, List<LocatedStack> locatedStacks, List<IWidget> locatedTextures) throws IllegalArgumentException;
 }

@@ -10,9 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class WikiRegistry{
 
@@ -39,6 +42,14 @@ public class WikiRegistry{
         registerBlockAndItemPageEntry(stack, stack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/"));
     }
 
+    public static void registerBlockAndItemPageEntry(Block block, String page){
+        registerBlockAndItemPageEntry(new ItemStack(block, 1, OreDictionary.WILDCARD_VALUE), page);
+    }
+
+    public static void registerBlockAndItemPageEntry(Item item, String page){
+        registerBlockAndItemPageEntry(new ItemStack(item, 1, OreDictionary.WILDCARD_VALUE), page);
+    }
+
     public static void registerBlockAndItemPageEntry(ItemStack stack, String page){
         itemAndBlockPageEntries.add(new AbstractMap.SimpleEntry(page, stack));
     }
@@ -60,7 +71,7 @@ public class WikiRegistry{
             if(entry.getValue().isItemEqual(stack) && ItemStack.areItemStackTagsEqual(entry.getValue(), stack)) return entry.getKey();
         }
         for(Map.Entry<String, ItemStack> entry : itemAndBlockPageEntries) {
-            if(entry.getValue().isItemEqual(stack)) return entry.getKey();
+            if(OreDictionary.itemMatches(entry.getValue(), stack, false)) return entry.getKey();
         }
         return null;
     }

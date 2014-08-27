@@ -3,6 +3,7 @@ package igwmod.recipeintegration;
 import igwmod.TextureSupplier;
 import igwmod.api.IRecipeIntegrator;
 import igwmod.gui.IReservedSpace;
+import igwmod.gui.IWidget;
 import igwmod.gui.LocatedStack;
 import igwmod.gui.LocatedString;
 import igwmod.gui.LocatedTexture;
@@ -17,7 +18,7 @@ public class IntegratorImage implements IRecipeIntegrator{
     }
 
     @Override
-    public void onCommandInvoke(String[] arguments, List<IReservedSpace> reservedSpaces, List<LocatedString> locatedStrings, List<LocatedStack> locatedStacks, List<LocatedTexture> locatedTextures) throws IllegalArgumentException{
+    public void onCommandInvoke(String[] arguments, List<IReservedSpace> reservedSpaces, List<LocatedString> locatedStrings, List<LocatedStack> locatedStacks, List<IWidget> locatedTextures) throws IllegalArgumentException{
         if(arguments.length != 3 && arguments.length != 4) throw new IllegalArgumentException("The code needs to contain 3 or 4 parameters: x, y, [scale,] , texture location. It now contains " + arguments.length + ".");
         int[] coords = new int[2];
         double scale = 1;

@@ -76,6 +76,6 @@ prefix{o} --> Italic
 prefix{} --> Reset
 
 [prefix{n}]link{linkAddress} [prefix{}]
-This command is used to link to other pages by adding in clickable text. If you want to give a group of words a link, do a link command with the link in front of this group, and do a link{} (yes an empty link) afterwards.
+This command is used to link to other pages or urls by adding in clickable text. If you want to give a group of words a link, do a link command with the link in front of this group, and do a link{} (yes an empty link) afterwards.
 
-You can simply do link{block/pistonBase} to refer to the Piston's wikipage. The link address is relative to assets/igwmod/wiki/<language>/
+You can simply do link{block/pistonBase} to refer to the Piston's wikipage. When the link is another page, the link address is relative to assets/igwmod/wiki/<language>/

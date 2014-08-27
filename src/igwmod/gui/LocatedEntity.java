@@ -21,18 +21,26 @@ import cpw.mods.fml.client.FMLClientHandler;
 
 public class LocatedEntity extends Gui implements IReservedSpace, IPageLink{
     protected static FontRenderer fontRenderer = FMLClientHandler.instance().getClient().fontRenderer;
-    private final Entity entity;
+    public final Entity entity;
     private int x, y;
+    private final float scale;
 
     public LocatedEntity(Class<? extends Entity> clazz, int x, int y){
+        this(clazz, x, y, 0.5F);
+    }
+
+    public LocatedEntity(Class<? extends Entity> clazz, int x, int y, float scale){
         entity = Util.getEntityForClass(clazz);
         this.x = x;
         this.y = y;
+        this.scale = scale;
     }
 
     @Override
     public void renderBackground(GuiWiki gui, int mouseX, int mouseY){
-        EntityWikiTab.drawEntity(entity, x + 16, y + 27, 0.5F, 0);
+        if(GuiWiki.MIN_TEXT_Y < y && GuiWiki.MAX_TEXT_Y > y + 16 * scale) {
+            EntityWikiTab.drawEntity(entity, x + 16, y + 27, scale, 0);
+        }
     }
 
     @Override
@@ -161,5 +169,10 @@ public class LocatedEntity extends Gui implements IReservedSpace, IPageLink{
             RenderHelper.enableStandardItemLighting();
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         }
+    }
+
+    @Override
+    public int getHeight(){
+        return 32;
     }
 }

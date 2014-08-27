@@ -10,6 +10,7 @@ import java.util.List;
 
 public abstract class BaseWikiTab implements IWikiTab{
     protected List<String> pageEntries = new ArrayList<String>();
+    private final List<Integer> lineSkips = new ArrayList<Integer>();
 
     @Override
     public List<IReservedSpace> getReservedSpaces(){
@@ -24,11 +25,19 @@ public abstract class BaseWikiTab implements IWikiTab{
                 pages.add(new LocatedString(getPageName(pageEntries.get(i)), 80, 64 + 11 * i, false, getPageLocation(pageEntries.get(i))));
             }
         } else {
+            int skipOffset = 0;
             for(int i = 0; i < pageIndexes.length; i++) {
-                pages.add(new LocatedString(getPageName(pageEntries.get(pageIndexes[i])), 80, 64 + 11 * i, false, getPageLocation(pageEntries.get(pageIndexes[i]))).capTextWidth(pagesPerTab() > pageIndexes.length ? 100 : 77));
+                if(pageIndexes.length == pageEntries.size() && lineSkips.contains(i)) {
+                    skipOffset += 11;
+                }
+                pages.add(new LocatedString(getPageName(pageEntries.get(pageIndexes[i])), 80, 64 + 11 * i + skipOffset, false, getPageLocation(pageEntries.get(pageIndexes[i]))).capTextWidth(pagesPerTab() > pageIndexes.length ? 100 : 77));
             }
         }
         return pages;
+    }
+
+    protected void skipLine(){
+        lineSkips.add(pageEntries.size());
     }
 
     @Override

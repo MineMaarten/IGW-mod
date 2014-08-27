@@ -1,6 +1,6 @@
 package igwmod.gui;
 
-public interface IWidged{
+public interface IWidget{
     public void renderBackground(GuiWiki gui, int mouseX, int mouseY);
 
     public void renderForeground(GuiWiki gui, int mouseX, int mouseY);
@@ -12,4 +12,6 @@ public interface IWidged{
     public int getX();
 
     public int getY();
+
+    public int getHeight();
 }

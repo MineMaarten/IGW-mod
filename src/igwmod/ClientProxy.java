@@ -9,6 +9,7 @@ import igwmod.lib.IGWLog;
 import igwmod.recipeintegration.IntegratorCraftingRecipe;
 import igwmod.recipeintegration.IntegratorFurnace;
 import igwmod.recipeintegration.IntegratorImage;
+import igwmod.recipeintegration.IntegratorStack;
 import igwmod.render.TooltipOverlayHandler;
 
 import java.lang.reflect.InvocationTargetException;
@@ -66,6 +67,7 @@ public class ClientProxy implements IProxy{
         WikiRegistry.registerRecipeIntegrator(new IntegratorImage());
         WikiRegistry.registerRecipeIntegrator(new IntegratorCraftingRecipe());
         WikiRegistry.registerRecipeIntegrator(new IntegratorFurnace());
+        WikiRegistry.registerRecipeIntegrator(new IntegratorStack());
     }
 
     @SubscribeEvent

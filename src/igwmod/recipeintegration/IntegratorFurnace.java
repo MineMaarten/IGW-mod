@@ -6,6 +6,7 @@ import igwmod.api.FurnaceRetrievalEvent;
 import igwmod.api.IRecipeIntegrator;
 import igwmod.gui.GuiWiki;
 import igwmod.gui.IReservedSpace;
+import igwmod.gui.IWidget;
 import igwmod.gui.LocatedStack;
 import igwmod.gui.LocatedString;
 import igwmod.gui.LocatedTexture;
@@ -28,7 +29,7 @@ public class IntegratorFurnace implements IRecipeIntegrator{
     }
 
     @Override
-    public void onCommandInvoke(String[] arguments, List<IReservedSpace> reservedSpaces, List<LocatedString> locatedStrings, List<LocatedStack> locatedStacks, List<LocatedTexture> locatedTextures) throws IllegalArgumentException{
+    public void onCommandInvoke(String[] arguments, List<IReservedSpace> reservedSpaces, List<LocatedString> locatedStrings, List<LocatedStack> locatedStacks, List<IWidget> locatedTextures) throws IllegalArgumentException{
         if(arguments.length != 3 && arguments.length != 4) throw new IllegalArgumentException("Code needs to contain 3 or 4 arguments: x, y, inputstack, outputstack. It now contains " + arguments.length + ".");
         int x;
         try {

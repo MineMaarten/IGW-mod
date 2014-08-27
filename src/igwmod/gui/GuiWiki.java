@@ -52,7 +52,7 @@ public class GuiWiki extends GuiContainer{
 
     private static final List<LocatedStack> locatedStacks = new ArrayList<LocatedStack>();
     private static final List<LocatedString> locatedStrings = new ArrayList<LocatedString>();
-    private static final List<LocatedTexture> locatedTextures = new ArrayList<LocatedTexture>();
+    private static final List<IWidget> locatedTextures = new ArrayList<IWidget>();
 
     private static final ResourceLocation scrollbarTexture = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
 
@@ -204,7 +204,8 @@ public class GuiWiki extends GuiContainer{
 
     public void setCurrentFile(World world, int x, int y, int z){
         BlockWikiEvent wikiEvent = new BlockWikiEvent(world, x, y, z);
-        wikiEvent.pageOpened = wikiEvent.drawnStack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/");
+        wikiEvent.pageOpened = WikiRegistry.getPageForItemStack(wikiEvent.drawnStack);
+        if(wikiEvent.pageOpened == null) wikiEvent.pageOpened = wikiEvent.drawnStack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/");
         MinecraftForge.EVENT_BUS.post(wikiEvent);
         setCurrentFile(wikiEvent.pageOpened, wikiEvent.drawnStack);
     }
@@ -221,6 +222,10 @@ public class GuiWiki extends GuiContainer{
         if(defaultName == null) defaultName = stack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/");
         ItemWikiEvent wikiEvent = new ItemWikiEvent(stack, defaultName);
         MinecraftForge.EVENT_BUS.post(wikiEvent);
+        if(stack != null) {
+            stack = stack.copy();
+            stack.stackSize = 1;
+        }
         setCurrentFile(wikiEvent.pageOpened, stack);
     }
 
@@ -285,7 +290,7 @@ public class GuiWiki extends GuiContainer{
         for(LocatedString string : locatedStrings) {
             string.setY(string.getY() + translation);
         }
-        for(LocatedTexture image : locatedTextures) {
+        for(IWidget image : locatedTextures) {
             image.setY(image.getY() + translation);
         }
         ((ContainerBlockWiki)inventorySlots).updateStacks(locatedStacks, visibleWikiPages);
@@ -293,8 +298,8 @@ public class GuiWiki extends GuiContainer{
 
     private int getMaxPageTranslation(){
         int maxTranslation = -100000;
-        for(LocatedTexture texture : locatedTextures) {
-            maxTranslation = Math.max(maxTranslation, texture.y + texture.height);
+        for(IWidget texture : locatedTextures) {
+            maxTranslation = Math.max(maxTranslation, texture.getY() + texture.getHeight());
         }
         for(LocatedString string : locatedStrings) {
             maxTranslation = Math.max(maxTranslation, string.getY() + fontRendererObj.FONT_HEIGHT);
@@ -493,7 +498,7 @@ public class GuiWiki extends GuiContainer{
         GL11.glColor4d(1, 1, 1, 1);
         GL11.glPushMatrix();
         GL11.glScaled(TEXT_SCALE, TEXT_SCALE, 1);
-        for(LocatedTexture texture : locatedTextures) {
+        for(IWidget texture : locatedTextures) {
             texture.renderForeground(this, mouseX, mouseY);
         }
 
@@ -561,7 +566,7 @@ public class GuiWiki extends GuiContainer{
         GL11.glColor4d(1, 1, 1, 1);
         GL11.glPushMatrix();
         GL11.glScaled(TEXT_SCALE, TEXT_SCALE, 1);
-        for(LocatedTexture texture : locatedTextures) {
+        for(IWidget texture : locatedTextures) {
             texture.renderBackground(this, mouseX, mouseY);
         }
 
