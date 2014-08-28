@@ -16,16 +16,16 @@ If you want to add In-Game Wiki Mod support to your mod, it's really easy to inc
 
 In your build.gradle, add:
 
-repositories {
+	repositories {
 		maven {
 			name = "IGW"
 			url = "http://maven.k-4u.nl/"
 		}
-}
+	}
 
-dependencies{
-	compile "igwmod:IGW-Mod-1.7.10:1.1.0-11:userdev"
-}
+	dependencies{
+		compile "igwmod:IGW-Mod-1.7.10:1.1.0-11:userdev"
+	}
 
 It should be clear that the version number used in the 'compile' is an example, to see which versions you can use, go to http://maven.k-4u.nl/igwmod/IGW-Mod-1.7.10/
 
