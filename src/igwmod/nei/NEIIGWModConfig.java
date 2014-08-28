@@ -19,6 +19,6 @@ public class NEIIGWModConfig implements IConfigureNEI{
 
     @Override
     public String getVersion(){
-        return Constants.MOD_VERSION;
+        return Constants.fullVersionString();
     }
 }
