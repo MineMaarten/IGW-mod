@@ -145,22 +145,13 @@ jar {
     classifier = "universal"
 }
 
-task deobfJar(type: Jar) {
-    from(sourceSets.main.output) {
-        appendix = "${project.ext.mcVersion}"
-        classifier = "dev"
-    }
-}
-
-// add a source jar
-task sourceJar(type: Jar) {
-    from (sourceSets.main.allSource) {
-        appendix = "${project.ext.mcVersion}"
-        classifier = "src"
-    }
+task userdevJar(type: Jar) {
+    from(sourceSets.main.output)
+	from(sourceSets.main.allSource)
+    appendix = "${project.ext.mcVersion}"
+    classifier = "userdev"
 }
 
 artifacts {
-    archives sourceJar
-    archives deobfJar
+    archives userdevJar
 }
