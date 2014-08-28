@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies{
-	compile "igwmod:IGW-Mod-1.7.10:1.1.0-7:dev"
+	compile "igwmod:IGW-Mod-1.7.10:1.1.0-11:userdev"
 }
 
 It should be clear that the version number used in the 'compile' is an example, to see which versions you can use, go to http://maven.k-4u.nl/igwmod/IGW-Mod-1.7.10/
