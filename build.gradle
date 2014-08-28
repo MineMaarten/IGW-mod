@@ -36,13 +36,13 @@ project.ext {
 }
 
 
-version = "${project.ext.major}.${project.minor}"
+version = "${project.ext.massive}.${project.ext.major}.${project.minor}"
 group = "igwmod"
 archivesBaseName = "IGW-Mod"
 
 
 if (System.getenv().BUILD_NUMBER != null) {
-    version += ".${System.getenv().BUILD_NUMBER}"
+    version += "-${System.getenv().BUILD_NUMBER}"
 } else {
     version += " - err"
 }
@@ -143,7 +143,7 @@ task("uploadJars", dependsOn:"reobf") {
 task deobfJar(type: Jar) {
     from(sourceSets.main.output) {
         appendix = "${project.ext.mcVersion}"
-        classifier = "deobf"
+        classifier = "dev"
     }
 }
 
