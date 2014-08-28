@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.block.Block;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
@@ -83,7 +84,11 @@ public class WikiRegistry{
     public static List<ItemStack> getItemAndBlockPageEntries(){
         List<ItemStack> entries = new ArrayList<ItemStack>();
         for(Map.Entry<String, ItemStack> entry : itemAndBlockPageEntries) {
-            entries.add(entry.getValue());
+            if(entry.getValue().getItemDamage() == OreDictionary.WILDCARD_VALUE) {
+                entry.getValue().getItem().getSubItems(entry.getValue().getItem(), CreativeTabs.tabAllSearch, entries);
+            } else {
+                entries.add(entry.getValue());
+            }
         }
         return entries;
     }
