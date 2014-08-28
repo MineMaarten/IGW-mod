@@ -29,8 +29,9 @@ repositories {
 apply plugin: 'forge'
 
 project.ext {
+	massive = "1"
     major = "1"
-    minor = "1"
+    minor = "0"
     mcVersion = "1.7.10"
 }
 
@@ -71,6 +72,7 @@ minecraft {
     runDir = "eclipse/assets"
 
     // replacing stuff in the source
+	replace '@MASSIVE@', project.massive
     replace '@MAJOR@', project.major
     replace '@MINOR@', project.minor
     replace '@MC_VERSION@', version
@@ -136,4 +138,24 @@ task("uploadJars", dependsOn:"reobf") {
             }
         }
     }
+}
+
+task deobfJar(type: Jar) {
+    from(sourceSets.main.output) {
+        appendix = "${project.ext.mcVersion}"
+        classifier = "deobf"
+    }
+}
+
+// add a source jar
+task sourceJar(type: Jar) {
+    from sourceSets.main.resources.srcDirs {
+        appendix = "${project.ext.mcVersion}"
+        classifier = "src"
+    }
+}
+
+artifacts {
+    archives sourceJar
+    archives deobfJar
 }
