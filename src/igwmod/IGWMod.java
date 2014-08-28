@@ -22,7 +22,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkCheckHandler;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid = Constants.MOD_ID, name = "In-Game Wiki Mod", version = Constants.MOD_VERSION)
+@Mod(modid = Constants.MOD_ID, name = "In-Game Wiki Mod")
 public class IGWMod{
     @SidedProxy(clientSide = "igwmod.ClientProxy", serverSide = "igwmod.ServerProxy")
     public static IProxy proxy;
@@ -78,6 +78,7 @@ public class IGWMod{
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event){
+        event.getModMetadata().version = Constants.fullVersionString();
         proxy.preInit(event);
         NetworkHandler.init();
     }

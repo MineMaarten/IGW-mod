@@ -24,50 +24,62 @@ repositories {
 			name 'CB Repo'
 			url "http://chickenbones.net/maven/"
 		}
-		maven {
-			name = "ic2"
-			url = "http://maven.ic2.player.to/"
-		}
 }
 
 apply plugin: 'forge'
 
-version = "1.2.5"
-group= "igwmod" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+project.ext {
+    major = "1"
+    minor = "1"
+    mcVersion = "1.7.10"
+}
+
+
+version = "${project.ext.major}.${project.minor}"
+group = "igwmod"
 archivesBaseName = "IGW-Mod"
 
+
+if (System.getenv().BUILD_NUMBER != null) {
+    version += ".${System.getenv().BUILD_NUMBER}"
+} else {
+    version += " - err"
+}
+
+def grabDep(url) {
+    ant.get(src: url, dest: 'dep')
+	compile files("dep/" + url.substring(url.lastIndexOf("/")));
+}
+
 dependencies {
-  //  def f = new File('dep/')
- //   if(f.exists()){
- //       f.delete()
-//    }
-  //  f.mkdirs()
-  ///  if(!f.exists()){
- //       f.mkdir()
-  //  }
-	//println("  Downloading dependencies!")
-   // ant.get(src: 'http://files.minecraftforge.net/CodeChickenLib/CodeChickenLib-dev-1.6.4-1.0.0.62.jar', dest: 'dep')
-	//file("dep/CodeChickenLib-dev-1.6.4-1.0.0.62.jar").renameTo(file("dep/ccl.jar"))
-	
-	println("  Adding dependencies!")
-
-	
-	
-	//compile "codechicken:CodeChickenLib:1.7.10-1.1.1.95:dev"
-	compile "codechicken:CodeChickenCore:1.7.10-1.0.2.11:dev"
-	compile "codechicken:NotEnoughItems:1.7.10-1.0.2.26:dev"
-	//compile "codechicken:ForgeMultipart:1.7.10-1.1.0.297:dev"
-	//compile "mcp.mobius.waila:Waila:1.5.3_1.7.10"
-    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-    //compile 'net.industrial-craft:industrialcraft-2:2.2.504-experimental:api'
-	//compile files("../dep/IGW-Mod1.0.2dev.jar
-
-	println("  Finished adding dependencies!")
+    def f = new File('dep/')
+    if (f.exists()) {
+        f.delete()
+    }
+    f.mkdirs()
+    if (!f.exists()) {
+        f.mkdir()
+    }
+    println("  Adding dependencies!")
+    compile "codechicken:CodeChickenCore:1.7.10-1.0.2.11:dev"
+    compile "codechicken:NotEnoughItems:1.7.10-1.0.2.26:dev"
+    println("  Finished adding dependencies!")
 }
 
 minecraft {
-    version = "1.7.10-10.13.0.1185"
-	runDir = "minecraft/assets"
+    version = "${project.ext.mcVersion}-10.13.0.1208"
+    runDir = "eclipse/assets"
+
+    // replacing stuff in the source
+    replace '@MAJOR@', project.major
+    replace '@MINOR@', project.minor
+    replace '@MC_VERSION@', version
+    if (System.getenv("BUILD_NUMBER") != null) {
+        replace '@BUILD_NUMBER@', System.getenv("BUILD_NUMBER")
+    } else {
+        replace '@BUILD_NUMBER@', 0
+    }
+
 }
 // configure the source folders
 sourceSets {

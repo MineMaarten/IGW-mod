@@ -5,6 +5,10 @@ import org.lwjgl.input.Keyboard;
 public class Constants{
     public static final String MOD_ID = "IGWMod";
     public static final String MOD_VERSION = "1.1.0";
+    private static final String MAJOR = "@MAJOR@";
+    private static final String MINOR = "@MINOR@";
+    private static final String BUILD = "@BUILD_NUMBER@";
+    private static final String MCVERSION = "1.7.10";
     //  public static final String WIKI_PAGE_LOCATION = "https://github.com/MineMaarten/IGW-mod/archive/master.zip";// "http://www.minemaarten.com/wp-content/uploads/2013/12/WikiPages.zip";
     //  public static final String ZIP_NAME = "igw";
     //   public static final int CONNECTION_TIMEOUT = 3000;
@@ -14,4 +18,9 @@ public class Constants{
     public static final int DEFAULT_KEYBIND_OPEN_GUI = Keyboard.KEY_I;
 
     public static final int TEXTURE_MAP_ID = 15595;
+
+    public static String fullVersionString(){
+
+        return String.format("%s-%s.%s.%s", MCVERSION, MAJOR, MINOR, BUILD);
+    }
 }
