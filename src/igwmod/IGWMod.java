@@ -69,6 +69,7 @@ public class IGWMod{
                 }
             }
             String version = installedMods.get(Constants.MOD_ID);
+            if(version.equals("${version}")) return true;
             return version != null && version.equals(Constants.fullVersionString());
         } else {
             return true;
