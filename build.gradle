@@ -140,6 +140,11 @@ task("uploadJars", dependsOn:"reobf") {
     }
 }
 
+jar {
+    appendix = "${project.ext.mcVersion}"
+    classifier = "universal"
+}
+
 task deobfJar(type: Jar) {
     from(sourceSets.main.output) {
         appendix = "${project.ext.mcVersion}"
