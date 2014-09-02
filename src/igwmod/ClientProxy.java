@@ -123,8 +123,10 @@ public class ClientProxy implements IProxy{
 
         //Add automatically generated furnace recipe key mappings.
         for(Map.Entry<ItemStack, ItemStack> entry : (Set<Map.Entry<ItemStack, ItemStack>>)FurnaceRecipes.smelting().getSmeltingList().entrySet()) {
-            String blockCode = WikiUtils.getNameFromStack(entry.getValue());
-            if(!IntegratorFurnace.autoMappedFurnaceRecipes.containsKey(blockCode)) IntegratorFurnace.autoMappedFurnaceRecipes.put(blockCode, entry.getKey());
+            if(entry.getValue() != null && entry.getValue().getItem() != null) {
+                String blockCode = WikiUtils.getNameFromStack(entry.getValue());
+                if(!IntegratorFurnace.autoMappedFurnaceRecipes.containsKey(blockCode)) IntegratorFurnace.autoMappedFurnaceRecipes.put(blockCode, entry.getKey());
+            }
         }
 
         IGWLog.info("Registered " + WikiRegistry.getItemAndBlockPageEntries().size() + " Block & Item page entries.");
