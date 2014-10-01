@@ -12,6 +12,14 @@ public class IGWInputHandler implements IContainerInputHandler{
 
     @Override
     public boolean keyTyped(GuiContainer gui, char keyChar, int keyCode){
+        return false;
+    }
+
+    @Override
+    public void onKeyTyped(GuiContainer gui, char keyChar, int keyID){}
+
+    @Override
+    public boolean lastKeyTyped(GuiContainer gui, char keyChar, int keyCode){
         if(ClientProxy.openInterfaceKey.getKeyCode() == keyCode) {
             GuiContainerManager.getManager(gui);
             ItemStack hoveredStack = GuiContainerManager.getStackMouseOver(gui);
@@ -21,17 +29,9 @@ public class IGWInputHandler implements IContainerInputHandler{
                 GuiWiki guiWiki = new GuiWiki();
                 FMLCommonHandler.instance().showGuiScreen(guiWiki);
                 guiWiki.setCurrentFile(hoveredStack);
+                return true;
             }
         }
-
-        return false;
-    }
-
-    @Override
-    public void onKeyTyped(GuiContainer gui, char keyChar, int keyID){}
-
-    @Override
-    public boolean lastKeyTyped(GuiContainer gui, char keyChar, int keyCode){
         return false;
     }
 
