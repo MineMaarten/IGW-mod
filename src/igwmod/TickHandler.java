@@ -91,13 +91,15 @@ public class TickHandler{
         if(lastEntityHovered != null) {
             return lastEntityHovered.getCommandSenderName();
         } else {
-            World world = FMLClientHandler.instance().getClient().theWorld;
-            Block block = world.getBlock(xHovered, yHovered, zHovered);
-            if(block != null) {
-                ItemStack idPicked = block.getPickBlock(FMLClientHandler.instance().getClient().objectMouseOver, world, xHovered, yHovered, zHovered);
-                return (idPicked != null ? idPicked : new ItemStack(block, 1, world.getBlockMetadata(xHovered, yHovered, zHovered))).getDisplayName();
-            }
-            return EnumChatFormatting.RED + "-No object-";
+            try {
+                World world = FMLClientHandler.instance().getClient().theWorld;
+                Block block = world.getBlock(xHovered, yHovered, zHovered);
+                if(block != null) {
+                    ItemStack idPicked = block.getPickBlock(FMLClientHandler.instance().getClient().objectMouseOver, world, xHovered, yHovered, zHovered);
+                    return (idPicked != null ? idPicked : new ItemStack(block, 1, world.getBlockMetadata(xHovered, yHovered, zHovered))).getDisplayName();
+                }
+            } catch(Throwable e) {}
+            return EnumChatFormatting.RED + "<ERROR>";
         }
 
     }
