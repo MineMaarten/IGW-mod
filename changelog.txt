@@ -1,0 +1,2 @@
+-Bugfix: IGW is listening for pressing of the 'i' key when text fields are focussed.
+-Bugfix: Crash when hovering over a multipart when trying to show the tooltip.
