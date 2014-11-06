@@ -1,10 +1,10 @@
 You can use the IGW-Mod to add information of the server like house rules and general information. For this no code is needed. What is needed though is that IGW-Mod is installed on the server.
 
-To add a wikitab for your server, add a folder called 'igwmod' in the folder where also the 'server.properties' file and the 'mods' folder is located. As soon as you have done this, any client trying to log into the server needs IGW-Mod to be installed. This requirement can be turned of, this will be explained later.
+To add a wikitab for your server, add a folder called 'igwmodServer' in the folder where also the 'server.properties' file and the 'mods' folder is located. As soon as you have done this, any client trying to log into the server needs IGW-Mod to be installed. This requirement can be turned of, this will be explained later.
 
 Another thing that happens is that as soon as a client logs in with IGW-Mod installed, the server will send over the 'igwmod' folder including its contents to the client. Also, a 'Server Wikitab' is added when the client opens the wiki GUI. It will always be the first tab. You will notice that the tab icon is emtpy. You will also notice that the tooltip of the tab is not set.
 
-Create a 'properties.txt' inside the 'igwmod' folder. The lay-out of this file is equivalent to the 'server.properties' file. The following is an example of the contents of the file. Every entry is optional, it's valid to leave entries out (or don't even include the properties.txt at all).
+Create a 'properties.txt' inside the 'igwmodServer' folder. The lay-out of this file is equivalent to the 'server.properties' file. The following is an example of the contents of the file. Every entry is optional, it's valid to leave entries out (or don't even include the properties.txt at all).
 
 server_name=Server Name
 icon_item=minecraft:piston
