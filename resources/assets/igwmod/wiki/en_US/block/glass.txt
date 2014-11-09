@@ -1,0 +1,3 @@
+If you brake Glass "normally" the glass get destroyed, but if you have a 
+
+tool with Silk Touch I on it the glass drops "normally". You can through the Block, mobs can't.

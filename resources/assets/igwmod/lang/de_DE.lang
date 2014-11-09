@@ -1,0 +1,13 @@
+igwmod.keys.wiki=Öfne IGW-Mod wiki
+igwmod.wikitab.blocksAndItems.name=Blöcke & Items
+igwmod.wikitab.entities.name=Lebewesen
+igwmod.wikitab.igwmod.name=IGW-Mod
+igwmod.tooltip.tabPageBrowse.next=Drücke die Lenke Maustaste um auf die Nexte Leite Seite zu kommen.
+igwmod.tooltip.tabPageBrowse.previous=Drücke die Rechte Maustaste um auf die vorherige seite zu kommen.
+
+igwtab.entry.intro=Intro
+igwtab.entry.forServers=Für Server
+igwtab.entry.devIntro=Dev: Intro
+igwtab.entry.devItemAndBlock=Dev: Item & Blöcke Seite
+igwtab.entry.devPageCommands=Dev: Page Commands
+igwtab.entry.devForModders=Dev: Für Modder

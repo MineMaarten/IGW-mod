@@ -1,0 +1,7 @@
+Gravel can be found underwater, underground and in Village's.
+
+Its mostly a decorative Block. There is a 10% chance to drop Flint 
+
+when the Block gets Harvested, if you have a tool with Fortune I you have a 14% chance, Fortune II 25% and 100% by Fortune Fortune III.
+
+By using a tool with Silk Touch I you always get the Gravel.

@@ -1,0 +1,5 @@
+Gold Ore is generated in the bottom 32 layers,
+
+there is a 0.1437% chance that Gold generate in a chunk.
+
+Usage 
