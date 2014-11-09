@@ -1,0 +1,6 @@
+Iron Generate at layer 1-63. But it mostly in lower layer's
+
+There are about 77 iron ores per chunk.
+
+
+Usage: 

@@ -1,0 +1,5 @@
+Bedrock is the hardest Vanilla Block,
+
+it cannot be broken with anything ether explosions ore any tool.
+
+ It will always generated in the same Pattern no matter what the seed is. 

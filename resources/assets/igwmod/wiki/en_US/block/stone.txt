@@ -1,3 +1,6 @@
-Auto recipe test:
+Stone is the most Generated Block in Vanilla Minecraft. 
+If you brake Stone with a Normal Pickaxe you get Cobblestone.
+A Pickaxe with Silk Touch I you get Directly "Normal" Stone,
+an aether way to get Stone is Smelt Cobblestone.
 
 [crafting{200,50,key=block/button}]
