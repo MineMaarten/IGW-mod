@@ -2,9 +2,11 @@ package igwmod.gui;
 
 import igwmod.InfoSupplier;
 import igwmod.TickHandler;
+import igwmod.WikiUtils;
 import igwmod.api.BlockWikiEvent;
 import igwmod.api.EntityWikiEvent;
 import igwmod.api.ItemWikiEvent;
+import igwmod.api.PageChangeEvent;
 import igwmod.api.WikiRegistry;
 import igwmod.gui.tabs.IWikiTab;
 import igwmod.lib.Textures;
@@ -46,7 +48,6 @@ public class GuiWiki extends GuiContainer{
     private static IWikiTab currentTab;
     private static int currentTabPage = 0;
 
-    private static int currentWikiPagePage = 0;
     private static List<IPageLink> visibleWikiPages = new ArrayList<IPageLink>();
     private static int matchingWikiPages;
 
@@ -137,12 +138,10 @@ public class GuiWiki extends GuiContainer{
             history = BrowseHistory.next();
         }
         currentFile = history.link;
-        fileInfo = InfoSupplier.getInfo(currentFile);
-        if(fileInfo == null) fileInfo = Arrays.asList("No info available about this topic. IGW-Mod is currently looking for " + currentFile.replace("igwmod:", "igwmod/assets/") + ".txt.");
         currentTab = history.tab;
         currentTabPage = getPageNumberForTab(currentTab);
         currentTab.onPageChange(this, currentFile, history.meta);
-        updateWikiPage();
+        updateWikiPage(history.meta);
         updateSearch();
         initGui();//update the textfield location.
         currentPageScroll = history.scroll;
@@ -204,6 +203,7 @@ public class GuiWiki extends GuiContainer{
 
     public void setCurrentFile(World world, int x, int y, int z){
         BlockWikiEvent wikiEvent = new BlockWikiEvent(world, x, y, z);
+        if(wikiEvent.drawnStack.getItem() == null) return;
         wikiEvent.pageOpened = WikiRegistry.getPageForItemStack(wikiEvent.drawnStack);
         if(wikiEvent.pageOpened == null) wikiEvent.pageOpened = wikiEvent.drawnStack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/");
         MinecraftForge.EVENT_BUS.post(wikiEvent);
@@ -231,14 +231,16 @@ public class GuiWiki extends GuiContainer{
 
     public void setCurrentFile(String file, Object... metadata){
         BrowseHistory.updateHistory(currentPageScroll);
+        if(metadata.length == 0) {
+            ItemStack displayedStack = WikiUtils.getStackFromName(file);
+            if(displayedStack != null) metadata = new Object[]{displayedStack};
+        }
         currentFile = file;
-        fileInfo = InfoSupplier.getInfo(currentFile);
-        if(fileInfo == null) fileInfo = Arrays.asList("No info available about this topic. IGW-Mod is currently looking for assets/igwmod/en_US/" + currentFile + ".txt.");
         IWikiTab tab = getTabForPage(currentFile);
         if(tab != null) currentTab = tab;
         currentTabPage = getPageNumberForTab(currentTab);
         currentTab.onPageChange(this, file, metadata);
-        updateWikiPage();
+        updateWikiPage(metadata);
         updateSearch();
         BrowseHistory.addHistory(file, currentTab, metadata);
         initGui();//update the textfield location.
@@ -547,7 +549,15 @@ public class GuiWiki extends GuiContainer{
         }*/
     }
 
-    private void updateWikiPage(){
+    private void updateWikiPage(Object... metadata){
+        Object o = metadata.length > 0 ? metadata[0] : null;
+        PageChangeEvent pageChangeEvent = new PageChangeEvent(currentFile, o instanceof ItemStack ? (ItemStack)o : null, o instanceof Entity ? (Entity)o : null);
+        MinecraftForge.EVENT_BUS.post(pageChangeEvent);
+        currentFile = pageChangeEvent.currentFile;
+        fileInfo = pageChangeEvent.pageText;
+        if(fileInfo == null) fileInfo = InfoSupplier.getInfo(currentFile);
+        if(fileInfo == null) fileInfo = Arrays.asList("No info available about this topic. IGW-Mod is currently looking for " + currentFile.replace("igwmod:", "igwmod/assets/") + ".txt.");
+
         List<IReservedSpace> reservedSpaces = currentTab.getReservedSpaces();
         if(reservedSpaces == null) reservedSpaces = new ArrayList<IReservedSpace>();
         reservedSpaces.add(new ReservedSpace(new Rectangle(0, 0, 200, Integer.MAX_VALUE)));
