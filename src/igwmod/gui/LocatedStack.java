@@ -34,7 +34,7 @@ public class LocatedStack implements IReservedSpace, IPageLink{
 
     @Override
     public String getName(){
-        return stack.getDisplayName();
+        return stack.getItem() == null ? "<STACK HAS NO ITEM!>" : stack.getDisplayName();
     }
 
     @Override
