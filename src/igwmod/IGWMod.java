@@ -39,10 +39,10 @@ public class IGWMod{
      */
     @NetworkCheckHandler
     public boolean onConnectRequest(Map<String, String> installedMods, Side side){
-        if(side == Side.SERVER) return true;
-        File serverFolder = new File(IGWMod.proxy.getSaveLocation() + "\\igwmodServer\\");
+        if(side == Side.SERVER || proxy == null) return true;
+        File serverFolder = new File(proxy.getSaveLocation() + "\\igwmodServer\\");
         if(serverFolder.exists()) {
-            String str = IGWMod.proxy.getSaveLocation() + "\\igwmodServer\\properties.txt";
+            String str = proxy.getSaveLocation() + "\\igwmodServer\\properties.txt";
             File file = new File(str);
             if(file.exists()) {
                 try {
