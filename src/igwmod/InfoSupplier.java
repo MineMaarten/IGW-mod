@@ -1,6 +1,7 @@
 package igwmod;
 
 import igwmod.api.IRecipeIntegrator;
+import igwmod.api.ITextInterpreter;
 import igwmod.api.WikiRegistry;
 import igwmod.gui.IReservedSpace;
 import igwmod.gui.IWidget;
@@ -110,6 +111,10 @@ public class InfoSupplier{
 
     @SideOnly(Side.CLIENT)
     public static void analyseInfo(FontRenderer fontRenderer, List<String> fileInfo, List<IReservedSpace> reservedSpaces, List<LocatedString> locatedStrings, List<LocatedStack> locatedStacks, List<IWidget> locatedTextures){
+        for(ITextInterpreter ti : WikiRegistry.textInterpreters) {
+            if(ti.interpret(fontRenderer, fileInfo, reservedSpaces, locatedStrings, locatedStacks, locatedTextures)) return;
+        }
+
         currentTextColor = 0xFF000000;
         curPrefix = "";
         curLink = "";

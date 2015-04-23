@@ -23,6 +23,7 @@ public class WikiRegistry{
     private static List<Map.Entry<String, ItemStack>> itemAndBlockPageEntries = new ArrayList<Map.Entry<String, ItemStack>>();
     private static Map<Class<? extends Entity>, String> entityPageEntries = new HashMap<Class<? extends Entity>, String>();
     public static List<IRecipeIntegrator> recipeIntegrators = new ArrayList<IRecipeIntegrator>();
+    public static List<ITextInterpreter> textInterpreters = new ArrayList<ITextInterpreter>();
 
     public static void registerWikiTab(IWikiTab tab){
         if(tab instanceof ServerWikiTab) {
@@ -65,6 +66,10 @@ public class WikiRegistry{
 
     public static void registerRecipeIntegrator(IRecipeIntegrator recipeIntegrator){
         recipeIntegrators.add(recipeIntegrator);
+    }
+
+    public static void registerTextInterpreter(ITextInterpreter textInterpreter){
+        textInterpreters.add(textInterpreter);
     }
 
     public static String getPageForItemStack(ItemStack stack){
