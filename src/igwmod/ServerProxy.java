@@ -1,5 +1,6 @@
 package igwmod;
 
+import igwmod.lib.IGWLog;
 import igwmod.network.MessageSendServerTab;
 import igwmod.network.NetworkHandler;
 
@@ -25,7 +26,13 @@ public class ServerProxy implements IProxy{
     @SubscribeEvent
     public void onJoinWorld(EntityJoinWorldEvent event){
         if(!event.world.isRemote && event.entity instanceof EntityPlayer) {
-            File serverFolder = new File(IGWMod.proxy.getSaveLocation() + "\\igwmodServer\\");
+            File serverFolder = new File(IGWMod.proxy.getSaveLocation() + "\\igwmod\\");
+            if(!serverFolder.exists()) {
+                serverFolder = new File(IGWMod.proxy.getSaveLocation() + "\\igwmodServer\\");//TODO legacy remove
+                if(serverFolder.exists()) {
+                    IGWLog.warning("Found IGW Mod server page in the 'igwmodServer' folder. This is deprecated! Rename the folder to 'igwmod' instead.");
+                }
+            }
             if(serverFolder.exists()) {
                 NetworkHandler.sendTo(new MessageSendServerTab(serverFolder), (EntityPlayerMP)event.entity);
             }
