@@ -41,13 +41,44 @@ public class InfoSupplier{
      * @param objectName
      * @return
      */
-    public static List<String> getInfo(String objectName){
-        return getInfo(objectName, FMLClientHandler.instance().getCurrentLanguage());
+    public static List<String> getInfo(String modid, String objectName, boolean returnNullIfUnavailable){
+        String language = FMLClientHandler.instance().getCurrentLanguage();
+
+        //First try to look up the page where it should be, in the assets folder of the owning mod, local language.
+        List<String> info = getInfo(modid, objectName, language);
+        if(info != null) return info;
+
+        //If we failed, we might have a backup page in english lying around.
+        if(!language.equals("en_US")) {
+            info = getInfo(modid, objectName, "en_US");
+            if(info != null) return info;
+        }
+
+        //Let's see if we can find the page where it used to be by default, in the igwmod folder.
+        if(!modid.equals("igwmod")) {
+            info = getInfo("igwmod", objectName, language);
+            if(info != null) {
+                if(ConfigHandler.debugMode) IGWLog.warning("IGW-Mod had to look in the igwmod/assets/wiki/ folder to find the " + objectName + " page. This is deprecated. now you should use " + modid + "/assets/wiki/ instead!");
+                return info;
+            }
+
+            if(!language.equals("en_US")) {
+                info = getInfo("igwmod", objectName, "en_US");
+                if(info != null) {
+                    if(ConfigHandler.debugMode) IGWLog.warning("IGW-Mod had to look in the igwmod/assets/wiki/ folder to find the " + objectName + " page. This is deprecated. now you should use " + modid + "/assets/wiki/ instead!");
+                    return info;
+                }
+            }
+        }
+
+        if(returnNullIfUnavailable) return null;
+        objectName = modid + "/assets/wiki/" + language + "/" + objectName.replace(":", "/") + ".txt";
+        return Arrays.asList("No info available about this topic. IGW-Mod is currently looking for " + objectName.replace(":", "/assets/") + ".");
     }
 
-    public static List<String> getInfo(String objectName, String language){
+    public static List<String> getInfo(String modid, String objectName, String language){
         String oldObjectName = objectName;
-        objectName = Paths.WIKI_PATH + language + "/" + objectName + ".txt";
+        objectName = modid + Paths.WIKI_PATH + language + "/" + objectName.replace(":", "/") + ".txt";
         if(!infoMap.containsKey(objectName)) {
             infoMap.put(objectName, new ResourceLocation(objectName));
         }
@@ -73,7 +104,6 @@ public class InfoSupplier{
             br.close();
             return textList;
         } catch(Exception e) {
-            if(!language.equals("en_US")) return getInfo(oldObjectName, "en_US");
             return null;
         }
     }

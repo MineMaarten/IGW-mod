@@ -6,6 +6,8 @@ import igwmod.gui.tabs.EntityWikiTab;
 import igwmod.gui.tabs.IGWWikiTab;
 import igwmod.lib.Constants;
 import igwmod.lib.IGWLog;
+import igwmod.lib.Paths;
+import igwmod.lib.Util;
 import igwmod.recipeintegration.IntegratorCraftingRecipe;
 import igwmod.recipeintegration.IntegratorFurnace;
 import igwmod.recipeintegration.IntegratorImage;
@@ -39,6 +41,8 @@ import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 
 public class ClientProxy implements IProxy{
     public static KeyBinding openInterfaceKey;
@@ -100,13 +104,17 @@ public class ClientProxy implements IProxy{
         }
 
         for(ItemStack stack : allCreativeStacks) {
-            List<String> info = InfoSupplier.getInfo(WikiUtils.getNameFromStack(stack), "en_US");
+            String modid = Paths.MOD_ID.toLowerCase();
+            UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(stack.getItem());
+            if(id != null && id.modId != null) modid = id.modId.toLowerCase();
+            List<String> info = InfoSupplier.getInfo(modid, WikiUtils.getNameFromStack(stack), true);
             if(info != null) WikiRegistry.registerBlockAndItemPageEntry(stack);
         }
 
         //Register all entities that have (default) pages to the entity page.
         for(Map.Entry<String, Class<? extends Entity>> entry : (Set<Map.Entry<String, Class<? extends Entity>>>)EntityList.stringToClassMapping.entrySet()) {
-            if(InfoSupplier.getInfo("entity/" + entry.getKey(), "en_US") != null) WikiRegistry.registerEntityPageEntry(entry.getValue());
+            String modid = Util.getModIdForEntity(entry.getValue());
+            if(InfoSupplier.getInfo(modid, "entity/" + entry.getKey(), true) != null) WikiRegistry.registerEntityPageEntry(entry.getValue());
         }
 
         //Add automatically generated crafting recipe key mappings.

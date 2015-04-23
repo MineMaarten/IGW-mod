@@ -8,6 +8,8 @@ import java.util.List;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 
 public class WikiUtils{
     private static HashMap<String, ItemStack> unlocMap;
@@ -29,6 +31,7 @@ public class WikiUtils{
             for(ItemStack stack : stackList) {
                 String itemName = stack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/");//TODO improve
                 unlocMap.put(itemName, stack);
+                unlocMap.put(getOwningModId(stack) + ":" + itemName, stack);
             }
         }
         String[] splitName = name.contains("#") ? name.split("#") : new String[]{name};
@@ -44,5 +47,12 @@ public class WikiUtils{
 
     public static String getNameFromStack(ItemStack stack){
         return stack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/");
+    }
+
+    public static String getOwningModId(ItemStack stack){
+        String modid = "minecraft";
+        UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(stack.getItem());
+        if(id != null && id.modId != null) modid = id.modId.toLowerCase();
+        return modid;
     }
 }

@@ -10,6 +10,7 @@ import igwmod.api.PageChangeEvent;
 import igwmod.api.WikiRegistry;
 import igwmod.gui.tabs.IWikiTab;
 import igwmod.lib.Textures;
+import igwmod.lib.Util;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -226,6 +227,7 @@ public class GuiWiki extends GuiContainer{
             stack = stack.copy();
             stack.stackSize = 1;
         }
+
         setCurrentFile(wikiEvent.pageOpened, stack);
     }
 
@@ -551,13 +553,22 @@ public class GuiWiki extends GuiContainer{
 
     private void updateWikiPage(Object... metadata){
         Object o = metadata.length > 0 ? metadata[0] : null;
-        PageChangeEvent pageChangeEvent = new PageChangeEvent(currentFile, o instanceof ItemStack ? (ItemStack)o : null, o instanceof Entity ? (Entity)o : null);
+        ItemStack pageStack = o instanceof ItemStack ? (ItemStack)o : null;
+        Entity pageEntity = o instanceof Entity ? (Entity)o : null;
+        PageChangeEvent pageChangeEvent = new PageChangeEvent(currentFile, pageStack, pageEntity);
         MinecraftForge.EVENT_BUS.post(pageChangeEvent);
         currentFile = pageChangeEvent.currentFile;
         fileInfo = pageChangeEvent.pageText;
-        if(fileInfo == null) fileInfo = InfoSupplier.getInfo(currentFile);
-        if(fileInfo == null) fileInfo = Arrays.asList("No info available about this topic. IGW-Mod is currently looking for " + currentFile.replace("igwmod:", "igwmod/assets/") + ".txt.");
-
+        if(fileInfo == null) {
+            String modid = "minecraft";
+            if(pageStack != null) {
+                modid = WikiUtils.getOwningModId(pageStack);
+            }
+            if(pageEntity != null) {
+                modid = Util.getModIdForEntity(pageEntity.getClass());
+            }
+            fileInfo = InfoSupplier.getInfo(modid, currentFile, false);
+        }
         List<IReservedSpace> reservedSpaces = currentTab.getReservedSpaces();
         if(reservedSpaces == null) reservedSpaces = new ArrayList<IReservedSpace>();
         reservedSpaces.add(new ReservedSpace(new Rectangle(0, 0, 200, Integer.MAX_VALUE)));

@@ -23,7 +23,7 @@ public class ServerWikiTab extends BaseWikiTab{
     private LocatedTexture icon;
 
     public ServerWikiTab(){
-        List<String> info = InfoSupplier.getInfo("server/properties");
+        List<String> info = InfoSupplier.getInfo("igwmod", "server/properties", true);
         if(info != null) {
             for(String s : info) {
                 String[] entry = s.split("=");
@@ -43,6 +43,7 @@ public class ServerWikiTab extends BaseWikiTab{
         }
 
         File[] files = new File(IGWMod.proxy.getSaveLocation() + "\\igwmod").listFiles(new FilenameFilter(){
+            @Override
             public boolean accept(File dir, String filename){
                 return filename.endsWith(".txt");
             }

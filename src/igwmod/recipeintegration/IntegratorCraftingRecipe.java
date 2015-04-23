@@ -53,7 +53,7 @@ public class IntegratorCraftingRecipe implements IRecipeIntegrator{
         } catch(NumberFormatException e) {
             throw new IllegalArgumentException("The second parameter (the y coordinate) contains an invalid number. Check for spaces or invalid characters!");
         }
-        locatedTextures.add(new LocatedTexture(TextureSupplier.getTexture(Paths.MOD_ID + "textures/GuiCrafting.png"), x, y, (int)(116 / GuiWiki.TEXT_SCALE), (int)(54 / GuiWiki.TEXT_SCALE)));
+        locatedTextures.add(new LocatedTexture(TextureSupplier.getTexture(Paths.MOD_ID_WITH_COLON + "textures/GuiCrafting.png"), x, y, (int)(116 / GuiWiki.TEXT_SCALE), (int)(54 / GuiWiki.TEXT_SCALE)));
 
         if(arguments[2].startsWith("key=")) {
             if(arguments.length != 3) throw new IllegalArgumentException("An RecipeRetrievalEvent crafting code can only have 3 parameters: x, y and the key!");
@@ -81,7 +81,7 @@ public class IntegratorCraftingRecipe implements IRecipeIntegrator{
             ShapedRecipes recipe = (ShapedRecipes)recipeEvent.recipe;
             for(int i = 0; i < recipe.recipeHeight; i++) {
                 for(int j = 0; j < recipe.recipeWidth; j++) {
-                    ItemStack ingredientStack = recipe.recipeItems[i * 3 + j];
+                    ItemStack ingredientStack = recipe.recipeItems[i * recipe.recipeWidth + j];
                     if(ingredientStack != null) {
                         locatedStacks.add(new LocatedStack(ingredientStack, x + STACKS_X_OFFSET + j * 18, y + STACKS_Y_OFFSET + i * 18));
                     }

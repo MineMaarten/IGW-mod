@@ -6,8 +6,3 @@ If you are a modder or a wiki page writer and you want to know how to add conten
 
 [prefix{l}]Future direction [prefix{}]
 The idea is that slowly but surely about everything about Vanilla blocks/items/entities can be found in this mod. It would be cool if the community could help with that, on a voluntary basis of course ;). For info about how to, enable 'debug mode' in the config.
-
-An other plan that I (MineMaarten) am going to fulfill is that I'll implement the IGW-Mod for PneumaticCraft. Things I still need to finish for this mod are:
-
-[prefix{n}]To do: [prefix{}]
--Add Vanilla info.

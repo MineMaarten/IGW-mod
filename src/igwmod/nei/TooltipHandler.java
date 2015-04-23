@@ -23,7 +23,7 @@ public class TooltipHandler implements IContainerTooltipHandler{
 
     @Override
     public List<String> handleItemTooltip(GuiContainer gui, ItemStack itemstack, int mousex, int mousey, List<String> currenttip){
-        if(igwmod.ConfigHandler.debugMode && itemstack != null) currenttip.add(String.format(EnumChatFormatting.AQUA + "IGW name: " + WikiUtils.getNameFromStack(itemstack)));
+        if(igwmod.ConfigHandler.debugMode && itemstack != null) currenttip.add(String.format(EnumChatFormatting.AQUA + "IGW name: " + WikiUtils.getOwningModId(itemstack) + ":" + WikiUtils.getNameFromStack(itemstack)));
         return currenttip;
     }
 }

@@ -43,7 +43,7 @@ public class IntegratorFurnace implements IRecipeIntegrator{
         } catch(NumberFormatException e) {
             throw new IllegalArgumentException("The second parameter (the y coordinate) contains an invalid number. Check for invalid characters!");
         }
-        locatedTextures.add(new LocatedTexture(TextureSupplier.getTexture(Paths.MOD_ID + "textures/GuiFurnace.png"), x, y, (int)(82 / GuiWiki.TEXT_SCALE), (int)(54 / GuiWiki.TEXT_SCALE)));
+        locatedTextures.add(new LocatedTexture(TextureSupplier.getTexture(Paths.MOD_ID_WITH_COLON + "textures/GuiFurnace.png"), x, y, (int)(82 / GuiWiki.TEXT_SCALE), (int)(54 / GuiWiki.TEXT_SCALE)));
         x = (int)(x * GuiWiki.TEXT_SCALE);
         y = (int)(y * GuiWiki.TEXT_SCALE);
         ItemStack inputStack = null;

@@ -14,7 +14,7 @@ optional=true
 The text that is displayed in the tooltip of the wikitab. Usually the server name.
 
 [prefix{l}]icon_item [prefix{}]
-The Minecraft name of any item/block (included modded) in the game. This item/block will displayed in the tab as icon. When an invalid item/block is given, or when no item/block is given, IGW-Mod will look for a 'tab_icon.png' in the 'igwmod' folder. This image can be of any size, it will be scaled appropriately.
+The Minecraft name of any item/block (including modded) in the game. This item/block will displayed in the tab as icon. When an invalid item/block is given, or when no item/block is given, IGW-Mod will look for a 'tab_icon.png' in the 'igwmod' folder. This image can be of any size, it will be scaled appropriately.
 
 [prefix{l}]optional [prefix{}]
 When false, clients can only connect if they have IGW-Mod installed. When true, IGW-Mod is optional. This is useful for when you want to be sure players have access to the rules of the server. When optional is not added in this file, it will be defaulting to false, meaning that clients will need IGW-Mod.

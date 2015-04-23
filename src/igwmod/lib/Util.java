@@ -1,10 +1,15 @@
 package igwmod.lib;
 
 import java.net.URI;
+import java.util.HashMap;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.common.registry.EntityRegistry;
+import cpw.mods.fml.common.registry.EntityRegistry.EntityRegistration;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class Util{
     public static Entity getEntityForClass(Class<? extends Entity> entityClass){
@@ -14,6 +19,32 @@ public class Util{
             IGWLog.error("[LocatedEntity.java] An entity class doesn't have a constructor with a single World parameter! Entity = " + entityClass.getName());
             e.printStackTrace();
             return null;
+        }
+    }
+
+    private static HashMap<String, ModContainer> entityNames;
+    private static boolean reflectionFailed;
+
+    public static String getModIdForEntity(Class<? extends Entity> entity){
+        if(reflectionFailed) return "minecraft";
+        if(entityNames == null) {
+            try {
+                entityNames = (HashMap<String, ModContainer>)ReflectionHelper.findField(EntityRegistry.class, "entityNames").get(EntityRegistry.instance());
+            } catch(Exception e) {
+                IGWLog.warning("IGW-Mod failed to perform reflection! A result of this is that wiki pages related to Entities will not be found. Report to MineMaarten please!");
+                e.printStackTrace();
+                reflectionFailed = true;
+                return "minecraft";
+            }
+        }
+        EntityRegistration entityReg = EntityRegistry.instance().lookupModSpawn(entity, true);
+        if(entityReg == null) return "minecraft";
+        ModContainer mod = entityNames.get(entityReg.getEntityName());
+        if(mod == null) {
+            IGWLog.info("Couldn't find the owning mod of the entity " + entityReg.getEntityName() + " even though it's registered through the EntityRegistry!");
+            return "minecraft";
+        } else {
+            return mod.getModId().toLowerCase();
         }
     }
 
