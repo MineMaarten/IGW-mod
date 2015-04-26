@@ -1,2 +1,12 @@
--Bugfix: IGW is listening for pressing of the 'i' key when text fields are focussed.
--Bugfix: Crash when hovering over a multipart when trying to show the tooltip.
+-Added dk_DK localization (by GirafiStudios)
+-Added ru_RU localization (by Xottab-DUTY)
+
+-API: Added PageChangeEvent.
+-API: Added ITextInterpreter interface.
+-API: Made page locations to be prefered in the assets/<modid>/wiki/  folder now, instead of assets/igwmod/wiki/. The latter now is deprecated.
+-API: Item/Block names containing a ':' will now be converted into a '/', meaning a folder seperation. This is to fix not being able to add pages, because Windows.
+
+-Bugfix: Server wiki tab is actually located in 'igwmodServer/' instead of 'igwmod'. The former is now deprecated. Closes #12
+-Bugfix: Stack trace in logs on startup. Closes #17
+-Bugfix: Crash because of some mod which adds ItemStacks that don't have an Item... sigh. Closes #19
+
