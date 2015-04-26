@@ -48,6 +48,7 @@ public class GuiWiki extends GuiContainer{
     public static List<IWikiTab> wikiTabs = new ArrayList<IWikiTab>();//A list of all the tabs registered.
     private static IWikiTab currentTab;
     private static int currentTabPage = 0;
+    private static String currentModIdPage = "igwmod";
 
     private static List<IPageLink> visibleWikiPages = new ArrayList<IPageLink>();
     private static int matchingWikiPages;
@@ -560,13 +561,22 @@ public class GuiWiki extends GuiContainer{
         currentFile = pageChangeEvent.currentFile;
         fileInfo = pageChangeEvent.pageText;
         if(fileInfo == null) {
-            String modid = "minecraft";
+            String modid = currentModIdPage;
+            if(!currentFile.startsWith("block/") && !currentFile.startsWith("item/") && currentFile.contains(":")) {
+                String[] splitted = currentFile.split(":");
+                modid = splitted[0];
+                currentFile = splitted[1];
+            }
             if(pageStack != null) {
                 modid = WikiUtils.getOwningModId(pageStack);
             }
             if(pageEntity != null) {
                 modid = Util.getModIdForEntity(pageEntity.getClass());
             }
+            if(o instanceof String) {
+                modid = (String)o;
+            }
+            currentModIdPage = modid;
             fileInfo = InfoSupplier.getInfo(modid, currentFile, false);
         }
         List<IReservedSpace> reservedSpaces = currentTab.getReservedSpaces();
