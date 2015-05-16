@@ -1,5 +1,16 @@
 package igwmod;
 
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.event.FMLInterModComms;
+import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
+import cpw.mods.fml.common.registry.GameData;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 import igwmod.api.WikiRegistry;
 import igwmod.gui.tabs.BlockAndItemWikiTab;
 import igwmod.gui.tabs.EntityWikiTab;
@@ -13,15 +24,6 @@ import igwmod.recipeintegration.IntegratorFurnace;
 import igwmod.recipeintegration.IntegratorImage;
 import igwmod.recipeintegration.IntegratorStack;
 import igwmod.render.TooltipOverlayHandler;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.creativetab.CreativeTabs;
@@ -33,16 +35,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.event.FMLInterModComms;
-import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 
 public class ClientProxy implements IProxy{
     public static KeyBinding openInterfaceKey;
@@ -105,10 +101,12 @@ public class ClientProxy implements IProxy{
 
         for(ItemStack stack : allCreativeStacks) {
             String modid = Paths.MOD_ID.toLowerCase();
-            UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(stack.getItem());
-            if(id != null && id.modId != null) modid = id.modId.toLowerCase();
-            List<String> info = InfoSupplier.getInfo(modid, WikiUtils.getNameFromStack(stack), true);
-            if(info != null) WikiRegistry.registerBlockAndItemPageEntry(stack);
+            if(GameData.getItemRegistry().getNameForObject(stack.getItem()) != null) {
+                UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(stack.getItem());
+                if(id != null && id.modId != null) modid = id.modId.toLowerCase();
+                List<String> info = InfoSupplier.getInfo(modid, WikiUtils.getNameFromStack(stack), true);
+                if(info != null) WikiRegistry.registerBlockAndItemPageEntry(stack);
+            }
         }
 
         //Register all entities that have (default) pages to the entity page.
