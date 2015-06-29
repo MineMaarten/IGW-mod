@@ -67,6 +67,7 @@ public class GuiWiki extends GuiContainer{
     private boolean isScrollingPage;
     private boolean wasClicking;
     private int lastMouseX;
+    private int oldGuiScale;
 
     private GuiButton previousButton, nextButton;
 
@@ -95,27 +96,33 @@ public class GuiWiki extends GuiContainer{
 
     @Override
     public void initGui(){
-        super.initGui();
-        buttonList.clear();
-        Keyboard.enableRepeatEvents(true);
+        if(mc.gameSettings.guiScale != 0) {
+            oldGuiScale = mc.gameSettings.guiScale;
+            mc.gameSettings.guiScale = 0;
+            mc.displayGuiScreen(this);
+        } else {
+            super.initGui();
+            buttonList.clear();
+            Keyboard.enableRepeatEvents(true);
 
-        String lastSearch = "";
-        if(searchField != null) lastSearch = searchField.getText();
-        searchField = new GuiTextField(fontRendererObj, guiLeft + 40, guiTop + currentTab.getSearchBarAndScrollStartY(), 53, fontRendererObj.FONT_HEIGHT);
-        searchField.setMaxStringLength(15);
-        searchField.setEnableBackgroundDrawing(true);
-        searchField.setVisible(true);
-        searchField.setFocused(false);
-        searchField.setCanLoseFocus(true);
-        searchField.setText(lastSearch);
-        updateSearch();
+            String lastSearch = "";
+            if(searchField != null) lastSearch = searchField.getText();
+            searchField = new GuiTextField(fontRendererObj, guiLeft + 40, guiTop + currentTab.getSearchBarAndScrollStartY(), 53, fontRendererObj.FONT_HEIGHT);
+            searchField.setMaxStringLength(15);
+            searchField.setEnableBackgroundDrawing(true);
+            searchField.setVisible(true);
+            searchField.setFocused(false);
+            searchField.setCanLoseFocus(true);
+            searchField.setText(lastSearch);
+            updateSearch();
 
-        previousButton = new GuiButton(0, guiLeft + 40, guiTop + 4, 25, 10, "<--");
-        nextButton = new GuiButton(1, guiLeft + 68, guiTop + 4, 25, 10, "-->");
-        previousButton.enabled = BrowseHistory.canGoPrevious();
-        nextButton.enabled = BrowseHistory.canGoNext();
-        buttonList.add(previousButton);
-        buttonList.add(nextButton);
+            previousButton = new GuiButton(0, guiLeft + 40, guiTop + 4, 25, 10, "<--");
+            nextButton = new GuiButton(1, guiLeft + 68, guiTop + 4, 25, 10, "-->");
+            previousButton.enabled = BrowseHistory.canGoPrevious();
+            nextButton.enabled = BrowseHistory.canGoNext();
+            buttonList.add(previousButton);
+            buttonList.add(nextButton);
+        }
     }
 
     public FontRenderer getFontRenderer(){
@@ -156,6 +163,7 @@ public class GuiWiki extends GuiContainer{
     public void onGuiClosed(){
         super.onGuiClosed();
         Keyboard.enableRepeatEvents(false);
+        mc.gameSettings.guiScale = oldGuiScale;
     }
 
     @Override
