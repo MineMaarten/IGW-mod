@@ -41,6 +41,7 @@ import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
+import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 
@@ -104,11 +105,13 @@ public class ClientProxy implements IProxy{
         }
 
         for(ItemStack stack : allCreativeStacks) {
-            String modid = Paths.MOD_ID.toLowerCase();
-            UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(stack.getItem());
-            if(id != null && id.modId != null) modid = id.modId.toLowerCase();
-            List<String> info = InfoSupplier.getInfo(modid, WikiUtils.getNameFromStack(stack), true);
-            if(info != null) WikiRegistry.registerBlockAndItemPageEntry(stack);
+            if(GameData.getItemRegistry().getNameForObject(stack.getItem()) != null) {
+                String modid = Paths.MOD_ID.toLowerCase();
+                UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(stack.getItem());
+                if(id != null && id.modId != null) modid = id.modId.toLowerCase();
+                List<String> info = InfoSupplier.getInfo(modid, WikiUtils.getNameFromStack(stack), true);
+                if(info != null) WikiRegistry.registerBlockAndItemPageEntry(stack);
+            }
         }
 
         //Register all entities that have (default) pages to the entity page.
