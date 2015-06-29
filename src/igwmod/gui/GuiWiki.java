@@ -25,7 +25,6 @@ import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -214,7 +213,7 @@ public class GuiWiki extends GuiContainer{
 
     public void setCurrentFile(Entity entity){
         EntityWikiEvent wikiEvent = new EntityWikiEvent(entity);
-        wikiEvent.pageOpened = "entity/" + EntityList.getEntityString(entity);
+        wikiEvent.pageOpened = WikiRegistry.getPageForEntityClass(entity.getClass());
         MinecraftForge.EVENT_BUS.post(wikiEvent);
         setCurrentFile(wikiEvent.pageOpened, entity);
     }
