@@ -664,7 +664,8 @@ public class GuiWiki extends GuiContainer{
                 }
             }
         }
-        for(IWikiTab tab : wikiTabs) {
+        for(int i = wikiTabs.size() - 1; i >= 0; i--) {
+            IWikiTab tab = wikiTabs.get(i);
             List<IPageLink> links = tab.getPages(null);
             if(links != null) {
                 for(IPageLink link : links) {
