@@ -1,5 +1,7 @@
 package igwmod;
 
+import igwmod.lib.IGWLog;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -51,8 +53,12 @@ public class WikiUtils{
 
     public static String getOwningModId(ItemStack stack){
         String modid = "minecraft";
-        UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(stack.getItem());
-        if(id != null && id.modId != null) modid = id.modId.toLowerCase();
+        if(stack.getItem() == null) {
+            IGWLog.warning("Found an ItemStack with a null item! This isn't supposed to happen!");
+        } else {
+            UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(stack.getItem());
+            if(id != null && id.modId != null) modid = id.modId.toLowerCase();
+        }
         return modid;
     }
 }
