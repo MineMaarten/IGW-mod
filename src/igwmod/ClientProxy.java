@@ -157,16 +157,20 @@ public class ClientProxy implements IProxy{
                 Class clazz = Class.forName(message.key);
                 try {
                     Method method = clazz.getMethod(message.getStringValue());
-                    try {
-                        method.invoke(null);
-                        IGWLog.info("Successfully gave " + message.getSender() + " a nudge! Happy to be doing business!");
-                    } catch(IllegalAccessException e) {
-                        IGWLog.error(message.getSender() + " tried to register to IGW. Failed because the method can NOT be accessed: " + message.getStringValue());
-                    } catch(IllegalArgumentException e) {
-                        IGWLog.error(message.getSender() + " tried to register to IGW. Failed because the method has arguments or it isn't static: " + message.getStringValue());
-                    } catch(InvocationTargetException e) {
-                        IGWLog.error(message.getSender() + " tried to register to IGW. Failed because the method threw an exception: " + message.getStringValue());
-                        e.printStackTrace();
+                    if(method == null) {
+                        IGWLog.error("Couldn't find the \"" + message.key + "\" method. Make sure it's there and marked with the 'static' modifier!");
+                    } else {
+                        try {
+                            method.invoke(null);
+                            IGWLog.info("Successfully gave " + message.getSender() + " a nudge! Happy to be doing business!");
+                        } catch(IllegalAccessException e) {
+                            IGWLog.error(message.getSender() + " tried to register to IGW. Failed because the method can NOT be accessed: " + message.getStringValue());
+                        } catch(IllegalArgumentException e) {
+                            IGWLog.error(message.getSender() + " tried to register to IGW. Failed because the method has arguments or it isn't static: " + message.getStringValue());
+                        } catch(InvocationTargetException e) {
+                            IGWLog.error(message.getSender() + " tried to register to IGW. Failed because the method threw an exception: " + message.getStringValue());
+                            e.printStackTrace();
+                        }
                     }
                 } catch(NoSuchMethodException e) {
                     IGWLog.error(message.getSender() + " tried to register to IGW. Failed because the method can NOT be found: " + message.getStringValue());

@@ -1,1 +1,6 @@
--Fixed maven.
+-Mods' wikitabs are now preferred over the Entity/Item page when clicking on a link to the object.
+
+-Bugfix: Crash with RotaryCraft.
+-Bugfix: Crash again with mods causing null items in ItemStack to appear.
+-Bugfix: Crash again with mods causing null items in ItemStack to appear.
+-Bugfix: 'page not found' page doesn't display the right path that was looked up.
