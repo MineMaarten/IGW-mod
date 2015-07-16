@@ -123,11 +123,16 @@ public class ClientProxy implements IProxy{
         //Add automatically generated crafting recipe key mappings.
         for(IRecipe recipe : (List<IRecipe>)CraftingManager.getInstance().getRecipeList()) {
             if(recipe.getRecipeOutput() != null && recipe.getRecipeOutput().getItem() != null) {
-                if(recipe.getRecipeOutput().getUnlocalizedName() == null) {
-                    IGWLog.error("Item has no unlocalized name: " + recipe.getRecipeOutput().getItem());
-                } else {
-                    String blockCode = WikiUtils.getNameFromStack(recipe.getRecipeOutput());
-                    if(!IntegratorCraftingRecipe.autoMappedRecipes.containsKey(blockCode)) IntegratorCraftingRecipe.autoMappedRecipes.put(blockCode, recipe);
+                try {
+                    if(recipe.getRecipeOutput().getUnlocalizedName() == null) {
+                        IGWLog.error("Item has no unlocalized name: " + recipe.getRecipeOutput().getItem());
+                    } else {
+                        String blockCode = WikiUtils.getNameFromStack(recipe.getRecipeOutput());
+                        if(!IntegratorCraftingRecipe.autoMappedRecipes.containsKey(blockCode)) IntegratorCraftingRecipe.autoMappedRecipes.put(blockCode, recipe);
+                    }
+                } catch(Throwable e) {
+                    IGWLog.error("IGW-Mod failed to add recipe handling support for " + recipe.getRecipeOutput());
+                    e.printStackTrace();
                 }
             }
         }
