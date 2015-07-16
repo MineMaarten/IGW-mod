@@ -73,8 +73,8 @@ public class InfoSupplier{
         }
 
         if(returnNullIfUnavailable) return null;
-        objectName = modid + "/assets/wiki/" + language + "/" + objectName.replace(":", "/") + ".txt";
-        return Arrays.asList("No info available about this topic. IGW-Mod is currently looking for " + objectName.replace(":", "/assets/") + ".");
+        objectName = "/assets/" + modid + "/wiki/" + language + "/" + objectName.replace(":", "/") + ".txt";
+        return Arrays.asList("No info available about this topic. IGW-Mod is currently looking for " + objectName + ".");
     }
 
     public static List<String> getInfo(String modid, String objectName, String language){
