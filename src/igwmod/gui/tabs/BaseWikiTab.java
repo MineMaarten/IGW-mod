@@ -1,16 +1,12 @@
 package igwmod.gui.tabs;
 
-import igwmod.gui.GuiWiki;
-import igwmod.gui.IPageLink;
-import igwmod.gui.IReservedSpace;
-import igwmod.gui.LocatedString;
+import igwmod.gui.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BaseWikiTab implements IWikiTab{
     protected List<String> pageEntries = new ArrayList<String>();
-    private final List<Integer> lineSkips = new ArrayList<Integer>();
 
     @Override
     public List<IReservedSpace> getReservedSpaces(){
@@ -22,22 +18,34 @@ public abstract class BaseWikiTab implements IWikiTab{
         List<IPageLink> pages = new ArrayList<IPageLink>();
         if(pageIndexes == null) {
             for(int i = 0; i < pageEntries.size(); i++) {
-                pages.add(new LocatedString(getPageName(pageEntries.get(i)), 80, 64 + 11 * i, false, getPageLocation(pageEntries.get(i))));
+                if(pageEntries.get(i).startsWith("#")) {
+                    pages.add(new LocatedSectionString(getPageName(pageEntries.get(i)), 80, 64 + 11 * i, false));
+                } else if(pageEntries.get(i).equals("-")){
+                    pages.add(new LocatedSpacer(80, 64 + 11 * i));
+                } else {
+                    pages.add(new LocatedString(getPageName(pageEntries.get(i)), 80, 64 + 11 * i, false, getPageLocation(pageEntries.get(i))));
+                }
             }
         } else {
-            int skipOffset = 0;
             for(int i = 0; i < pageIndexes.length; i++) {
-                if(pageIndexes.length == pageEntries.size() && lineSkips.contains(i)) {
-                    skipOffset += 11;
+                if(pageEntries.get(pageIndexes[i]).startsWith("#")) {
+                    pages.add(new LocatedSectionString(getPageName(pageEntries.get(pageIndexes[i])), 80, 64 + 11 * i, false).capTextWidth(pagesPerTab() > pageIndexes.length ? 100 : 77));
+                } else if(pageEntries.get(pageIndexes[i]).startsWith("-")){
+                    pages.add(new LocatedSpacer(80, 64 + 11 * i));
+                } else {
+                    pages.add(new LocatedString(getPageName(pageEntries.get(pageIndexes[i])), 80, 64 + 11 * i, false, getPageLocation(pageEntries.get(pageIndexes[i]))).capTextWidth(pagesPerTab() > pageIndexes.length ? 100 : 77));
                 }
-                pages.add(new LocatedString(getPageName(pageEntries.get(pageIndexes[i])), 80, 64 + 11 * i + skipOffset, false, getPageLocation(pageEntries.get(pageIndexes[i]))).capTextWidth(pagesPerTab() > pageIndexes.length ? 100 : 77));
             }
         }
         return pages;
     }
 
     protected void skipLine(){
-        lineSkips.add(pageEntries.size());
+        pageEntries.add("-");
+    }
+
+    protected void addSectionHeader(String header){
+        pageEntries.add("#" + header);
     }
 
     @Override
