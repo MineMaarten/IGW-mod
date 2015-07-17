@@ -12,3 +12,6 @@ igwtab.entry.devIntro=Dev: Intro
 igwtab.entry.devItemAndBlock=Dev: Item & Block Page
 igwtab.entry.devPageCommands=Dev: Page Commands
 igwtab.entry.devForModders=Dev: For Modders
+
+igwmod.gui.crafting.shapeless=Shapeless Crafting
+igwmod.gui.crafting.shaped=Shaped Crafting

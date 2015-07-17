@@ -17,12 +17,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public class IntegratorCraftingRecipe implements IRecipeIntegrator{
@@ -57,7 +59,7 @@ public class IntegratorCraftingRecipe implements IRecipeIntegrator{
 
         if(arguments[2].startsWith("key=")) {
             if(arguments.length != 3) throw new IllegalArgumentException("An RecipeRetrievalEvent crafting code can only have 3 parameters: x, y and the key!");
-            addAutomaticCraftingRecipe(arguments[2], locatedStacks, locatedTextures, (int)(x * GuiWiki.TEXT_SCALE), (int)(y * GuiWiki.TEXT_SCALE));
+            addAutomaticCraftingRecipe(arguments[2], locatedStacks, locatedTextures, locatedStrings, (int)(x * GuiWiki.TEXT_SCALE), (int)(y * GuiWiki.TEXT_SCALE));
         } else {
             addManualCraftingRecipe(arguments, locatedStacks, locatedTextures, (int)(x * GuiWiki.TEXT_SCALE), (int)(y * GuiWiki.TEXT_SCALE));
         }
@@ -68,7 +70,7 @@ public class IntegratorCraftingRecipe implements IRecipeIntegrator{
      * @param y 
      * @param x 
      */
-    private void addAutomaticCraftingRecipe(String code, List<LocatedStack> locatedStacks, List<IWidget> locatedTextures, int x, int y) throws IllegalArgumentException{
+    private void addAutomaticCraftingRecipe(String code, List<LocatedStack> locatedStacks, List<IWidget> locatedTextures, List<LocatedString> locatedStrings, int x, int y) throws IllegalArgumentException{
         String key = code.substring(4);
         CraftingRetrievalEvent recipeEvent = new CraftingRetrievalEvent(key);
         IRecipe autoMappedRecipe = autoMappedRecipes.get(key);
@@ -88,6 +90,7 @@ public class IntegratorCraftingRecipe implements IRecipeIntegrator{
                 }
             }
             locatedStacks.add(new LocatedStack(recipe.getRecipeOutput(), x + RESULT_STACK_X_OFFSET, y + RESULT_STACK_Y_OFFSET));
+            locatedStrings.add(new LocatedString(I18n.format("igwmod.gui.crafting.shaped"), x + 60, y + 10, 0xFF000000, false));
         } else if(recipeEvent.recipe instanceof ShapedOreRecipe) {
             ShapedOreRecipe recipe = (ShapedOreRecipe)recipeEvent.recipe;
             int recipeHeight = 0;
@@ -111,6 +114,7 @@ public class IntegratorCraftingRecipe implements IRecipeIntegrator{
                 }
             }
             locatedStacks.add(new LocatedStack(recipe.getRecipeOutput(), x + RESULT_STACK_X_OFFSET, y + RESULT_STACK_Y_OFFSET));
+            locatedStrings.add(new LocatedString(I18n.format("igwmod.gui.crafting.shaped"), x * 2 + 120, y * 2 + 10, 0xFF000000, false));
         } else if(recipeEvent.recipe instanceof ShapelessRecipes) {
             ShapelessRecipes recipe = (ShapelessRecipes)recipeEvent.recipe;
             for(int i = 0; i < 3; i++) {
@@ -124,10 +128,28 @@ public class IntegratorCraftingRecipe implements IRecipeIntegrator{
                 }
             }
             locatedStacks.add(new LocatedStack(recipe.getRecipeOutput(), x + RESULT_STACK_X_OFFSET, y + RESULT_STACK_Y_OFFSET));
+            locatedStrings.add(new LocatedString(I18n.format("igwmod.gui.crafting.shapeless"), x * 2 + 120, y * 2 + 10, 0xFF000000, false));
+        } else if(recipeEvent.recipe instanceof ShapelessOreRecipe) {
+            ShapelessOreRecipe recipe = (ShapelessOreRecipe)recipeEvent.recipe;
+            for(int i = 0; i < 3; i++) {
+                for(int j = 0; j < 3; j++) {
+                    if(i * 3 + j < recipe.getInput().size()) {
+                        Object ingredient = recipe.getInput().get(i * 3 + j);
+                        if(ingredient != null) {
+                            ItemStack ingredientStack = ingredient instanceof ItemStack ? (ItemStack)ingredient : ((List<ItemStack>)ingredient).get(0);
+                            if(ingredientStack != null) {
+                                locatedStacks.add(new LocatedStack(ingredientStack, x + STACKS_X_OFFSET + j * 18, y + STACKS_Y_OFFSET + i * 18));
+                            }
+                        }
+                    }
+                }
+            }
+            locatedStacks.add(new LocatedStack(recipe.getRecipeOutput(), x + RESULT_STACK_X_OFFSET, y + RESULT_STACK_Y_OFFSET));
+            locatedStrings.add(new LocatedString(I18n.format("igwmod.gui.crafting.shapeless"), x * 2 + 120, y * 2 + 10, 0xFF000000, false));
         } else if(recipeEvent.recipe == null) {
             throw new IllegalArgumentException("RecipeRetrievalEvent: For the given key, no subscriber returned a recipe! key = " + key);
         } else {
-            throw new IllegalArgumentException("RecipeRetrievalEvent: Don't pass anything other than ShapedRecipes, ShapedOreRecipes or ShapelessRecipes! key = " + key);
+            throw new IllegalArgumentException("RecipeRetrievalEvent: Don't pass anything other than ShapedRecipes, ShapedOreRecipes, ShapelessRecipes or ShapelessOreRecipe! key = " + key);
         }
     }
 
