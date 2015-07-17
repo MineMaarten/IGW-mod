@@ -275,7 +275,9 @@ public class GuiWiki extends GuiContainer{
         if(pages != null) {
             List<Integer> matchingIndexes = new ArrayList<Integer>();
             for(int i = 0; i < pages.size(); i++) {
-                if(pages.get(i).getName().toLowerCase().contains(searchField.getText().toLowerCase())) {
+                if(searchField.getText().toLowerCase().equals("")) {
+                    matchingIndexes.add(i);
+                } else if(pages.get(i).getName().toLowerCase().contains(searchField.getText().toLowerCase()) && !(pages.get(i) instanceof LocatedSectionString)) {
                     matchingIndexes.add(i);
                 }
             }
