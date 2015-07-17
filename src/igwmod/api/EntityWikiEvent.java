@@ -4,7 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraftforge.event.entity.EntityEvent;
 
 /**
- * Event fired when the IGW GUI gets opened by looking at an entity and pressing 'i'. You could change the entity displayed in the 
+ * Event fired on MinecraftForge.EVENT_BUS when the IGW GUI gets opened by looking at an entity and pressing 'i'. You could change the entity displayed in the 
  * top left corner by setting the 'entity' field. If you want the default entity, don't change it.
  * When you don't change pageOpened, it will default to assets/igwmod/wiki/entity/<Entity.getEntityString(entity)>
  * For info about the pageOpened field, look at {@link BlockWikiEvent}.

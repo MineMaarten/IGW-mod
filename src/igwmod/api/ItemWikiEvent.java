@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.eventhandler.Event;
 
 /**
- * Event fired when the player opens the IGW GUI by looking at an item in another GUI and pressing 'i' or when the player
+ * Event fired on MinecraftForge.EVENT_BUS when the player opens the IGW GUI by looking at an item in another GUI and pressing 'i' or when the player
  * navigates between wikipages. This event is also fired when looking
  * at item entities. For info about the pageOpened field, look at {@link BlockWikiEvent}
  * when you don't alter the pageOpened field, it will default to assets/igwmod/wiki/item/<itemStack.getUnlocalizedName()>

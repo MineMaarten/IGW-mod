@@ -7,7 +7,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import cpw.mods.fml.client.FMLClientHandler;
 
 /**
- * This event will be fired when a player opens the wiki GUI while looking at a block in the world. Your job as subscriber is to change the
+ * This event will be fired on MinecraftForge.EVENT_BUS when a player opens the wiki GUI while looking at a block in the world. Your job as subscriber is to change the
  * pageOpened field when you find the right block. If no subscriber changes the pageOpened field, IGW will try to open a page at
  * assets/igwmod/wiki/block/drawnStack.getUnlocalizedName()>.
  */

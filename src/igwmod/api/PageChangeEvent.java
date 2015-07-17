@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.eventhandler.Event;
 
 /**
- * Fired when the page changes. This can be used to intercept any page that is being tried to be looked up from a .txt file, and supply it a custom (language) string instead.
+ * Fired on MinecraftForge.EVENT_BUS when the page changes. This can be used to intercept any page that is being tried to be looked up from a .txt file, and supply it a custom (language) string instead.
  */
 public class PageChangeEvent extends Event{
 

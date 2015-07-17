@@ -128,10 +128,16 @@ public class InfoSupplier{
                     for(int j = i; j < line.length(); j++) {
                         if(line.charAt(j) == ']') {
                             try {
-                                if(decomposeTemplate(line.substring(i + 1, j), reservedSpaces, locatedStrings, locatedStacks, locatedTextures)) {
+                                String code = line.substring(i + 1, j);
+                                if(decomposeTemplate(code, reservedSpaces, locatedStrings, locatedStacks, locatedTextures)) {
                                     String cutString = line.substring(0, i) + line.substring(j + 1, line.length());
                                     if(cutString.equals("")) fileInfo.remove(k--);
                                     else fileInfo.set(k, cutString);
+                                } else {
+                                    if(code.startsWith("variable{")) {
+                                        String cutString = line.substring(0, i) + VariableHandler.getVariable(code.substring("variable{".length(), code.length() - 1)) + line.substring(j + 1, line.length());
+                                        fileInfo.set(k, cutString);
+                                    }
                                 }
                             } catch(IllegalArgumentException e) {
                                 fileInfo.add(EnumChatFormatting.RED + "Problem when parsing \"" + line.substring(i + 1, j) + "\":");

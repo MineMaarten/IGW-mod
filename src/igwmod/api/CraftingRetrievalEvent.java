@@ -4,7 +4,7 @@ import net.minecraft.item.crafting.IRecipe;
 import cpw.mods.fml.common.eventhandler.Event;
 
 /**
- * This event is fired when a wikipage contains a [crafting{key=recipeName}] block, in which the 'recipeName' is a string that is passed to this event.
+ * This event is fired on MinecraftForge.EVENT_BUS when a wikipage contains a [crafting{key=recipeName}] block, in which the 'recipeName' is a string that is passed to this event.
  * This event is a way to save you the time of writing a manual recipe, like 
  * [crafting{www,cic,crc,w=block/wood,c=block/stonebrick,i=item/ingotIron,r=block/redstoneDust}block/pistonBase] for a piston.
  * With this event, you can write [crafting{piston}]. IGW detects this, and fires this event with the 'piston' key. You see the key, and set
