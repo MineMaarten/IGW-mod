@@ -3,10 +3,20 @@ package igwmod.gui;
 import igwmod.InfoSupplier;
 import igwmod.TickHandler;
 import igwmod.WikiUtils;
-import igwmod.api.*;
+import igwmod.api.BlockWikiEvent;
+import igwmod.api.EntityWikiEvent;
+import igwmod.api.ItemWikiEvent;
+import igwmod.api.PageChangeEvent;
+import igwmod.api.WikiRegistry;
 import igwmod.gui.tabs.IWikiTab;
 import igwmod.lib.Textures;
 import igwmod.lib.Util;
+
+import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -21,14 +31,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Derived from Vanilla's GuiContainerCreative
@@ -269,9 +275,9 @@ public class GuiWiki extends GuiContainer{
         if(pages != null) {
             List<Integer> matchingIndexes = new ArrayList<Integer>();
             for(int i = 0; i < pages.size(); i++) {
-                if(searchField.getText().toLowerCase().equals("")){
+                if(searchField.getText().toLowerCase().equals("")) {
                     matchingIndexes.add(i);
-                } else if (pages.get(i).getName().toLowerCase().contains(searchField.getText().toLowerCase()) && !(pages.get(i) instanceof LocatedSectionString) && !(pages.get(i) instanceof LocatedSpacer)) {
+                } else if(pages.get(i).getName().toLowerCase().contains(searchField.getText().toLowerCase()) && !(pages.get(i) instanceof LocatedSectionString)) {
                     matchingIndexes.add(i);
                 }
             }

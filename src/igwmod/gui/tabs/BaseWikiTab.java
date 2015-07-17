@@ -1,6 +1,10 @@
 package igwmod.gui.tabs;
 
-import igwmod.gui.*;
+import igwmod.gui.GuiWiki;
+import igwmod.gui.IPageLink;
+import igwmod.gui.IReservedSpace;
+import igwmod.gui.LocatedSectionString;
+import igwmod.gui.LocatedString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +24,8 @@ public abstract class BaseWikiTab implements IWikiTab{
             for(int i = 0; i < pageEntries.size(); i++) {
                 if(pageEntries.get(i).startsWith("#")) {
                     pages.add(new LocatedSectionString(getPageName(pageEntries.get(i)), 80, 64 + 11 * i, false));
-                } else if(pageEntries.get(i).equals("-")){
-                    pages.add(new LocatedSpacer(80, 64 + 11 * i));
+                } else if(pageEntries.get(i).equals("")) {
+                    pages.add(new LocatedString("", 80, 64 + 11 * i, 0, false));
                 } else {
                     pages.add(new LocatedString(getPageName(pageEntries.get(i)), 80, 64 + 11 * i, false, getPageLocation(pageEntries.get(i))));
                 }
@@ -30,8 +34,8 @@ public abstract class BaseWikiTab implements IWikiTab{
             for(int i = 0; i < pageIndexes.length; i++) {
                 if(pageEntries.get(pageIndexes[i]).startsWith("#")) {
                     pages.add(new LocatedSectionString(getPageName(pageEntries.get(pageIndexes[i])), 80, 64 + 11 * i, false).capTextWidth(pagesPerTab() > pageIndexes.length ? 100 : 77));
-                } else if(pageEntries.get(pageIndexes[i]).startsWith("-")){
-                    pages.add(new LocatedSpacer(80, 64 + 11 * i));
+                } else if(pageEntries.get(pageIndexes[i]).equals("")) {
+                    pages.add(new LocatedString("", 80, 64 + 11 * i, 0, false));
                 } else {
                     pages.add(new LocatedString(getPageName(pageEntries.get(pageIndexes[i])), 80, 64 + 11 * i, false, getPageLocation(pageEntries.get(pageIndexes[i]))).capTextWidth(pagesPerTab() > pageIndexes.length ? 100 : 77));
                 }
@@ -41,7 +45,7 @@ public abstract class BaseWikiTab implements IWikiTab{
     }
 
     protected void skipLine(){
-        pageEntries.add("-");
+        pageEntries.add("");
     }
 
     protected void addSectionHeader(String header){
