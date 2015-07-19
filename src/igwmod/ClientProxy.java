@@ -8,6 +8,7 @@ import igwmod.lib.Constants;
 import igwmod.lib.IGWLog;
 import igwmod.lib.Paths;
 import igwmod.lib.Util;
+import igwmod.recipeintegration.IntegratorComment;
 import igwmod.recipeintegration.IntegratorCraftingRecipe;
 import igwmod.recipeintegration.IntegratorFurnace;
 import igwmod.recipeintegration.IntegratorImage;
@@ -73,6 +74,7 @@ public class ClientProxy implements IProxy{
         WikiRegistry.registerRecipeIntegrator(new IntegratorCraftingRecipe());
         WikiRegistry.registerRecipeIntegrator(new IntegratorFurnace());
         WikiRegistry.registerRecipeIntegrator(new IntegratorStack());
+        WikiRegistry.registerRecipeIntegrator(new IntegratorComment());
     }
 
     @SubscribeEvent
