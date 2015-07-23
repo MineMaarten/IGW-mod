@@ -27,6 +27,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -635,7 +636,14 @@ public class GuiWiki extends GuiContainer{
         for(IWikiTab tab : visibleTabs) {
             ItemStack drawingStack = tab.renderTabIcon(this);
             if(drawingStack != null) {
-                renderRotatingBlockIntoGUI(this, drawingStack, 11, 10, 1.5F);
+                if(drawingStack.getItem() instanceof ItemBlock) {
+                    renderRotatingBlockIntoGUI(this, drawingStack, 11, 10, 1.5F);
+                } else {
+                    boolean oldSetting = mc.gameSettings.fancyGraphics;
+                    mc.gameSettings.fancyGraphics = true;
+                    renderRotatingBlockIntoGUI(this, drawingStack, 12, 13, 1.2F);
+                    mc.gameSettings.fancyGraphics = oldSetting;
+                }
             }
             GL11.glTranslated(0, 35, 0);
         }

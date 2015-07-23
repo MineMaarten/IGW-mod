@@ -20,7 +20,7 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
 public class BlockAndItemWikiTab implements IWikiTab{
-    private static RenderItem itemRenderer;
+    public static RenderItem itemRenderer;
     private static ItemStack drawingStack;
 
     static {
