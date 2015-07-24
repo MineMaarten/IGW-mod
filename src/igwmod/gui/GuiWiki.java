@@ -1,5 +1,6 @@
 package igwmod.gui;
 
+import igwmod.ConfigHandler;
 import igwmod.InfoSupplier;
 import igwmod.TickHandler;
 import igwmod.WikiUtils;
@@ -9,6 +10,7 @@ import igwmod.api.ItemWikiEvent;
 import igwmod.api.PageChangeEvent;
 import igwmod.api.WikiRegistry;
 import igwmod.gui.tabs.IWikiTab;
+import igwmod.lib.IGWLog;
 import igwmod.lib.Textures;
 import igwmod.lib.Util;
 
@@ -572,20 +574,28 @@ public class GuiWiki extends GuiContainer{
         fileInfo = pageChangeEvent.pageText;
         if(fileInfo == null) {
             String modid = currentModIdPage;
-            if(!currentFile.startsWith("block/") && !currentFile.startsWith("item/") && currentFile.contains(":")) {
-                String[] splitted = currentFile.split(":");
+            if(currentFile.contains(":")) {
+                String[] splitted = currentFile.split(":", 2);
                 modid = splitted[0];
                 currentFile = splitted[1];
+            } else {
+                if(pageStack != null) {
+                    modid = WikiUtils.getOwningModId(pageStack);
+                } else if(pageEntity != null) {
+                    modid = Util.getModIdForEntity(pageEntity.getClass());
+                } else if(o instanceof String) {
+                    modid = (String)o;
+                } else {
+                    ItemStack tabItem = currentTab.renderTabIcon(this);
+                    if(tabItem != null && tabItem.getItem() != null) {
+                        modid = WikiUtils.getOwningModId(tabItem);
+                    }
+                    if(ConfigHandler.debugMode) {
+                        IGWLog.info("Tracked down the mod owner of the page \"" + currentFile + "\" by getting the mod owner of the tab ItemStack. This is not recommended. Please prefix page links with <modid>:, so for example: pneumaticcraft:menu/baseConcepts");
+                    }
+                }
             }
-            if(pageStack != null) {
-                modid = WikiUtils.getOwningModId(pageStack);
-            }
-            if(pageEntity != null) {
-                modid = Util.getModIdForEntity(pageEntity.getClass());
-            }
-            if(o instanceof String) {
-                modid = (String)o;
-            }
+
             currentModIdPage = modid;
             fileInfo = InfoSupplier.getInfo(modid, currentFile, false);
         }

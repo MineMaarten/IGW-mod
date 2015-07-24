@@ -36,6 +36,6 @@ public class IGWWikiTab extends BaseWikiTab{
 
     @Override
     protected String getPageLocation(String pageEntry){
-        return "igwtab/" + pageEntry;
+        return "igwmod:igwtab/" + pageEntry;
     }
 }
