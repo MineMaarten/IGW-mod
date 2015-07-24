@@ -43,7 +43,7 @@ import cpw.mods.fml.relauncher.Side;
 public class IGWSupportNotifier{
     private String supportingMod;
     private static final String LATEST_DL_URL = "http://minecraft.curseforge.com/mc-mods/223815-in-game-wiki-mod/files/latest";
-    private static final String DL_URL_1_7_10 = "http://minecraft.curseforge.com/mc-mods/223815-in-game-wiki-mod/files/2247673/download";
+    private static final String DL_URL_1_7_10 = "http://minecraft.curseforge.com/mc-mods/223815-in-game-wiki-mod/files/2248719/download";
 
     /**
      * Needs to be instantiated somewhere in your mod's loading stage.
