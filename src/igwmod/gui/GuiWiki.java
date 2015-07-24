@@ -1,5 +1,6 @@
 package igwmod.gui;
 
+import igwmod.ClientProxy;
 import igwmod.ConfigHandler;
 import igwmod.InfoSupplier;
 import igwmod.TickHandler;
@@ -268,7 +269,11 @@ public class GuiWiki extends GuiContainer{
             currentPageLinkScroll = 0;
             updateSearch();
         } else {
-            super.keyTyped(par1, par2);
+            if(ClientProxy.openInterfaceKey.getKeyCode() == par2) {
+                mc.thePlayer.closeScreen();
+            } else {
+                super.keyTyped(par1, par2);
+            }
         }
     }
 
