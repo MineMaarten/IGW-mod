@@ -1,24 +1,23 @@
 package igwmod;
 
 import igwmod.gui.GuiWiki;
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class TickHandler{
     private static int ticksHovered;
     private static Entity lastEntityHovered;
-    private static int xHovered;
-    private static int yHovered;
-    private static int zHovered;
+    private static BlockPos coordHovered;
     public static int ticksExisted;
     private static final int MIN_TICKS_HOVER = 50;
 
@@ -33,27 +32,21 @@ public class TickHandler{
                     if(lookedObject.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
                         if(lastEntityHovered == lookedObject.entityHit) {
                             ticksHovered++;
-                            xHovered = 0;
-                            yHovered = 0;
-                            zHovered = 0;
+                            coordHovered = null;
                         } else {
                             lastEntityHovered = lookedObject.entityHit;
                             ticksHovered = 0;
-                            xHovered = 0;
-                            yHovered = 0;
-                            zHovered = 0;
+                            coordHovered = null;
                         }
-                    } else {
-                        if(lookedObject.blockX == xHovered && lookedObject.blockY == yHovered && lookedObject.blockZ == zHovered) {
+                    } else if(lookedObject.getBlockPos() != null) {
+                        if(coordHovered != null && lookedObject.getBlockPos().equals(new BlockPos(coordHovered))) {
                             ticksHovered++;
                             lastEntityHovered = null;
                         } else {
-                            if(!event.player.worldObj.isAirBlock(lookedObject.blockX, lookedObject.blockY, lookedObject.blockZ)) {
+                            if(!event.player.worldObj.isAirBlock(lookedObject.getBlockPos())) {
                                 ticksHovered = 0;
                                 lastEntityHovered = null;
-                                xHovered = lookedObject.blockX;
-                                yHovered = lookedObject.blockY;
-                                zHovered = lookedObject.blockZ;
+                                coordHovered = lookedObject.getBlockPos();
                             }
                         }
                     }
@@ -73,13 +66,13 @@ public class TickHandler{
             GuiWiki gui = new GuiWiki();
             FMLCommonHandler.instance().showGuiScreen(gui);
             gui.setCurrentFile(lastEntityHovered);
-        } else if(xHovered != 0 || yHovered != 0 || zHovered != 0) {
+        } else if(coordHovered != null) {
             World world = FMLClientHandler.instance().getClient().theWorld;
             if(world != null) {
-                if(!world.isAirBlock(xHovered, yHovered, zHovered)) {
+                if(!world.isAirBlock(coordHovered)) {
                     GuiWiki gui = new GuiWiki();
                     FMLCommonHandler.instance().showGuiScreen(gui);
-                    gui.setCurrentFile(world, xHovered, yHovered, zHovered);
+                    gui.setCurrentFile(world, coordHovered);
                 }
             }
         } else {
@@ -89,14 +82,14 @@ public class TickHandler{
 
     public static String getCurrentObjectName(){
         if(lastEntityHovered != null) {
-            return lastEntityHovered.getCommandSenderName();
+            return lastEntityHovered.getName();
         } else {
             try {
                 World world = FMLClientHandler.instance().getClient().theWorld;
-                Block block = world.getBlock(xHovered, yHovered, zHovered);
-                if(block != null) {
-                    ItemStack idPicked = block.getPickBlock(FMLClientHandler.instance().getClient().objectMouseOver, world, xHovered, yHovered, zHovered);
-                    return (idPicked != null ? idPicked : new ItemStack(block, 1, world.getBlockMetadata(xHovered, yHovered, zHovered))).getDisplayName();
+                IBlockState blockState = world.getBlockState(coordHovered);
+                if(blockState != null) {
+                    ItemStack idPicked = blockState.getBlock().getPickBlock(FMLClientHandler.instance().getClient().objectMouseOver, world, coordHovered, FMLClientHandler.instance().getClientPlayerEntity());
+                    return (idPicked != null ? idPicked : new ItemStack(blockState.getBlock(), 1, blockState.getBlock().getDamageValue(world, coordHovered))).getDisplayName();
                 }
             } catch(Throwable e) {}
             return EnumChatFormatting.RED + "<ERROR>";

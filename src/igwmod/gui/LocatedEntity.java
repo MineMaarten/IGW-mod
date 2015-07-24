@@ -13,14 +13,13 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraftforge.fml.client.FMLClientHandler;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import cpw.mods.fml.client.FMLClientHandler;
-
 public class LocatedEntity extends Gui implements IReservedSpace, IPageLink{
-    protected static FontRenderer fontRenderer = FMLClientHandler.instance().getClient().fontRenderer;
+    protected static FontRenderer fontRenderer = FMLClientHandler.instance().getClient().fontRendererObj;
     public final Entity entity;
     private int x, y;
     private final float scale;
@@ -46,7 +45,7 @@ public class LocatedEntity extends Gui implements IReservedSpace, IPageLink{
     @Override
     public void renderForeground(GuiWiki gui, int mouseX, int mouseY){
         if(getReservedSpace().contains(mouseX - gui.getGuiLeft(), mouseY - gui.getGuiTop())) {
-            drawCreativeTabHoveringText(entity.getCommandSenderName(), mouseX - gui.getGuiLeft(), mouseY - gui.getGuiTop());
+            drawCreativeTabHoveringText(entity.getName(), mouseX - gui.getGuiLeft(), mouseY - gui.getGuiTop());
         }
     }
 
@@ -86,7 +85,7 @@ public class LocatedEntity extends Gui implements IReservedSpace, IPageLink{
 
     @Override
     public String getName(){
-        return entity.getCommandSenderName();
+        return entity.getName();
     }
 
     @Override

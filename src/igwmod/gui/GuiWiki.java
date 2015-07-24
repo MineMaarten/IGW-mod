@@ -16,22 +16,26 @@ import igwmod.lib.Textures;
 import igwmod.lib.Util;
 
 import java.awt.Rectangle;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.entity.RenderEntityItem;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -111,7 +115,7 @@ public class GuiWiki extends GuiContainer{
 
             String lastSearch = "";
             if(searchField != null) lastSearch = searchField.getText();
-            searchField = new GuiTextField(fontRendererObj, guiLeft + 40, guiTop + currentTab.getSearchBarAndScrollStartY(), 53, fontRendererObj.FONT_HEIGHT);
+            searchField = new GuiTextField(0, fontRendererObj, guiLeft + 40, guiTop + currentTab.getSearchBarAndScrollStartY(), 53, fontRendererObj.FONT_HEIGHT);
             searchField.setMaxStringLength(15);
             searchField.setEnableBackgroundDrawing(true);
             searchField.setVisible(true);
@@ -178,7 +182,7 @@ public class GuiWiki extends GuiContainer{
     }
 
     @Override
-    protected void mouseClicked(int x, int y, int button){
+    protected void mouseClicked(int x, int y, int button) throws IOException{
         super.mouseClicked(x, y, button);
         searchField.mouseClicked(x, y, button);
         if(searchField.isFocused() && button == 1) {
@@ -214,8 +218,8 @@ public class GuiWiki extends GuiContainer{
         }
     }
 
-    public void setCurrentFile(World world, int x, int y, int z){
-        BlockWikiEvent wikiEvent = new BlockWikiEvent(world, x, y, z);
+    public void setCurrentFile(World world, BlockPos pos){
+        BlockWikiEvent wikiEvent = new BlockWikiEvent(world, pos);
         if(wikiEvent.drawnStack.getItem() == null) return;
         wikiEvent.pageOpened = WikiRegistry.getPageForItemStack(wikiEvent.drawnStack);
         if(wikiEvent.pageOpened == null) wikiEvent.pageOpened = wikiEvent.drawnStack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/");
@@ -264,7 +268,7 @@ public class GuiWiki extends GuiContainer{
      * Fired when a key is typed. This is the equivalent of KeyListener.keyTyped(KeyEvent e).
      */
     @Override
-    protected void keyTyped(char par1, int par2){
+    protected void keyTyped(char par1, int par2) throws IOException{
         if(searchField.textboxKeyTyped(par1, par2)) {
             currentPageLinkScroll = 0;
             updateSearch();
@@ -338,7 +342,7 @@ public class GuiWiki extends GuiContainer{
     }
 
     @Override
-    public void handleMouseInput(){
+    public void handleMouseInput() throws IOException{
         super.handleMouseInput();
         int i = Mouse.getEventDWheel();
 
@@ -550,6 +554,8 @@ public class GuiWiki extends GuiContainer{
     }
 
     private void drawTooltips(int x, int y){
+        GlStateManager.enableLighting();
+
         List<IWikiTab> visibleTabs = getVisibleTabs();
         for(int i = 0; i < visibleTabs.size(); i++) {
             if(x <= 33 + guiLeft && x >= 1 + guiLeft && y >= 4 + guiTop + i * 35 && y <= 39 + guiTop + i * 35) {
@@ -557,7 +563,7 @@ public class GuiWiki extends GuiContainer{
             }
         }
         if(hasMultipleTabPages() && x < 33 + guiLeft && x >= 1 + guiLeft && y >= 214 + guiTop && y <= 236 + guiTop) {
-            func_146283_a(Arrays.asList(new String[]{I18n.format("igwmod.tooltip.tabPageBrowse.next"), I18n.format("igwmod.tooltip.tabPageBrowse.previous")}), x - guiLeft, y - guiTop);
+            drawHoveringText(Arrays.asList(new String[]{I18n.format("igwmod.tooltip.tabPageBrowse.next"), I18n.format("igwmod.tooltip.tabPageBrowse.previous")}), x - guiLeft, y - guiTop);
         }
         /*
         if(curSection == EnumWikiSection.ENTITIES) {
@@ -648,15 +654,17 @@ public class GuiWiki extends GuiContainer{
         GL11.glPushMatrix();
         GL11.glTranslated(0, 4, 0);
         List<IWikiTab> visibleTabs = getVisibleTabs();
+
+        RenderHelper.enableGUIStandardItemLighting();
         for(IWikiTab tab : visibleTabs) {
             ItemStack drawingStack = tab.renderTabIcon(this);
             if(drawingStack != null) {
                 if(drawingStack.getItem() instanceof ItemBlock) {
-                    renderRotatingBlockIntoGUI(this, drawingStack, 11, 10, 1.5F);
+                    renderRotatingBlockIntoGUI(this, drawingStack, 11, 23, 1.5F);
                 } else {
                     boolean oldSetting = mc.gameSettings.fancyGraphics;
                     mc.gameSettings.fancyGraphics = true;
-                    renderRotatingBlockIntoGUI(this, drawingStack, 12, 13, 1.2F);
+                    renderRotatingBlockIntoGUI(this, drawingStack, 12, 26, 1.2F);
                     mc.gameSettings.fancyGraphics = oldSetting;
                 }
             }
@@ -756,18 +764,18 @@ public class GuiWiki extends GuiContainer{
      GL11.glPopMatrix();
     }*/
 
-    private static RenderItem renderItem = new RenderItem(){
-        @Override
-        public boolean shouldBob(){
-            return false;
-        }
-    };
+    private static RenderEntityItem renderItem;
     private static EntityItem entityItem;
 
     public void renderRotatingBlockIntoGUI(GuiWiki gui, ItemStack stack, int x, int y, float scale){
         if(entityItem == null) {
             entityItem = new EntityItem(gui.mc.theWorld);
-            renderItem.setRenderManager(RenderManager.instance);
+            renderItem = new RenderEntityItem(Minecraft.getMinecraft().getRenderManager(), Minecraft.getMinecraft().getRenderItem()){
+                @Override
+                public boolean shouldBob(){
+                    return false;
+                }
+            };
         }
         entityItem.setEntityItemStack(stack);
 

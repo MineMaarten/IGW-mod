@@ -1,6 +1,6 @@
 package igwmod.api;
 
-import cpw.mods.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
  * This event is fired on MinecraftForge.EVENT_BUS when a wikipage contains a [variable{<variableName>}] block, in which the <variableName is a string that is passed to this event.

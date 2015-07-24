@@ -1,8 +1,8 @@
 package igwmod;
 
 import net.minecraft.entity.player.EntityPlayer;
-import cpw.mods.fml.common.event.FMLInterModComms;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public interface IProxy{
     public void preInit(FMLPreInitializationEvent event);

@@ -13,14 +13,13 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.fml.client.FMLClientHandler;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import cpw.mods.fml.client.FMLClientHandler;
-
 public class LocatedString extends Gui implements IPageLink, GuiYesNoCallback{
-    protected static FontRenderer fontRenderer = FMLClientHandler.instance().getClient().fontRenderer;
+    protected static FontRenderer fontRenderer = FMLClientHandler.instance().getClient().fontRendererObj;
     private final String string;
     private String cappedText;
     private int x;
@@ -104,10 +103,13 @@ public class LocatedString extends Gui implements IPageLink, GuiYesNoCallback{
     public void renderBackground(GuiWiki gui, int mouseX, int mouseY){
         GL11.glPushMatrix();
         GL11.glScaled(GuiWiki.TEXT_SCALE, GuiWiki.TEXT_SCALE, 1);
+        //GlStateManager.enableLighting();
+        // RenderHelper.enableStandardItemLighting();
         if(getLinkAddress() != null) {
             Rectangle mouseSpace = getMouseSpace();
             fontRenderer.drawString(EnumChatFormatting.UNDERLINE + cappedText, x, y, mouseSpace.contains(mouseX - gui.getGuiLeft(), mouseY - gui.getGuiTop()) ? 0xFFFFFF00 : 0xFF3333FF, shadow);
         } else {
+            GL11.glColor4d(0, 0, 0, 1);
             fontRenderer.drawString(cappedText, x, y, color, shadow);
         }
         GL11.glPopMatrix();

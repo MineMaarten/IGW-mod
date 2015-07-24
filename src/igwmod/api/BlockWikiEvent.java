@@ -1,10 +1,11 @@
 package igwmod.api;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
-import cpw.mods.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.client.FMLClientHandler;
 
 /**
  * This event will be fired on MinecraftForge.EVENT_BUS when a player opens the wiki GUI while looking at a block in the world. Your job as subscriber is to change the
@@ -12,23 +13,19 @@ import cpw.mods.fml.client.FMLClientHandler;
  * assets/igwmod/wiki/block/drawnStack.getUnlocalizedName()>.
  */
 public class BlockWikiEvent extends WorldEvent{
-    public final int x, y, z, metadata;
-    public final Block block;
+    public final BlockPos pos;
+    public final IBlockState blockState;
     public ItemStack itemStackPicked;
     public ItemStack drawnStack; //ItemStack that is drown in the top left corner of the GUI.
     public String pageOpened; //current page this gui will go to. It contains the default location, but can be changed.
 
-    public BlockWikiEvent(World world, int x, int y, int z){
+    public BlockWikiEvent(World world, BlockPos pos){
         super(world);
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        metadata = world.getBlockMetadata(x, y, z);
-        block = world.getBlock(x, y, z);
+        this.pos = pos;
+        blockState = world.getBlockState(pos);
         try {
-            itemStackPicked = block.getPickBlock(FMLClientHandler.instance().getClient().objectMouseOver, world, x, y, z);
+            itemStackPicked = blockState.getBlock().getPickBlock(FMLClientHandler.instance().getClient().objectMouseOver, world, pos, FMLClientHandler.instance().getClientPlayerEntity());
         } catch(Throwable e) {}//FMP parts have the habit to throw a ClassCastException.
-        drawnStack = itemStackPicked != null ? itemStackPicked : new ItemStack(block, 1, metadata);
+        drawnStack = itemStackPicked != null ? itemStackPicked : new ItemStack(blockState.getBlock(), 1, blockState.getBlock().getDamageValue(world, pos));
     }
-
 }

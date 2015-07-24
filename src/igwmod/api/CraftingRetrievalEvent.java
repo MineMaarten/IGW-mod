@@ -1,7 +1,7 @@
 package igwmod.api;
 
 import net.minecraft.item.crafting.IRecipe;
-import cpw.mods.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
  * This event is fired on MinecraftForge.EVENT_BUS when a wikipage contains a [crafting{key=recipeName}] block, in which the 'recipeName' is a string that is passed to this event.

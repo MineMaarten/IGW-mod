@@ -1,6 +1,1 @@
--The IGW-Mod support notifier now will download the mod and name the jar with the version number.
--You can now hit 'i' (or different if it has been rebound) to close the wiki GUI.
-
--Bugfix: When using an item (as opposed to a block) as GUI tab, it goes out of bounds.
--Bugfix: Pop-up window when hovering over a block always says 'Press 'i' to open' regardless of the actual keybinding.
--Bugfix: another crash related to obscure null items in itemstacks.
+-Update to MC1.8

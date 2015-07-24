@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
@@ -84,13 +85,13 @@ public class LocatedTexture implements IReservedSpace, IWidget{
     public static void drawTexture(int x, int y, int width, int heigth){
         int minYCap = Math.max(0, GuiWiki.MIN_TEXT_Y - y);
         int maxYCap = Math.min(heigth, GuiWiki.MAX_TEXT_Y - y);
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV(x, y + maxYCap, 0, 0.0, (float)maxYCap / heigth);//TODO render at right Z level
-        tessellator.addVertexWithUV(x + width, y + maxYCap, 0, 1.0, (float)maxYCap / heigth);
-        tessellator.addVertexWithUV(x + width, y + minYCap, 0, 1, (float)minYCap / heigth);
-        tessellator.addVertexWithUV(x, y + minYCap, 0, 0, (float)minYCap / heigth);
-        tessellator.draw();
+        WorldRenderer wr = Tessellator.getInstance().getWorldRenderer();
+        wr.startDrawingQuads();
+        wr.addVertexWithUV(x, y + maxYCap, 0, 0.0, (float)maxYCap / heigth);//TODO render at right Z level
+        wr.addVertexWithUV(x + width, y + maxYCap, 0, 1.0, (float)maxYCap / heigth);
+        wr.addVertexWithUV(x + width, y + minYCap, 0, 1, (float)minYCap / heigth);
+        wr.addVertexWithUV(x, y + minYCap, 0, 0, (float)minYCap / heigth);
+        Tessellator.getInstance().draw();
         // this.drawTexturedModalRect(x, y, 0, 0, 16, 16);
     }
 

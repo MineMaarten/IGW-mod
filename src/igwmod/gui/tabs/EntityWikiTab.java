@@ -13,9 +13,9 @@ import igwmod.lib.Util;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -146,9 +146,9 @@ public class EntityWikiTab implements IWikiTab{
          entity.rotationPitch = -((float)Math.atan((double)(par4 / 40.0F))) * 20.0F;
          entity.rotationYawHead = entity.rotationYaw;
          entity.prevRotationYawHead = entity.rotationYaw;*/
-        GL11.glTranslatef(0.0F, entity.yOffset, 0.0F);
-        RenderManager.instance.playerViewY = 180.0F;
-        RenderManager.instance.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
+        GL11.glTranslatef(0.0F, (float)entity.getYOffset(), 0.0F);
+        Minecraft.getMinecraft().getRenderManager().playerViewY = 180.0F;
+        Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F);
         /* entity.renderYawOffset = f2;
          entity.rotationYaw = f3;
          entity.rotationPitch = f4;

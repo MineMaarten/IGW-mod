@@ -4,7 +4,7 @@ import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
  * Fired on MinecraftForge.EVENT_BUS when the page changes. This can be used to intercept any page that is being tried to be looked up from a .txt file, and supply it a custom (language) string instead.

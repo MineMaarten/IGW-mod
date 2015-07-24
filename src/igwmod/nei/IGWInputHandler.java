@@ -4,9 +4,9 @@ import igwmod.ClientProxy;
 import igwmod.gui.GuiWiki;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import codechicken.nei.guihook.GuiContainerManager;
 import codechicken.nei.guihook.IContainerInputHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
 
 public class IGWInputHandler implements IContainerInputHandler{
 

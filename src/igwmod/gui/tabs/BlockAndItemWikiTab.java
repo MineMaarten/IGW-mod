@@ -11,8 +11,10 @@ import igwmod.lib.Textures;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -24,8 +26,7 @@ public class BlockAndItemWikiTab implements IWikiTab{
     private static ItemStack drawingStack;
 
     static {
-        itemRenderer = new RenderItem();
-        itemRenderer.setRenderManager(RenderManager.instance);
+        itemRenderer = Minecraft.getMinecraft().getRenderItem();
     }
 
     @Override
@@ -79,13 +80,15 @@ public class BlockAndItemWikiTab implements IWikiTab{
     @Override
     public void renderForeground(GuiWiki gui, int mouseX, int mouseY){
         if(drawingStack != null) {
+            GlStateManager.enableLighting();
+            RenderHelper.enableGUIStandardItemLighting();
             if(drawingStack.getItem() instanceof ItemBlock) {
-                gui.renderRotatingBlockIntoGUI(gui, drawingStack, 55, 33, 2.8F);
+                gui.renderRotatingBlockIntoGUI(gui, drawingStack, 55, 58, 2.8F);
             } else {
                 GL11.glPushMatrix();
                 GL11.glTranslated(49, 20, 0);
                 GL11.glScaled(2.2, 2.2, 2.2);
-                itemRenderer.renderItemAndEffectIntoGUI(gui.getFontRenderer(), gui.mc.getTextureManager(), drawingStack, 0, 0);
+                itemRenderer.renderItemAndEffectIntoGUI(drawingStack, 0, 0);
                 GL11.glPopMatrix();
             }
         }
