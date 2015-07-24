@@ -32,7 +32,7 @@ apply plugin: "curseforge"
 project.ext {
 	massive = "1"
     major = "1"
-    minor = "6"
+    minor = "7"
     mcVersion = "1.7.10"
 }
 

@@ -1,4 +1,6 @@
--Recipes now show 'Shaped Crafting' or 'Shapeless Crafting' next to the recipe to indicate which type of recipe it is.
--Implemented a section header system (thanks to K4Unl!).
+-The IGW-Mod support notifier now will download the mod and name the jar with the version number.
+-You can now hit 'i' (or different if it has been rebound) to close the wiki GUI.
 
--Bugfix: Shapeless ore dictionary recipes are not supported.
+-Bugfix: When using an item (as opposed to a block) as GUI tab, it goes out of bounds.
+-Bugfix: Pop-up window when hovering over a block always says 'Press 'i' to open' regardless of the actual keybinding.
+-Bugfix: another crash related to obscure null items in itemstacks.

@@ -74,6 +74,9 @@ public class InfoSupplier{
 
         if(returnNullIfUnavailable) return null;
         objectName = "/assets/" + modid + "/wiki/" + language + "/" + objectName.replace(":", "/") + ".txt";
+        if(objectName.length() > 50) {
+            objectName = objectName.substring(0, objectName.length() / 2) + " " + objectName.substring(objectName.length() / 2, objectName.length());
+        }
         return Arrays.asList("No info available about this topic. IGW-Mod is currently looking for " + objectName + ".");
     }
 

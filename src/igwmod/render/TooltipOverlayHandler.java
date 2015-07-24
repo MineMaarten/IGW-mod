@@ -1,6 +1,7 @@
 package igwmod.render;
 
 import igwmod.ClientProxy;
+import igwmod.ConfigHandler;
 import igwmod.IGWMod;
 import igwmod.TickHandler;
 import net.minecraft.client.Minecraft;
@@ -17,7 +18,7 @@ public class TooltipOverlayHandler{
 
     @SubscribeEvent
     public void tickEnd(TickEvent.RenderTickEvent event){
-        if(event.phase == TickEvent.Phase.END && TickHandler.showTooltip() && /* ConfigHandler.shouldShowTooltip &&*/FMLClientHandler.instance().getClient().inGameHasFocus && IGWMod.proxy.getPlayer().worldObj != null) {
+        if(event.phase == TickEvent.Phase.END && TickHandler.showTooltip() && ConfigHandler.shouldShowTooltip && FMLClientHandler.instance().getClient().inGameHasFocus && IGWMod.proxy.getPlayer().worldObj != null) {
             Minecraft mc = FMLClientHandler.instance().getClient();
             ScaledResolution sr = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
             FontRenderer fontRenderer = FMLClientHandler.instance().getClient().fontRenderer;
