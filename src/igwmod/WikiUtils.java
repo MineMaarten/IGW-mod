@@ -1,5 +1,6 @@
 package igwmod;
 
+import cpw.mods.fml.common.registry.GameData;
 import igwmod.lib.IGWLog;
 
 import java.util.ArrayList;
@@ -54,10 +55,13 @@ public class WikiUtils{
 
     public static String getOwningModId(ItemStack stack){
         String modid = "minecraft";
-        if(stack.getItem() == null) {
+        Item item = stack.getItem();
+        if(item == null) {
             IGWLog.warning("Found an ItemStack with a null item! This isn't supposed to happen!");
+        } else if (GameData.getItemRegistry().getNameForObject(item) == null) {
+            IGWLog.warning("Found an Item with no name!");
         } else {
-            UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(stack.getItem());
+            UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(item);
             if(id != null && id.modId != null) modid = id.modId.toLowerCase();
         }
         return modid;
