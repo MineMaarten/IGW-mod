@@ -23,3 +23,7 @@ environment.properties
 /eclipse
 .gradle/
 .settings/
+gradle/
+gradlew
+gradlew.bat
+.idea/
