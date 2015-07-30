@@ -10,6 +10,7 @@ import java.util.List;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 
@@ -54,8 +55,11 @@ public class WikiUtils{
 
     public static String getOwningModId(ItemStack stack){
         String modid = "minecraft";
-        if(stack.getItem() == null) {
+        Item item = stack.getItem();
+        if(item == null) {
             IGWLog.warning("Found an ItemStack with a null item! This isn't supposed to happen!");
+        } else if(GameData.getItemRegistry().getNameForObject(item) == null) {
+            IGWLog.warning("Found an Item with no name! " + item);
         } else {
             UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(stack.getItem());
             if(id != null && id.modId != null) modid = id.modId.toLowerCase();
