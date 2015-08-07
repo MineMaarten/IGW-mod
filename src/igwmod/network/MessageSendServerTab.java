@@ -48,7 +48,7 @@ public class MessageSendServerTab extends AbstractPacket<MessageSendServerTab>{
 
     @Override
     public void fromBytes(ByteBuf buf){
-        File folder = new File(IGWMod.proxy.getSaveLocation() + "\\igwmod\\");
+        File folder = new File(IGWMod.proxy.getSaveLocation() + File.separator + "igwmod" + File.separator);
 
         folder.mkdirs();
         try {
@@ -61,7 +61,7 @@ public class MessageSendServerTab extends AbstractPacket<MessageSendServerTab>{
         int fileAmount = buf.readInt();
         for(int i = 0; i < fileAmount; i++) {
             try {
-                File file = new File(folder.getAbsolutePath() + "\\" + ByteBufUtils.readUTF8String(buf));
+                File file = new File(folder.getAbsolutePath() + File.separator + ByteBufUtils.readUTF8String(buf));
                 byte[] fileBytes = new byte[buf.readInt()];
                 buf.readBytes(fileBytes);
                 FileOutputStream stream = new FileOutputStream(file);
