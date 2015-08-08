@@ -8,3 +8,5 @@ A Grass Block is a [link{server/test1}]block [link{}]that was introduced very ea
 In mining, grass blocks behave just like [link{block/dirt}]Dirt [link{}]- they drop dirt resources and are best dug with a shovel; however, they make a different sound when harvested and take slightly longer to dig up. This can be used to tell when the player is about to break the surface when tunneling upwards.
 
 Color test: [color{FFFFFF}]white [color{FF0000}]red, still red, [prefix{l}]still red
+
+Variables: [variable{igwmod:test1}], [variable{igwmod:test2}]
