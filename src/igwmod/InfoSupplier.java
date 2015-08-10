@@ -140,6 +140,7 @@ public class InfoSupplier{
                                     if(code.startsWith("variable{")) {
                                         String cutString = line.substring(0, i) + VariableHandler.getVariable(code.substring("variable{".length(), code.length() - 1)) + line.substring(j + 1, line.length());
                                         fileInfo.set(k, cutString);
+                                        line = cutString;
                                     }
                                 }
                             } catch(IllegalArgumentException e) {

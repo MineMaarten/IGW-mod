@@ -100,7 +100,7 @@ public class GuiWiki extends GuiContainer{
 
     @Override
     public void initGui(){
-        if(mc.gameSettings.guiScale != 0) {
+        if(mc.gameSettings.guiScale != 0 && ConfigHandler.shouldAutoScale) {
             oldGuiScale = mc.gameSettings.guiScale;
             mc.gameSettings.guiScale = 0;
             mc.displayGuiScreen(this);
@@ -167,7 +167,7 @@ public class GuiWiki extends GuiContainer{
     public void onGuiClosed(){
         super.onGuiClosed();
         Keyboard.enableRepeatEvents(false);
-        mc.gameSettings.guiScale = oldGuiScale;
+        if(ConfigHandler.shouldAutoScale) mc.gameSettings.guiScale = oldGuiScale;
     }
 
     @Override

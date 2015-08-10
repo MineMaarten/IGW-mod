@@ -22,6 +22,8 @@ public class LocatedTexture implements IReservedSpace, IWidget{
     public ResourceLocation texture;
     public int x, y, width, height;
     private int textureId;
+    private boolean useAlpha;
+    private double alpha;
 
     public LocatedTexture(ResourceLocation texture, int x, int y, int width, int height){
         this.texture = texture;
@@ -32,7 +34,7 @@ public class LocatedTexture implements IReservedSpace, IWidget{
 
         if(texture.getResourcePath().startsWith("server")) {
             try {
-                BufferedImage image = ImageIO.read(new FileInputStream(new File(IGWMod.proxy.getSaveLocation() + File.separator + "igwmod"+ File.separator + texture.getResourcePath().substring(7))));
+                BufferedImage image = ImageIO.read(new FileInputStream(new File(IGWMod.proxy.getSaveLocation() + File.separator + "igwmod" + File.separator + texture.getResourcePath().substring(7))));
                 DynamicTexture t = new DynamicTexture(image);
                 textureId = t.getGlTextureId();
             } catch(Exception e) {
@@ -63,6 +65,12 @@ public class LocatedTexture implements IReservedSpace, IWidget{
         }
     }
 
+    public LocatedTexture setAlpha(double alpha){
+        this.alpha = alpha;
+        useAlpha = true;
+        return this;
+    }
+
     @Override
     public Rectangle getReservedSpace(){
         return new Rectangle(x, y, width, height);
@@ -75,7 +83,16 @@ public class LocatedTexture implements IReservedSpace, IWidget{
         } else {
             gui.mc.getTextureManager().bindTexture(texture);
         }
+        if(useAlpha) {
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            GL11.glColor4d(1, 1, 1, alpha);
+        }
         drawTexture(x, y, width, height);
+        if(useAlpha) {
+            GL11.glDisable(GL11.GL_BLEND);
+            GL11.glColor4d(1, 1, 1, 1);
+        }
     }
 
     @Override

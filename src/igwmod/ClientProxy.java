@@ -1,5 +1,6 @@
 package igwmod;
 
+import igwmod.api.VariableRetrievalEvent;
 import igwmod.api.WikiRegistry;
 import igwmod.gui.tabs.BlockAndItemWikiTab;
 import igwmod.gui.tabs.EntityWikiTab;
@@ -34,6 +35,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -63,6 +65,7 @@ public class ClientProxy implements IProxy{
         openInterfaceKey = new KeyBinding("igwmod.keys.wiki", Constants.DEFAULT_KEYBIND_OPEN_GUI, "igwmod.keys.category");//TODO blend keybinding category in normal
         ClientRegistry.registerKeyBinding(openInterfaceKey);
         FMLCommonHandler.instance().bus().register(this);//subscribe to key events.
+        MinecraftForge.EVENT_BUS.register(this);
 
         ConfigHandler.init(event.getSuggestedConfigurationFile());
 
@@ -75,6 +78,15 @@ public class ClientProxy implements IProxy{
         WikiRegistry.registerRecipeIntegrator(new IntegratorFurnace());
         WikiRegistry.registerRecipeIntegrator(new IntegratorStack());
         WikiRegistry.registerRecipeIntegrator(new IntegratorComment());
+    }
+
+    @SubscribeEvent
+    public void onVariableTest(VariableRetrievalEvent event){
+        if(event.variableName.equals("igwmod:test1")) {
+            event.replacementValue = "value1";
+        } else if(event.variableName.equals("igwmod:test2")) {
+            event.replacementValue = "value2";
+        }
     }
 
     @SubscribeEvent

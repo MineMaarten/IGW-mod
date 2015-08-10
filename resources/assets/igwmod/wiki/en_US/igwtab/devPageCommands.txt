@@ -80,5 +80,5 @@ This command is used to link to other pages or urls by adding in clickable text.
 
 You can simply do link{block/pistonBase} to refer to the Piston's wikipage. When the link is another page, the link address is relative to assets/igwmod/wiki/<language>/
 
-[prefix{n}]variable{<variableName>} prefix{}]
+[prefix{n}]variable{<variableName>} [prefix{}]
 This is a command is used as a bridge between a page and code. It allows you to mention values on a wikipage that can change, like config options, or values prone to change. When using this command, a VariableRetrievalEvent is fired with the <variableName>. See this class for more information.
