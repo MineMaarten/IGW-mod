@@ -10,6 +10,8 @@ import igwmod.lib.Constants;
 import igwmod.lib.IGWLog;
 import igwmod.lib.Paths;
 import igwmod.lib.Util;
+import igwmod.network.MessageSendServerTab;
+import igwmod.network.NetworkHandler;
 import igwmod.recipeintegration.IntegratorComment;
 import igwmod.recipeintegration.IntegratorCraftingRecipe;
 import igwmod.recipeintegration.IntegratorFurnace;
@@ -17,6 +19,9 @@ import igwmod.recipeintegration.IntegratorImage;
 import igwmod.recipeintegration.IntegratorStack;
 import igwmod.render.TooltipOverlayHandler;
 
+
+
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -31,12 +36,14 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -69,7 +76,12 @@ public class ClientProxy implements IProxy{
         MinecraftForge.EVENT_BUS.register(this);
 
         ConfigHandler.init(event.getSuggestedConfigurationFile());
-        WikiRegistry.registerWikiTab(new ServerWikiTab());
+        //Allow for local server igwmod folder. For modpacks, etc.
+        File serverFolder = new File(getSaveLocation() + File.separator + "igwmod" + File.separator);
+        if(serverFolder.exists()){ 
+        	WikiRegistry.registerWikiTab(new ServerWikiTab());
+        }
+        
         WikiRegistry.registerWikiTab(new IGWWikiTab());
         WikiRegistry.registerWikiTab(new BlockAndItemWikiTab());
         WikiRegistry.registerWikiTab(new EntityWikiTab());
