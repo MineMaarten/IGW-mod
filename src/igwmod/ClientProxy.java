@@ -2,6 +2,7 @@ package igwmod;
 
 import igwmod.api.VariableRetrievalEvent;
 import igwmod.api.WikiRegistry;
+import igwmod.gui.tabs.ServerWikiTab;
 import igwmod.gui.tabs.BlockAndItemWikiTab;
 import igwmod.gui.tabs.EntityWikiTab;
 import igwmod.gui.tabs.IGWWikiTab;
@@ -68,7 +69,7 @@ public class ClientProxy implements IProxy{
         MinecraftForge.EVENT_BUS.register(this);
 
         ConfigHandler.init(event.getSuggestedConfigurationFile());
-
+        WikiRegistry.registerWikiTab(new ServerWikiTab());
         WikiRegistry.registerWikiTab(new IGWWikiTab());
         WikiRegistry.registerWikiTab(new BlockAndItemWikiTab());
         WikiRegistry.registerWikiTab(new EntityWikiTab());
@@ -201,7 +202,7 @@ public class ClientProxy implements IProxy{
     @Override
     public String getSaveLocation(){
         String mcDataLocation = Minecraft.getMinecraft().mcDataDir.getAbsolutePath();
-        return mcDataLocation.substring(0, mcDataLocation.length() - 2);
+        return mcDataLocation;
     }
 
     @Override
