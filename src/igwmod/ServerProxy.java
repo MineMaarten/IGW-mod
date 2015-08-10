@@ -50,7 +50,7 @@ public class ServerProxy implements IProxy{
     @Override
     public String getSaveLocation(){
         String mcDataLocation = FMLServerHandler.instance().getSavesDirectory().getAbsolutePath();
-        return mcDataLocation.substring(0, mcDataLocation.length() - 2);
+        return mcDataLocation;
     }
 
     @Override

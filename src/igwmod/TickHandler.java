@@ -30,6 +30,10 @@ public class TickHandler{
                 ticksExisted++;
                 MovingObjectPosition lookedObject = FMLClientHandler.instance().getClient().objectMouseOver;
                 if(lookedObject != null) {
+                	if(ConfigHandler.shouldFirstTimeLaunch){
+                		TickHandler.openWikiGui();
+                		ConfigHandler.disableFirstTimeLaunch();
+                	}
                     if(lookedObject.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
                         if(lastEntityHovered == lookedObject.entityHit) {
                             ticksHovered++;
@@ -69,6 +73,12 @@ public class TickHandler{
     public static void openWikiGui(){
         // if(showTooltip()) {
         ConfigHandler.disableTooltip();
+        if(ConfigHandler.shouldFirstTimeLaunch){
+        	
+        	GuiWiki gui = new GuiWiki();
+            FMLCommonHandler.instance().showGuiScreen(gui);
+            gui.setCurrentFile("server/FirstRun");
+        }
         if(lastEntityHovered != null) {
             GuiWiki gui = new GuiWiki();
             FMLCommonHandler.instance().showGuiScreen(gui);
