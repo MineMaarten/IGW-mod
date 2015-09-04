@@ -1,5 +1,3 @@
--Added 'setAlpha(double)' to LocatedTexture to allow for textures with.. you guessed it, alpha.
--Added config option to disable the auto-scaling to GUI scale AUTO when having the IGW GUI open.
-
--Bugfix: Crash when pressing 'i' when looking at an entity which doesn't have info.
--Bugfix: You can only have one [variable] command one a line.
+-Added way to remap pages through JSON.
+-Page links that contain 'http' will now also be recognized as web links.
+-Added config option that allows configuring a page that is opened when the player joins the world/server.

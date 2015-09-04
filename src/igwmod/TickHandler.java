@@ -27,6 +27,16 @@ public class TickHandler{
         if(event.phase == TickEvent.Phase.END) {
             EntityPlayer player = event.player;
             if(player == FMLClientHandler.instance().getClient().thePlayer) {
+                if(!ConfigHandler.popupPage.equals("")) {
+                    GuiWiki gui = new GuiWiki();
+                    FMLCommonHandler.instance().showGuiScreen(gui);
+                    gui.setCurrentFile(ConfigHandler.popupPage);
+                    if(!ConfigHandler.popupPageEveryTime) {
+                        ConfigHandler.disablePopUpPage();
+                    } else {
+                        ConfigHandler.popupPage = "";
+                    }
+                }
                 ticksExisted++;
                 MovingObjectPosition lookedObject = FMLClientHandler.instance().getClient().objectMouseOver;
                 if(lookedObject != null) {
