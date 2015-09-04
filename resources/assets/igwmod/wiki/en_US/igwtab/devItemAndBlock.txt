@@ -20,3 +20,14 @@
  
  There are blocks/items where this system doesn't work that great with. For example, take a look at the Enchanted Book. If you look at the name, you'll see it tells "minecraft:item/enchantedBook". And it does that for every enchanted book, regardless of the enchant. So you could only write a wikipage about Enchanted Books in general. To distinguish each of the enchants, code is needed. If you're a mod developer, take a look at the BlockWikiEvent.java and ItemWikiEvent.java. Note that you then also need to register the item/block page with WikiRegistry.registerBlockAndItemPageEntry() method.
  
+ [prefix{n}]Remapping pages[prefix{}]
+ It might be desired to not have 1 page per item/block. You might have a collection of blocks/items that can be explained using one page. Take for example PneumaticCraft's Assembly system. There is only one page to describe all components of the system. When you load up the page of one of the machines they all link to that single page.
+ 
+ This can be done in the code, but also through a json file. The file has to be created as follows: "resources/assets/<modid>/wiki/pageMappings.json". Now you can lay out the page that other pages need to be redirected to on the left, and pages that need to be redirected on the right:
+ 
+ {
+    "minecraft:item/ingotIron" : ["minecraft:item/ingotGold", "minecraft:item/blockIron"],
+    "minecraft:block/glowstone" : ["minecraft:item/glowstoneDust"]
+ }
+ 
+ This json file would remap looking up the page of Gold Ingot or a Block of Iron to an Iron Ingot, and Glowstone Dust to a block of Glowstone (provided I got the vanilla unlocalized names right).

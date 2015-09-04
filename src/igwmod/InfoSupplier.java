@@ -14,6 +14,7 @@ import java.awt.Rectangle;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -92,10 +93,8 @@ public class InfoSupplier{
                 String s = IGWMod.proxy.getSaveLocation() + File.separator + "igwmod" + File.separator + oldObjectName.substring(7) + ".txt";
                 stream = new FileInputStream(new File(s));
             } else {
-                IResourceManager manager = FMLClientHandler.instance().getClient().getResourceManager();
                 ResourceLocation location = infoMap.get(objectName);
-                IResource resource = manager.getResource(location);
-                stream = resource.getInputStream();
+                stream = getStreamForResource(location);
             }
 
             BufferedReader br = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
@@ -110,6 +109,12 @@ public class InfoSupplier{
         } catch(Exception e) {
             return null;
         }
+    }
+
+    public static InputStream getStreamForResource(ResourceLocation resource) throws IOException{
+        IResourceManager manager = FMLClientHandler.instance().getClient().getResourceManager();
+        IResource r = manager.getResource(resource);
+        return r.getInputStream();
     }
 
     @SideOnly(Side.CLIENT)

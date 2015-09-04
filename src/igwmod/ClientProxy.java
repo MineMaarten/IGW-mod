@@ -5,6 +5,7 @@ import igwmod.api.WikiRegistry;
 import igwmod.gui.tabs.BlockAndItemWikiTab;
 import igwmod.gui.tabs.EntityWikiTab;
 import igwmod.gui.tabs.IGWWikiTab;
+import igwmod.json.JsonRegistrator;
 import igwmod.lib.Constants;
 import igwmod.lib.IGWLog;
 import igwmod.lib.Paths;
@@ -98,6 +99,7 @@ public class ClientProxy implements IProxy{
 
     @Override
     public void postInit(){
+        JsonRegistrator.init();
         addDefaultKeys();
     }
 
