@@ -105,7 +105,7 @@ public class TickHandler{
                 World world = FMLClientHandler.instance().getClient().theWorld;
                 Block block = world.getBlock(xHovered, yHovered, zHovered);
                 if(block != null) {
-                    ItemStack idPicked = block.getPickBlock(FMLClientHandler.instance().getClient().objectMouseOver, world, xHovered, yHovered, zHovered);
+                    ItemStack idPicked = block.getPickBlock(FMLClientHandler.instance().getClient().objectMouseOver, world, xHovered, yHovered, zHovered, FMLClientHandler.instance().getClientPlayerEntity());
                     return (idPicked != null ? idPicked : new ItemStack(block, 1, world.getBlockMetadata(xHovered, yHovered, zHovered))).getDisplayName();
                 }
             } catch(Throwable e) {}

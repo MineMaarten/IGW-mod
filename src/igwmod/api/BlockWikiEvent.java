@@ -26,7 +26,7 @@ public class BlockWikiEvent extends WorldEvent{
         metadata = world.getBlockMetadata(x, y, z);
         block = world.getBlock(x, y, z);
         try {
-            itemStackPicked = block.getPickBlock(FMLClientHandler.instance().getClient().objectMouseOver, world, x, y, z);
+            itemStackPicked = block.getPickBlock(FMLClientHandler.instance().getClient().objectMouseOver, world, x, y, z, FMLClientHandler.instance().getClientPlayerEntity());
         } catch(Throwable e) {}//FMP parts have the habit to throw a ClassCastException.
         drawnStack = itemStackPicked != null ? itemStackPicked : new ItemStack(block, 1, metadata);
     }

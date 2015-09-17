@@ -1,3 +1,1 @@
--Added way to remap pages through JSON.
--Page links that contain 'http' will now also be recognized as web links.
--Added config option that allows configuring a page that is opened when the player joins the world/server.
+-Bugfix: IGW fails to look up pages.
