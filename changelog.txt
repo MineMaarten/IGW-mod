@@ -1,1 +1,1 @@
--Update to MC1.8
+-Update to MC1.8.8

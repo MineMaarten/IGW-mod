@@ -1,6 +1,7 @@
 package igwmod.gui;
 
 import igwmod.IGWMod;
+import igwmod.TessWrapper;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -11,8 +12,6 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
@@ -85,13 +84,12 @@ public class LocatedTexture implements IReservedSpace, IWidget{
     public static void drawTexture(int x, int y, int width, int heigth){
         int minYCap = Math.max(0, GuiWiki.MIN_TEXT_Y - y);
         int maxYCap = Math.min(heigth, GuiWiki.MAX_TEXT_Y - y);
-        WorldRenderer wr = Tessellator.getInstance().getWorldRenderer();
-        wr.startDrawingQuads();
-        wr.addVertexWithUV(x, y + maxYCap, 0, 0.0, (float)maxYCap / heigth);//TODO render at right Z level
-        wr.addVertexWithUV(x + width, y + maxYCap, 0, 1.0, (float)maxYCap / heigth);
-        wr.addVertexWithUV(x + width, y + minYCap, 0, 1, (float)minYCap / heigth);
-        wr.addVertexWithUV(x, y + minYCap, 0, 0, (float)minYCap / heigth);
-        Tessellator.getInstance().draw();
+        TessWrapper.startDrawingQuads();
+        TessWrapper.addVertexWithUV(x, y + maxYCap, 0, 0.0, (float)maxYCap / heigth);//TODO render at right Z level
+        TessWrapper.addVertexWithUV(x + width, y + maxYCap, 0, 1.0, (float)maxYCap / heigth);
+        TessWrapper.addVertexWithUV(x + width, y + minYCap, 0, 1, (float)minYCap / heigth);
+        TessWrapper.addVertexWithUV(x, y + minYCap, 0, 0, (float)minYCap / heigth);
+        TessWrapper.draw();
         // this.drawTexturedModalRect(x, y, 0, 0, 16, 16);
     }
 

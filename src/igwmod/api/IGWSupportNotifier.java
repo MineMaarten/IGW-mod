@@ -86,17 +86,17 @@ public class IGWSupportNotifier{
         }
 
         @Override
-        public String getName(){
+        public String getCommandName(){
             return "igwmod_download";
         }
 
         @Override
         public String getCommandUsage(ICommandSender p_71518_1_){
-            return getName();
+            return getCommandName();
         }
 
         @Override
-        public void execute(ICommandSender p_71515_1_, String[] p_71515_2_){
+        public void processCommand(ICommandSender p_71515_1_, String[] p_71515_2_){
             new ThreadDownloadIGW();
         }
 
