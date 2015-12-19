@@ -90,7 +90,7 @@ public class IntegratorCraftingRecipe implements IRecipeIntegrator{
                 }
             }
             locatedStacks.add(new LocatedStack(recipe.getRecipeOutput(), x + RESULT_STACK_X_OFFSET, y + RESULT_STACK_Y_OFFSET));
-            locatedStrings.add(new LocatedString(I18n.format("igwmod.gui.crafting.shaped"), x + 60, y + 10, 0xFF000000, false));
+            locatedStrings.add(new LocatedString(I18n.format("igwmod.gui.crafting.shaped"), x * 2 + 120, y * 2 + 10, 0xFF000000, false));
         } else if(recipeEvent.recipe instanceof ShapedOreRecipe) {
             ShapedOreRecipe recipe = (ShapedOreRecipe)recipeEvent.recipe;
             int recipeHeight = 0;

@@ -664,7 +664,7 @@ public class GuiWiki extends GuiContainer{
                 } else {
                     boolean oldSetting = mc.gameSettings.fancyGraphics;
                     mc.gameSettings.fancyGraphics = true;
-                    renderRotatingBlockIntoGUI(this, drawingStack, 12, 26, 1.2F);
+                    renderRotatingBlockIntoGUI(this, drawingStack, 12, 20, 1.2F);
                     mc.gameSettings.fancyGraphics = oldSetting;
                 }
             }
