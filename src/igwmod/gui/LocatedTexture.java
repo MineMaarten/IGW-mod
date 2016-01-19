@@ -84,7 +84,7 @@ public class LocatedTexture implements IReservedSpace, IWidget{
     public static void drawTexture(int x, int y, int width, int heigth){
         int minYCap = Math.max(0, GuiWiki.MIN_TEXT_Y - y);
         int maxYCap = Math.min(heigth, GuiWiki.MAX_TEXT_Y - y);
-        TessWrapper.startDrawingQuads();
+        TessWrapper.startDrawingTexturedQuads();
         TessWrapper.addVertexWithUV(x, y + maxYCap, 0, 0.0, (float)maxYCap / heigth);//TODO render at right Z level
         TessWrapper.addVertexWithUV(x + width, y + maxYCap, 0, 1.0, (float)maxYCap / heigth);
         TessWrapper.addVertexWithUV(x + width, y + minYCap, 0, 1, (float)minYCap / heigth);
