@@ -22,12 +22,7 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
 public class BlockAndItemWikiTab implements IWikiTab{
-    public static RenderItem itemRenderer;
     private static ItemStack drawingStack;
-
-    static {
-        itemRenderer = Minecraft.getMinecraft().getRenderItem();
-    }
 
     @Override
     public String getName(){
@@ -88,7 +83,7 @@ public class BlockAndItemWikiTab implements IWikiTab{
                 GL11.glPushMatrix();
                 GL11.glTranslated(49, 20, 0);
                 GL11.glScaled(2.2, 2.2, 2.2);
-                itemRenderer.renderItemAndEffectIntoGUI(drawingStack, 0, 0);
+                Minecraft.getMinecraft().getRenderItem().renderItemAndEffectIntoGUI(drawingStack, 0, 0);
                 GL11.glPopMatrix();
             }
         }

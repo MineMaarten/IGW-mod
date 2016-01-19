@@ -31,7 +31,11 @@ class ContainerBlockWiki extends Container{
                     public boolean isItemValid(ItemStack par1ItemStack){
                         return false;
                     }
-                });
+                });                
+                if(stack.stack.getItemDamage() == 32767)//TODO better way to handle wildcard value.
+                {
+                    stack.stack.setItemDamage(0);
+                }
                 inventory.setInventorySlotContents(curSlot++, stack.stack);
             }
         }
