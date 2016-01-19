@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -34,9 +33,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.event.FMLInterModComms.IMCEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -51,18 +50,16 @@ public class ClientProxy implements IProxy{
 
     @Override
     public void preInit(FMLPreInitializationEvent event){
-        FMLCommonHandler.instance().bus().register(new TickHandler());
+        MinecraftForge.EVENT_BUS.register(new TickHandler());
 
-        FMLCommonHandler.instance().bus().register(new TooltipOverlayHandler());
+        MinecraftForge.EVENT_BUS.register(new TooltipOverlayHandler());
 
         //Not being used, as it doesn't really add anything...
         // MinecraftForge.EVENT_BUS.register(new HighlightHandler());
 
-        //We don't need a proxy here, since this is a client-only mod.
-
         openInterfaceKey = new KeyBinding("igwmod.keys.wiki", Constants.DEFAULT_KEYBIND_OPEN_GUI, "igwmod.keys.category");//TODO blend keybinding category in normal
         ClientRegistry.registerKeyBinding(openInterfaceKey);
-        FMLCommonHandler.instance().bus().register(this);//subscribe to key events.
+        MinecraftForge.EVENT_BUS.register(this);//subscribe to key events.
 
         ConfigHandler.init(event.getSuggestedConfigurationFile());
 
@@ -117,13 +114,13 @@ public class ClientProxy implements IProxy{
         }
 
         //Register all entities that have (default) pages to the entity page.
-        for(Map.Entry<String, Class<? extends Entity>> entry : (Set<Map.Entry<String, Class<? extends Entity>>>)EntityList.stringToClassMapping.entrySet()) {
+        for(Map.Entry<String, Class<? extends Entity>> entry : EntityList.stringToClassMapping.entrySet()) {
             String modid = Util.getModIdForEntity(entry.getValue());
             if(InfoSupplier.getInfo(modid, "entity/" + entry.getKey(), true) != null) WikiRegistry.registerEntityPageEntry(entry.getValue());
         }
 
         //Add automatically generated crafting recipe key mappings.
-        for(IRecipe recipe : (List<IRecipe>)CraftingManager.getInstance().getRecipeList()) {
+        for(IRecipe recipe : CraftingManager.getInstance().getRecipeList()) {
             if(recipe.getRecipeOutput() != null && recipe.getRecipeOutput().getItem() != null) {
                 try {
                     if(recipe.getRecipeOutput().getUnlocalizedName() == null) {
@@ -140,7 +137,7 @@ public class ClientProxy implements IProxy{
         }
 
         //Add automatically generated furnace recipe key mappings.
-        for(Map.Entry<ItemStack, ItemStack> entry : (Set<Map.Entry<ItemStack, ItemStack>>)FurnaceRecipes.instance().getSmeltingList().entrySet()) {
+        for(Map.Entry<ItemStack, ItemStack> entry : FurnaceRecipes.instance().getSmeltingList().entrySet()) {
             if(entry.getValue() != null && entry.getValue().getItem() != null) {
                 String blockCode = WikiUtils.getNameFromStack(entry.getValue());
                 if(!IntegratorFurnace.autoMappedFurnaceRecipes.containsKey(blockCode)) IntegratorFurnace.autoMappedFurnaceRecipes.put(blockCode, entry.getKey());

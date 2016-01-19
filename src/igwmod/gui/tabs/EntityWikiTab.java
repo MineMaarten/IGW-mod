@@ -113,7 +113,7 @@ public class EntityWikiTab implements IWikiTab{
          //GL11.glRotated(20, 1, 0, 1);
          GL11.glRotatef(-30.0F, 1.0F, 0.0F, 0.0F);
          GL11.glRotated(TickHandler.ticksExisted + partialTicks, 0, 1, 0);
-         RenderManager.instance.renderEntityWithPosYaw(entity, 0D, 0D, 0.0D, 0, partialTicks);
+         Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entity, 0D, 0D, 0.0D, 0, partialTicks);
          GL11.glPopMatrix();
          GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
          GL11.glDisable(GL11.GL_LIGHTING);
