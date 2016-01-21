@@ -689,6 +689,7 @@ public class GuiWiki extends GuiContainer{
     }
 
     private IWikiTab getTabForPage(String page){
+        if(page == null) return null; //When there isn't a valid page just stay on the same page.
         if(currentTab != null) {//give the current tab the highest priority.
             List<IPageLink> links = currentTab.getPages(null);
             if(links != null) {

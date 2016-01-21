@@ -1,1 +1,4 @@
--Update to MC1.8.8
+(Ported from 1.7)
+-Bugfix: Crash when a mod doesn't set a name for an item/block.
+-Bugfix: Crash when opening the GUI with some mods.
+-Bugfix: Crash when mod adds null item stacks to getSubItems() (why >.>).

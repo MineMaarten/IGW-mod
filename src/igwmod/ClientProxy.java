@@ -104,12 +104,14 @@ public class ClientProxy implements IProxy{
         }
 
         for(ItemStack stack : allCreativeStacks) {
-            if(stack.getItem() != null && GameData.getItemRegistry().getNameForObject(stack.getItem()) != null) {
+            if(stack != null && stack.getItem() != null && GameData.getItemRegistry().getNameForObject(stack.getItem()) != null) {
                 String modid = Paths.MOD_ID.toLowerCase();
                 UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(stack.getItem());
                 if(id != null && id.modId != null) modid = id.modId.toLowerCase();
-                List<String> info = InfoSupplier.getInfo(modid, WikiUtils.getNameFromStack(stack), true);
-                if(info != null) WikiRegistry.registerBlockAndItemPageEntry(stack);
+                if(stack.getUnlocalizedName() != null) {
+                    List<String> info = InfoSupplier.getInfo(modid, WikiUtils.getNameFromStack(stack), true);
+                    if(info != null) WikiRegistry.registerBlockAndItemPageEntry(stack);
+                }
             }
         }
 
