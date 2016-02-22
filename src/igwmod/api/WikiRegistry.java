@@ -83,7 +83,12 @@ public class WikiRegistry{
     }
 
     public static String getPageForEntityClass(Class<? extends Entity> entityClass){
-        return entityPageEntries.get(entityClass);
+        String page = entityPageEntries.get(entityClass);
+        if(page != null) {
+            return page;
+        } else {
+            return "entity/" + EntityList.classToStringMapping.get(entityClass);
+        }
     }
 
     public static List<ItemStack> getItemAndBlockPageEntries(){
