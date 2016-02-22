@@ -16,7 +16,7 @@ buildscript {
 }
 
 plugins {
-  id "com.matthewprenger.cursegradle" version "1.0.5"
+  id "com.matthewprenger.cursegradle" version "1.0.7"
 }
 
 repositories {
@@ -35,7 +35,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 project.ext {
 	massive = "1"
     major = "2"
-    minor = "3"
+    minor = "4"
     mcVersion = "1.8.9"
 }
 
@@ -95,19 +95,21 @@ minecraft {
 
 }
 
-/*curse {
+curseforge {
     apiKey = System.getenv("minemaarten_curse")
-    projectId = "223815" // my project url is http://minecraft.curseforge.com/mc-mods/59652-seretroomsmod/
-    changelog = new File('changelog.txt').text
-    releaseType = "release"
+	project{
+		id = "223815" // my project url is http://minecraft.curseforge.com/mc-mods/59652-seretroomsmod/
+		changelog = new File('changelog.txt').text
+		releaseType = "release"
 
-    // the default obfuscated jar is uploaded by default
-    // artifact = project.file("some/jar/to/upload.jar")
+		// the default obfuscated jar is uploaded by default
+		// artifact = project.file("some/jar/to/upload.jar")
 
-    // allows you to add extra compatible MC versions. The one specified in the minecraft{} block is used by default.
-    // addGameVersion "1.7.1"
-    // addGameversion "1.7.0", "1.7.4"
-}*/
+		// allows you to add extra compatible MC versions. The one specified in the minecraft{} block is used by default.
+		// addGameVersion "1.7.1"
+		// addGameversion "1.7.0", "1.7.4"
+	}
+}
 
 // configure the source folders
 sourceSets {
