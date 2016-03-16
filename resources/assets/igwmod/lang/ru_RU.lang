@@ -12,3 +12,6 @@ igwtab.entry.devIntro=Разработка: Вступление
 igwtab.entry.devItemAndBlock=Разработка: страница блоков и предметов
 igwtab.entry.devPageCommands=Разработка: команды на страницах
 igwtab.entry.devForModders=Разработка: Для мододелов
+
+igwmod.gui.crafting.shapeless=Бесформенный рецепт
+igwmod.gui.crafting.shaped=Форменный рецепт
