@@ -12,7 +12,7 @@ import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
 import org.lwjgl.opengl.GL11;
@@ -107,7 +107,7 @@ public class LocatedString extends Gui implements IPageLink, GuiYesNoCallback{
         // RenderHelper.enableStandardItemLighting();
         if(getLinkAddress() != null) {
             Rectangle mouseSpace = getMouseSpace();
-            fontRenderer.drawString(EnumChatFormatting.UNDERLINE + cappedText, x, y, mouseSpace.contains(mouseX - gui.getGuiLeft(), mouseY - gui.getGuiTop()) ? 0xFFFFFF00 : 0xFF3333FF, shadow);
+            fontRenderer.drawString(TextFormatting.UNDERLINE + cappedText, x, y, mouseSpace.contains(mouseX - gui.getGuiLeft(), mouseY - gui.getGuiTop()) ? 0xFFFFFF00 : 0xFF3333FF, shadow);
         } else {
             GL11.glColor4d(0, 0, 0, 1);
             fontRenderer.drawString(cappedText, x, y, color, shadow);

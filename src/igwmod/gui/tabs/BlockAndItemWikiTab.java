@@ -14,7 +14,6 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -31,7 +30,7 @@ public class BlockAndItemWikiTab implements IWikiTab{
 
     @Override
     public ItemStack renderTabIcon(GuiWiki gui){
-        return new ItemStack(Blocks.grass);
+        return new ItemStack(Blocks.GRASS);
     }
 
     @Override

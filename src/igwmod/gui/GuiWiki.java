@@ -32,11 +32,12 @@ import net.minecraft.client.renderer.entity.RenderEntityItem;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -173,12 +174,13 @@ public class GuiWiki extends GuiContainer{
         Keyboard.enableRepeatEvents(false);
         mc.gameSettings.guiScale = oldGuiScale;
     }
-
+    
     @Override
-    protected void handleMouseClick(Slot slot, int x, int y, int mouse){
-        if(slot != null && slot.getHasStack()) {
-            setCurrentFile(slot.getStack());
-        }
+    protected void handleMouseClick(Slot slot, int slotId, int mouseButton,
+    		ClickType type) {
+    	 if(slot != null && slot.getHasStack()) {
+             setCurrentFile(slot.getStack());
+         }
     }
 
     @Override

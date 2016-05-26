@@ -11,12 +11,8 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
     }
-}
-
-plugins {
-  id "com.matthewprenger.cursegradle" version "1.0.7"
 }
 
 repositories {
@@ -34,9 +30,9 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 project.ext {
 	massive = "1"
-    major = "2"
-    minor = "4"
-    mcVersion = "1.8.9"
+    major = "3"
+    minor = "0"
+    mcVersion = "1.9.4"
 }
 
 
@@ -72,7 +68,7 @@ dependencies {
 }
 
 minecraft {
-    version = "11.15.0.1675"
+    version = "1.9.4-12.17.0.1910-1.9.4"
     runDir = "eclipse"
     
     // the mappings can be changed at any time, and must be in the following format.
@@ -80,7 +76,7 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not allways work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20151230"
+    mappings = "snapshot_20160518"
 
     // replacing stuff in the source
 	replace '@MASSIVE@', project.massive
@@ -93,22 +89,6 @@ minecraft {
         replace '@BUILD_NUMBER@', 0
     }
 
-}
-
-curseforge {
-    apiKey = System.getenv("minemaarten_curse")
-	project{
-		id = "223815" // my project url is http://minecraft.curseforge.com/mc-mods/59652-seretroomsmod/
-		changelog = new File('changelog.txt').text
-		releaseType = "release"
-
-		// the default obfuscated jar is uploaded by default
-		// artifact = project.file("some/jar/to/upload.jar")
-
-		// allows you to add extra compatible MC versions. The one specified in the minecraft{} block is used by default.
-		// addGameVersion "1.7.1"
-		// addGameversion "1.7.0", "1.7.4"
-	}
 }
 
 // configure the source folders

@@ -33,6 +33,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -42,8 +43,6 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.registry.GameData;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
 
 public class ClientProxy implements IProxy{
     public static KeyBinding openInterfaceKey;
@@ -90,7 +89,7 @@ public class ClientProxy implements IProxy{
         //Register all basic items that have (default) pages to the item and blocks page.
         List<ItemStack> allCreativeStacks = new ArrayList<ItemStack>();
 
-        Iterator iterator = Item.itemRegistry.iterator();
+        Iterator iterator = Item.REGISTRY.iterator();
         while(iterator.hasNext()) {
             Item item = (Item)iterator.next();
 
@@ -106,8 +105,8 @@ public class ClientProxy implements IProxy{
         for(ItemStack stack : allCreativeStacks) {
             if(stack != null && stack.getItem() != null && GameData.getItemRegistry().getNameForObject(stack.getItem()) != null) {
                 String modid = Paths.MOD_ID.toLowerCase();
-                UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(stack.getItem());
-                if(id != null && id.modId != null) modid = id.modId.toLowerCase();
+                ResourceLocation id = Item.REGISTRY.getNameForObject(stack.getItem());
+                if(id != null && id.getResourceDomain() != null) modid = id.getResourceDomain().toLowerCase();
                 if(stack.getUnlocalizedName() != null) {
                     List<String> info = InfoSupplier.getInfo(modid, WikiUtils.getNameFromStack(stack), true);
                     if(info != null) WikiRegistry.registerBlockAndItemPageEntry(stack);
@@ -116,7 +115,7 @@ public class ClientProxy implements IProxy{
         }
 
         //Register all entities that have (default) pages to the entity page.
-        for(Map.Entry<String, Class<? extends Entity>> entry : EntityList.stringToClassMapping.entrySet()) {
+        for(Map.Entry<String, Class<? extends Entity>> entry : EntityList.NAME_TO_CLASS.entrySet()) {
             String modid = Util.getModIdForEntity(entry.getValue());
             if(InfoSupplier.getInfo(modid, "entity/" + entry.getKey(), true) != null) WikiRegistry.registerEntityPageEntry(entry.getValue());
         }

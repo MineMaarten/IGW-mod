@@ -48,6 +48,6 @@ public abstract class LocationDoublePacket<REQ extends IMessage> extends Abstrac
 
     public NetworkRegistry.TargetPoint getTargetPoint(World world, double updateDistance){
 
-        return new NetworkRegistry.TargetPoint(world.provider.getDimensionId(), x, y, z, updateDistance);
+        return new NetworkRegistry.TargetPoint(world.provider.getDimension(), x, y, z, updateDistance);
     }
 }

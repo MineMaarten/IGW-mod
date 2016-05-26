@@ -10,8 +10,8 @@ import java.util.List;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
 
 public class WikiUtils{
     private static HashMap<String, ItemStack> unlocMap;
@@ -21,7 +21,7 @@ public class WikiUtils{
             unlocMap = new HashMap<String, ItemStack>();
             List<ItemStack> stackList = new ArrayList<ItemStack>();
 
-            Iterator iterator = Item.itemRegistry.iterator();
+            Iterator iterator = Item.REGISTRY.iterator();
             while(iterator.hasNext()) {
                 Item item = (Item)iterator.next();
 
@@ -57,8 +57,8 @@ public class WikiUtils{
         if(stack.getItem() == null) {
             IGWLog.warning("Found an ItemStack with a null item! This isn't supposed to happen!");
         } else {
-            UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(stack.getItem());
-            if(id != null && id.modId != null) modid = id.modId.toLowerCase();
+        	ResourceLocation id = Item.REGISTRY.getNameForObject(stack.getItem());
+            if(id != null && id.getResourceDomain() != null) modid = id.getResourceDomain().toLowerCase();
         }
         return modid;
     }

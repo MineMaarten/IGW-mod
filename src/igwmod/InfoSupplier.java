@@ -24,8 +24,8 @@ import java.util.List;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -143,8 +143,8 @@ public class InfoSupplier{
                                     }
                                 }
                             } catch(IllegalArgumentException e) {
-                                fileInfo.add(EnumChatFormatting.RED + "Problem when parsing \"" + line.substring(i + 1, j) + "\":");
-                                fileInfo.add(EnumChatFormatting.RED + e.getMessage());
+                                fileInfo.add(TextFormatting.RED + "Problem when parsing \"" + line.substring(i + 1, j) + "\":");
+                                fileInfo.add(TextFormatting.RED + e.getMessage());
                                 IGWLog.warning(e.getMessage());
                             }
                             break;
@@ -214,7 +214,7 @@ public class InfoSupplier{
                                 newX += fontRenderer.getStringWidth(textPart + " ");
                                 foundCode = true;
                             } catch(IllegalArgumentException e) {
-                                fileInfo.add(EnumChatFormatting.RED + e.getMessage());
+                                fileInfo.add(TextFormatting.RED + e.getMessage());
                                 IGWLog.warning(e.getMessage());
                             }
                             potentialCode = sentenceWords[currentWord];

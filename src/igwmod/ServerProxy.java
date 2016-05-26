@@ -25,7 +25,7 @@ public class ServerProxy implements IProxy{
 
     @SubscribeEvent
     public void onJoinWorld(EntityJoinWorldEvent event){
-        if(!event.world.isRemote && event.entity instanceof EntityPlayer) {
+        if(!event.getWorld().isRemote && event.getEntity() instanceof EntityPlayer) {
             File serverFolder = new File(IGWMod.proxy.getSaveLocation() + "\\igwmod\\");
             if(!serverFolder.exists()) {
                 serverFolder = new File(IGWMod.proxy.getSaveLocation() + "\\igwmodServer\\");//TODO legacy remove
@@ -34,7 +34,7 @@ public class ServerProxy implements IProxy{
                 }
             }
             if(serverFolder.exists()) {
-                NetworkHandler.sendTo(new MessageSendServerTab(serverFolder), (EntityPlayerMP)event.entity);
+                NetworkHandler.sendTo(new MessageSendServerTab(serverFolder), (EntityPlayerMP)event.getEntity());
             }
         }
     }

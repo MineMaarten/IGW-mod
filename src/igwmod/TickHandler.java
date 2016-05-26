@@ -5,9 +5,9 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -27,9 +27,9 @@ public class TickHandler{
             EntityPlayer player = event.player;
             if(player == FMLClientHandler.instance().getClient().thePlayer) {
                 ticksExisted++;
-                MovingObjectPosition lookedObject = FMLClientHandler.instance().getClient().objectMouseOver;
+                RayTraceResult lookedObject = FMLClientHandler.instance().getClient().objectMouseOver;
                 if(lookedObject != null) {
-                    if(lookedObject.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
+                    if(lookedObject.typeOfHit == RayTraceResult.Type.ENTITY) {
                         if(lastEntityHovered == lookedObject.entityHit) {
                             ticksHovered++;
                             coordHovered = null;
@@ -88,11 +88,11 @@ public class TickHandler{
                 World world = FMLClientHandler.instance().getClient().theWorld;
                 IBlockState blockState = world.getBlockState(coordHovered);
                 if(blockState != null) {
-                    ItemStack idPicked = blockState.getBlock().getPickBlock(FMLClientHandler.instance().getClient().objectMouseOver, world, coordHovered, FMLClientHandler.instance().getClientPlayerEntity());
-                    return (idPicked != null ? idPicked : new ItemStack(blockState.getBlock(), 1, blockState.getBlock().getDamageValue(world, coordHovered))).getDisplayName();
+                    ItemStack idPicked = blockState.getBlock().getPickBlock(blockState, FMLClientHandler.instance().getClient().objectMouseOver, world, coordHovered, FMLClientHandler.instance().getClientPlayerEntity());
+                    return (idPicked != null ? idPicked : new ItemStack(blockState.getBlock(), 1, blockState.getBlock().getMetaFromState(blockState))).getDisplayName(); //TODO test blockState.getBlock().getDamage()
                 }
             } catch(Throwable e) {}
-            return EnumChatFormatting.RED + "<ERROR>";
+            return TextFormatting.RED + "<ERROR>";
         }
 
     }

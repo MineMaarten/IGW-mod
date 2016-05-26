@@ -2,7 +2,7 @@ package igwmod.api;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -24,8 +24,8 @@ public class BlockWikiEvent extends WorldEvent{
         this.pos = pos;
         blockState = world.getBlockState(pos);
         try {
-            itemStackPicked = blockState.getBlock().getPickBlock(FMLClientHandler.instance().getClient().objectMouseOver, world, pos, FMLClientHandler.instance().getClientPlayerEntity());
+            itemStackPicked = blockState.getBlock().getPickBlock(blockState, FMLClientHandler.instance().getClient().objectMouseOver, world, pos, FMLClientHandler.instance().getClientPlayerEntity());
         } catch(Throwable e) {}//FMP parts have the habit to throw a ClassCastException.
-        drawnStack = itemStackPicked != null ? itemStackPicked : new ItemStack(blockState.getBlock(), 1, blockState.getBlock().getDamageValue(world, pos));
+        drawnStack = itemStackPicked != null ? itemStackPicked : new ItemStack(blockState.getBlock(), 1, blockState.getBlock().getMetaFromState(blockState));
     }
 }

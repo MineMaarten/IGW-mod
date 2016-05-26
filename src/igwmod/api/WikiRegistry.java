@@ -57,7 +57,7 @@ public class WikiRegistry{
     }
 
     public static void registerEntityPageEntry(Class<? extends Entity> entityClass){
-        registerEntityPageEntry(entityClass, "entity/" + EntityList.classToStringMapping.get(entityClass));
+        registerEntityPageEntry(entityClass, "entity/" + EntityList.CLASS_TO_NAME.get(entityClass));
     }
 
     public static void registerEntityPageEntry(Class<? extends Entity> entityClass, String page){
@@ -87,7 +87,7 @@ public class WikiRegistry{
         if(page != null) {
             return page;
         } else {
-            return "entity/" + EntityList.classToStringMapping.get(entityClass);
+            return "entity/" + EntityList.CLASS_TO_NAME.get(entityClass);
         }
     }
 
@@ -95,7 +95,7 @@ public class WikiRegistry{
         List<ItemStack> entries = new ArrayList<ItemStack>();
         for(Map.Entry<String, ItemStack> entry : itemAndBlockPageEntries) {
             if(entry.getValue().getItemDamage() == OreDictionary.WILDCARD_VALUE) {
-                entry.getValue().getItem().getSubItems(entry.getValue().getItem(), CreativeTabs.tabAllSearch, entries);
+                entry.getValue().getItem().getSubItems(entry.getValue().getItem(), CreativeTabs.SEARCH, entries);
             } else {
                 entries.add(entry.getValue());
             }
