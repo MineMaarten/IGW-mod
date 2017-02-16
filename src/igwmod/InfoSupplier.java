@@ -89,7 +89,7 @@ public class InfoSupplier{
         try {
             InputStream stream;
             if(oldObjectName.startsWith("server/")) {
-                String s = IGWMod.proxy.getSaveLocation() + "\\igwmod\\" + oldObjectName.substring(7) + ".txt";
+                String s = IGWMod.proxy.getSaveLocation() + File.separator + "igwmod" + File.separator + oldObjectName.substring(7) + ".txt";
                 stream = new FileInputStream(new File(s));
             } else {
                 IResourceManager manager = FMLClientHandler.instance().getClient().getResourceManager();
