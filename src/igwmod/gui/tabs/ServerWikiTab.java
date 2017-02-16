@@ -41,7 +41,7 @@ public class ServerWikiTab extends BaseWikiTab{
             icon = new LocatedTexture(new ResourceLocation("server/tab_icon.png"), 5, 10, 27, 27);
         }
 
-        File[] files = new File(IGWMod.proxy.getSaveLocation() + File.separator"igwmod").listFiles(new FilenameFilter(){
+        File[] files = new File(IGWMod.proxy.getSaveLocation() + File.separator + "igwmod").listFiles(new FilenameFilter(){
             @Override
             public boolean accept(File dir, String filename){
                 return filename.endsWith(".txt");
