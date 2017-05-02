@@ -14,7 +14,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 public class Util{
     public static Entity getEntityForClass(Class<? extends Entity> entityClass){
         try {
-            return entityClass.getConstructor(World.class).newInstance(FMLClientHandler.instance().getClient().theWorld);
+            return entityClass.getConstructor(World.class).newInstance(FMLClientHandler.instance().getClient().world);
         } catch(Exception e) {
             IGWLog.error("[LocatedEntity.java] An entity class doesn't have a constructor with a single World parameter! Entity = " + entityClass.getName());
             e.printStackTrace();

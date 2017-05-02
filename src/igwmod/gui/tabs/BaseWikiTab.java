@@ -27,17 +27,17 @@ public abstract class BaseWikiTab implements IWikiTab{
                 } else if(pageEntries.get(i).equals("")) {
                     pages.add(new LocatedString("", 80, 64 + 11 * i, 0, false));
                 } else {
-                    pages.add(new LocatedString(getPageName(pageEntries.get(i)), 80, 64 + 11 * i, false, getPageLocation(pageEntries.get(i))));
+                    pages.add(new LocatedString(getPageName(pageEntries.get(i).toLowerCase()), 80, 64 + 11 * i, false, getPageLocation(pageEntries.get(i).toLowerCase())));
                 }
             }
         } else {
             for(int i = 0; i < pageIndexes.length; i++) {
                 if(pageEntries.get(pageIndexes[i]).startsWith("#")) {
-                    pages.add(new LocatedSectionString(getPageName(pageEntries.get(pageIndexes[i])), 80, 64 + 11 * i, false).capTextWidth(pagesPerTab() > pageIndexes.length ? 100 : 77));
+                    pages.add(new LocatedSectionString(getPageName(pageEntries.get(pageIndexes[i]).toLowerCase()), 80, 64 + 11 * i, false).capTextWidth(pagesPerTab() > pageIndexes.length ? 100 : 77));
                 } else if(pageEntries.get(pageIndexes[i]).equals("")) {
                     pages.add(new LocatedString("", 80, 64 + 11 * i, 0, false));
                 } else {
-                    pages.add(new LocatedString(getPageName(pageEntries.get(pageIndexes[i])), 80, 64 + 11 * i, false, getPageLocation(pageEntries.get(pageIndexes[i]))).capTextWidth(pagesPerTab() > pageIndexes.length ? 100 : 77));
+                    pages.add(new LocatedString(getPageName(pageEntries.get(pageIndexes[i]).toLowerCase()), 80, 64 + 11 * i, false, getPageLocation(pageEntries.get(pageIndexes[i]).toLowerCase())).capTextWidth(pagesPerTab() > pageIndexes.length ? 100 : 77));
                 }
             }
         }

@@ -1,5 +1,7 @@
 package igwmod.render;
 
+import org.lwjgl.input.Keyboard;
+
 import igwmod.ClientProxy;
 import igwmod.ConfigHandler;
 import igwmod.IGWMod;
@@ -11,13 +13,11 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import org.lwjgl.input.Keyboard;
-
 public class TooltipOverlayHandler{
 
     @SubscribeEvent
     public void tickEnd(TickEvent.RenderTickEvent event){
-        if(event.phase == TickEvent.Phase.END && TickHandler.showTooltip() && ConfigHandler.shouldShowTooltip && FMLClientHandler.instance().getClient().inGameHasFocus && IGWMod.proxy.getPlayer().worldObj != null) {
+        if(event.phase == TickEvent.Phase.END && TickHandler.showTooltip() && ConfigHandler.shouldShowTooltip && FMLClientHandler.instance().getClient().inGameHasFocus && IGWMod.proxy.getPlayer().world != null) {
             Minecraft mc = FMLClientHandler.instance().getClient();
             ScaledResolution sr = new ScaledResolution(mc);
             FontRenderer fontRenderer = FMLClientHandler.instance().getClient().fontRendererObj;

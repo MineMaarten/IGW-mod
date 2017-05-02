@@ -83,6 +83,7 @@ public class InfoSupplier{
     public static List<String> getInfo(String modid, String objectName, String language){
         String oldObjectName = objectName;
         objectName = modid + Paths.WIKI_PATH + language + "/" + objectName.replace(":", "/") + ".txt";
+        System.out.println("Looking for: " + objectName);
         if(!infoMap.containsKey(objectName)) {
             infoMap.put(objectName, new ResourceLocation(objectName));
         }
@@ -97,7 +98,6 @@ public class InfoSupplier{
                 IResource resource = manager.getResource(location);
                 stream = resource.getInputStream();
             }
-
             BufferedReader br = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
             List<String> textList = new ArrayList<String>();
             String line = br.readLine();

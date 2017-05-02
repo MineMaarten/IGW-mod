@@ -1,5 +1,15 @@
 package igwmod.gui;
 
+import java.awt.Rectangle;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
+
 import igwmod.ClientProxy;
 import igwmod.ConfigHandler;
 import igwmod.InfoSupplier;
@@ -14,13 +24,6 @@ import igwmod.gui.tabs.IWikiTab;
 import igwmod.lib.IGWLog;
 import igwmod.lib.Textures;
 import igwmod.lib.Util;
-
-import java.awt.Rectangle;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -40,10 +43,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Derived from Vanilla's GuiContainerCreative
@@ -243,7 +242,8 @@ public class GuiWiki extends GuiContainer{
         MinecraftForge.EVENT_BUS.post(wikiEvent);
         if(stack != null) {
             stack = stack.copy();
-            stack.stackSize = 1;
+//            stack.stackSize = 1;
+            stack.setCount(1);
         }
 
         setCurrentFile(wikiEvent.pageOpened, stack);
@@ -276,7 +276,7 @@ public class GuiWiki extends GuiContainer{
             updateSearch();
         } else {
             if(ClientProxy.openInterfaceKey.getKeyCode() == par2) {
-                mc.thePlayer.closeScreen();
+                mc.player.closeScreen();
             } else {
                 super.keyTyped(par1, par2);
             }
@@ -772,7 +772,7 @@ public class GuiWiki extends GuiContainer{
 
     public void renderRotatingBlockIntoGUI(GuiWiki gui, ItemStack stack, int x, int y, float scale){
         if(entityItem == null) {
-            entityItem = new EntityItem(gui.mc.theWorld);
+            entityItem = new EntityItem(gui.mc.world);
             renderItem = new RenderEntityItem(Minecraft.getMinecraft().getRenderManager(), Minecraft.getMinecraft().getRenderItem()){
                 @Override
                 public boolean shouldBob(){

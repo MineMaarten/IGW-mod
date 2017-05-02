@@ -1,17 +1,14 @@
 package igwmod;
 
-import igwmod.lib.IGWLog;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 
+import igwmod.lib.IGWLog;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class WikiUtils{
     private static HashMap<String, ItemStack> unlocMap;
@@ -19,8 +16,8 @@ public class WikiUtils{
     public static ItemStack getStackFromName(String name){
         if(unlocMap == null) {
             unlocMap = new HashMap<String, ItemStack>();
-            List<ItemStack> stackList = new ArrayList<ItemStack>();
-
+           // List<ItemStack> stackList = new ArrayList<ItemStack>();
+            NonNullList<ItemStack> stackList = NonNullList.<ItemStack>create();
             Iterator iterator = Item.REGISTRY.iterator();
             while(iterator.hasNext()) {
                 Item item = (Item)iterator.next();
@@ -41,7 +38,8 @@ public class WikiUtils{
         ItemStack stack = unlocMap.get(splitName[0]);
         if(stack != null) {
             stack = stack.copy();
-            if(splitName.length > 1) stack.stackSize = Integer.parseInt(splitName[1]);
+//            if(splitName.length > 1) stack.stackSize = Integer.parseInt(splitName[1]);
+            if(splitName.length > 1) stack.setCount(Integer.parseInt(splitName[1]));
             return stack;
         } else {
             return null;

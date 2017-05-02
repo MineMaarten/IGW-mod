@@ -7,8 +7,8 @@ igwmod.tooltip.tabPageBrowse.next=Нажмите ЛКМ, чтобы перейт
 igwmod.tooltip.tabPageBrowse.previous=Нажмите ПКМ, чтобы перейти на предыдущую страницу
 
 igwtab.entry.intro=Вступление
-igwtab.entry.forServers=Для серверов
-igwtab.entry.devIntro=Разработка: Вступление
-igwtab.entry.devItemAndBlock=Разработка: страница блоков и предметов
-igwtab.entry.devPageCommands=Разработка: команды на страницах
-igwtab.entry.devForModders=Разработка: Для мододелов
+igwtab.entry.forservers=Для серверов
+igwtab.entry.devintro=Разработка: Вступление
+igwtab.entry.devitemandblock=Разработка: страница блоков и предметов
+igwtab.entry.devpagecommands=Разработка: команды на страницах
+igwtab.entry.devformodders=Разработка: Для мододелов
