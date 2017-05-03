@@ -83,7 +83,6 @@ public class InfoSupplier{
     public static List<String> getInfo(String modid, String objectName, String language){
         String oldObjectName = objectName;
         objectName = modid + Paths.WIKI_PATH + language + "/" + objectName.replace(":", "/") + ".txt";
-        System.out.println("Looking for: " + objectName);
         if(!infoMap.containsKey(objectName)) {
             infoMap.put(objectName, new ResourceLocation(objectName));
         }
