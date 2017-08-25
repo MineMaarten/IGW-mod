@@ -20,7 +20,7 @@ public class TooltipOverlayHandler{
         if(event.phase == TickEvent.Phase.END && TickHandler.showTooltip() && ConfigHandler.shouldShowTooltip && FMLClientHandler.instance().getClient().inGameHasFocus && IGWMod.proxy.getPlayer().world != null) {
             Minecraft mc = FMLClientHandler.instance().getClient();
             ScaledResolution sr = new ScaledResolution(mc);
-            FontRenderer fontRenderer = FMLClientHandler.instance().getClient().fontRendererObj;
+            FontRenderer fontRenderer = FMLClientHandler.instance().getClient().fontRenderer;
             String objectName = TickHandler.getCurrentObjectName();
             String moreInfo = "'" + Keyboard.getKeyName(ClientProxy.openInterfaceKey.getKeyCode()) + "' for more info";
             fontRenderer.drawString(objectName, sr.getScaledWidth() / 2 - fontRenderer.getStringWidth(objectName) / 2, sr.getScaledHeight() / 2 - 20, 0xFFFFFFFF);

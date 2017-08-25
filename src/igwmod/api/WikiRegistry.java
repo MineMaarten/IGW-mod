@@ -98,7 +98,7 @@ public class WikiRegistry{
         NonNullList entries = NonNullList.<ItemStack>create();
         for(Map.Entry<String, ItemStack> entry : itemAndBlockPageEntries) {
             if(entry.getValue().getItemDamage() == OreDictionary.WILDCARD_VALUE) {
-                entry.getValue().getItem().getSubItems(entry.getValue().getItem(), CreativeTabs.SEARCH, entries);
+                entry.getValue().getItem().getSubItems(CreativeTabs.SEARCH, entries);
             } else {
                 entries.add(entry.getValue());
             }

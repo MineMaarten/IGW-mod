@@ -59,9 +59,7 @@ class ContainerBlockWiki extends Container{
         return true;
     }
 
-    @Override
-    protected void retrySlotClick(int par1, int par2, boolean par3, EntityPlayer par4EntityPlayer){}
-
+    
     /**
      * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
      */

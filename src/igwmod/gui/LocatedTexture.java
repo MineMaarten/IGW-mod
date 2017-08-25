@@ -1,8 +1,5 @@
 package igwmod.gui;
 
-import igwmod.IGWMod;
-import igwmod.TessWrapper;
-
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -11,12 +8,14 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import org.lwjgl.opengl.GL11;
+
+import igwmod.IGWMod;
+import igwmod.TessWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.opengl.GL11;
 
 public class LocatedTexture implements IReservedSpace, IWidget{
     public ResourceLocation texture;

@@ -23,7 +23,7 @@ public class WikiUtils{
                 Item item = (Item)iterator.next();
 
                 if(item != null && item.getCreativeTab() != null) {
-                    item.getSubItems(item, (CreativeTabs)null, stackList);
+                    item.getSubItems(CreativeTabs.SEARCH, stackList);
                 }
             }
 

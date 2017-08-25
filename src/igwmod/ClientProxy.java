@@ -2,7 +2,6 @@ package igwmod;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +25,6 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
@@ -39,7 +37,8 @@ import net.minecraftforge.fml.common.event.FMLInterModComms.IMCEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
-import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.registries.IForgeRegistry;
 
 public class ClientProxy implements IProxy{
     public static KeyBinding openInterfaceKey;
@@ -87,21 +86,19 @@ public class ClientProxy implements IProxy{
     	// List<ItemStack> stackList = new ArrayList<ItemStack>();
         NonNullList<ItemStack> allCreativeStacks = NonNullList.<ItemStack>create();
 
-        Iterator iterator = Item.REGISTRY.iterator();
-        while(iterator.hasNext()) {
-            Item item = (Item)iterator.next();
-
-            if(item != null && item.getCreativeTab() != null) {
+        IForgeRegistry<Item> itemReg = GameRegistry.findRegistry(Item.class);
+        for (Item item : itemReg) {
+        	if(item != null && item.getCreativeTab() != null) {
                 try {
-                    item.getSubItems(item, (CreativeTabs)null, allCreativeStacks);
+                    item.getSubItems(CreativeTabs.SEARCH, allCreativeStacks);
                 } catch(Throwable e) {
                     e.printStackTrace();
                 }
             }
-        }
+		}
 
         for(ItemStack stack : allCreativeStacks) {
-            if(stack != null && stack.getItem() != null && GameData.getItemRegistry().getNameForObject(stack.getItem()) != null) {
+            if(stack != null && stack.getItem() != null && Item.REGISTRY.getNameForObject(stack.getItem()) != null) {
                 String modid = Paths.MOD_ID.toLowerCase();
                 ResourceLocation id = Item.REGISTRY.getNameForObject(stack.getItem());
                 if(id != null && id.getResourceDomain() != null) modid = id.getResourceDomain().toLowerCase();
@@ -119,7 +116,7 @@ public class ClientProxy implements IProxy{
         }
 
         //Add automatically generated crafting recipe key mappings.
-        for(IRecipe recipe : CraftingManager.getInstance().getRecipeList()) {
+        for(IRecipe recipe : GameRegistry.findRegistry(IRecipe.class)) {
             if(recipe.getRecipeOutput() != null && recipe.getRecipeOutput().getItem() != null) {
                 try {
                     if(recipe.getRecipeOutput().getUnlocalizedName() == null) {
