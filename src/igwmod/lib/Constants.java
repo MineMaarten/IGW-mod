@@ -3,7 +3,7 @@ package igwmod.lib;
 import org.lwjgl.input.Keyboard;
 
 public class Constants{
-    public static final String MOD_ID = "IGWMod";
+    public static final String MOD_ID = "igwmod";
     private static final String MASSIVE = "@MASSIVE@";
     private static final String MAJOR = "@MAJOR@";
     private static final String MINOR = "@MINOR@";

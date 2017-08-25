@@ -6,8 +6,8 @@ igwmod.tooltip.tabPageBrowse.next=Venstreklik for at gå til næste side
 igwmod.tooltip.tabPageBrowse.previous=Højreklik for at gå til næste side
 
 igwtab.entry.intro=Intro
-igwtab.entry.forServers=For Servers
-igwtab.entry.devIntro=Dev: Intro
-igwtab.entry.devItemAndBlock=Dev: Ting & Blokke Side
-igwtab.entry.devPageCommands=Dev: Side Kommandoer
-igwtab.entry.devForModders=Dev: For Modders
+igwtab.entry.forservers=For Servers
+igwtab.entry.devintro=Dev: Intro
+igwtab.entry.devitemandblock=Dev: Ting & Blokke Side
+igwtab.entry.devpagecommands=Dev: Side Kommandoer
+igwtab.entry.devformodders=Dev: For Modders

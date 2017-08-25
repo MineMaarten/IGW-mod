@@ -1,21 +1,21 @@
 package igwmod.api;
 
-import igwmod.gui.GuiWiki;
-import igwmod.gui.tabs.IWikiTab;
-import igwmod.gui.tabs.ServerWikiTab;
-
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import igwmod.gui.GuiWiki;
+import igwmod.gui.tabs.IWikiTab;
+import igwmod.gui.tabs.ServerWikiTab;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class WikiRegistry{
@@ -57,7 +57,8 @@ public class WikiRegistry{
     }
 
     public static void registerEntityPageEntry(Class<? extends Entity> entityClass){
-        registerEntityPageEntry(entityClass, "entity/" + EntityList.CLASS_TO_NAME.get(entityClass));
+//        registerEntityPageEntry(entityClass, "entity/" + EntityList.CLASS_TO_NAME.get(entityClass));
+    	registerEntityPageEntry(entityClass, "entity/" + EntityList.getKey(entityClass).getResourcePath());
     }
 
     public static void registerEntityPageEntry(Class<? extends Entity> entityClass, String page){
@@ -87,15 +88,17 @@ public class WikiRegistry{
         if(page != null) {
             return page;
         } else {
-            return "entity/" + EntityList.CLASS_TO_NAME.get(entityClass);
+//            return "entity/" + EntityList.CLASS_TO_NAME.get(entityClass);
+            return "entity/" + EntityList.getKey(entityClass).getResourcePath();
         }
     }
 
     public static List<ItemStack> getItemAndBlockPageEntries(){
-        List<ItemStack> entries = new ArrayList<ItemStack>();
+//        List<ItemStack> entries = new ArrayList<ItemStack>();
+        NonNullList entries = NonNullList.<ItemStack>create();
         for(Map.Entry<String, ItemStack> entry : itemAndBlockPageEntries) {
             if(entry.getValue().getItemDamage() == OreDictionary.WILDCARD_VALUE) {
-                entry.getValue().getItem().getSubItems(entry.getValue().getItem(), CreativeTabs.SEARCH, entries);
+                entry.getValue().getItem().getSubItems(CreativeTabs.SEARCH, entries);
             } else {
                 entries.add(entry.getValue());
             }

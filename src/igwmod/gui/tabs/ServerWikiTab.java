@@ -1,20 +1,19 @@
 package igwmod.gui.tabs;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.List;
+
+import org.lwjgl.opengl.GL11;
+
 import igwmod.IGWMod;
 import igwmod.InfoSupplier;
 import igwmod.gui.GuiWiki;
 import igwmod.gui.LocatedTexture;
 import igwmod.lib.IGWLog;
-
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.List;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-
-import org.lwjgl.opengl.GL11;
 
 public class ServerWikiTab extends BaseWikiTab{
     private String serverName;
@@ -29,7 +28,8 @@ public class ServerWikiTab extends BaseWikiTab{
                 if(entry[0].equals("server_name")) serverName = entry[1];
                 if(entry[0].equals("icon_item")) {
                     String[] icon = entry[1].split(":");
-                    iconStack = new ItemStack(GameRegistry.findItem(icon[0], icon[1]));
+//                    iconStack = new ItemStack(GameRegistry.findItem(icon[0], icon[1]));
+                    iconStack = GameRegistry.makeItemStack(icon[0] + ":" + icon[1], 1, 1, "");
                     if(iconStack == null) {
                         IGWLog.warning("Couldn't find a server tab icon item stack for the name: " + entry[1]);
                     }

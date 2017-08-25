@@ -25,7 +25,7 @@ public class TickHandler{
     public void tick(TickEvent.PlayerTickEvent event){
         if(event.phase == TickEvent.Phase.END) {
             EntityPlayer player = event.player;
-            if(player == FMLClientHandler.instance().getClient().thePlayer) {
+            if(player == FMLClientHandler.instance().getClient().player) {
                 ticksExisted++;
                 RayTraceResult lookedObject = FMLClientHandler.instance().getClient().objectMouseOver;
                 if(lookedObject != null) {
@@ -43,7 +43,7 @@ public class TickHandler{
                             ticksHovered++;
                             lastEntityHovered = null;
                         } else {
-                            if(!event.player.worldObj.isAirBlock(lookedObject.getBlockPos())) {
+                            if(!event.player.world.isAirBlock(lookedObject.getBlockPos())) {
                                 ticksHovered = 0;
                                 lastEntityHovered = null;
                                 coordHovered = lookedObject.getBlockPos();
@@ -67,7 +67,7 @@ public class TickHandler{
             FMLCommonHandler.instance().showGuiScreen(gui);
             gui.setCurrentFile(lastEntityHovered);
         } else if(coordHovered != null) {
-            World world = FMLClientHandler.instance().getClient().theWorld;
+            World world = FMLClientHandler.instance().getClient().world;
             if(world != null) {
                 if(!world.isAirBlock(coordHovered)) {
                     GuiWiki gui = new GuiWiki();
@@ -85,7 +85,7 @@ public class TickHandler{
             return lastEntityHovered.getName();
         } else {
             try {
-                World world = FMLClientHandler.instance().getClient().theWorld;
+                World world = FMLClientHandler.instance().getClient().world;
                 IBlockState blockState = world.getBlockState(coordHovered);
                 if(blockState != null) {
                     ItemStack idPicked = blockState.getBlock().getPickBlock(blockState, FMLClientHandler.instance().getClient().objectMouseOver, world, coordHovered, FMLClientHandler.instance().getClientPlayerEntity());

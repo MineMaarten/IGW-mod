@@ -1,24 +1,12 @@
 package igwmod.api;
 
-import java.awt.Desktop;
 import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.client.gui.GuiNewChat;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -28,13 +16,6 @@ import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 /**
  * This class is meant to be copied to your own mod which implements IGW-Mod. When properly implemented by instantiating a new instance somewhere in your mod
@@ -64,7 +45,7 @@ public class IGWSupportNotifier{
                     if(container.getModId().equals(modid)) {
                         supportingMod = container.getName();
                         MinecraftForge.EVENT_BUS.register(this);
-                        ClientCommandHandler.instance.registerCommand(new CommandDownloadIGW());
+//                        ClientCommandHandler.instance.registerCommand(new CommandDownloadIGW());
                         break;
                     }
                 }
@@ -75,91 +56,107 @@ public class IGWSupportNotifier{
 
     @SubscribeEvent
     public void onPlayerJoin(TickEvent.PlayerTickEvent event){
-        if(event.player.worldObj.isRemote && event.player == FMLClientHandler.instance().getClientPlayerEntity()) {
-            event.player.addChatComponentMessage(ITextComponent.Serializer.jsonToComponent("[\"" + TextFormatting.GOLD + "The mod " + supportingMod + " is supporting In-Game Wiki mod. " + TextFormatting.GOLD + "However, In-Game Wiki isn't installed! " + "[\"," + "{\"text\":\"Download Latest\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/igwmod_download\"}}," + "\"]\"]"));
-            FMLCommonHandler.instance().bus().unregister(this);
+        if(event.player.world.isRemote && event.player == FMLClientHandler.instance().getClientPlayerEntity()) {
+//            event.player.(ITextComponent.Serializer.jsonToComponent("[\"" + TextFormatting.GOLD + "The mod " + supportingMod + " is supporting In-Game Wiki mod. " + TextFormatting.GOLD + "However, In-Game Wiki isn't installed! " + "[\"," + "{\"text\":\"Download Latest\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/igwmod_download\"}}," + "\"]\"]"));
+        	GuiNewChat chat = Minecraft.getMinecraft().ingameGUI.getChatGUI();
+        	chat.printChatMessage(ITextComponent.Serializer.jsonToComponent("[\"" + TextFormatting.GOLD + "The mod " + supportingMod + " is supporting In-Game Wiki mod. " + TextFormatting.GOLD + "However, In-Game Wiki isn't installed! " + "[\"," + "{\"text\":\"Download Latest\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/igwmod_download\"}}," + "\"]\"]"));
+        	FMLCommonHandler.instance().bus().unregister(this);
         }
     }
 
-    private class CommandDownloadIGW extends CommandBase{
+//    Removes so the original author can fix these commands/downloads
+    
+//    private class CommandDownloadIGW extends CommandBase{
+//
+//        @Override
+//        public int getRequiredPermissionLevel(){
+//            return -100;
+//        }
+//
+//        @Override
+//        public String getCommandName(){
+//            return "igwmod_download";
+//        }
+//
+//        @Override
+//        public String getCommandUsage(ICommandSender p_71518_1_){
+//            return getCommandName();
+//        }
+//
+//		@Override
+//		public void execute(MinecraftServer server, ICommandSender sender,
+//				String[] args) throws CommandException {
+//			new ThreadDownloadIGW();
+//		}
+//
+//		@Override
+//		public String getName() {
+//			// TODO Auto-generated method stub
+//			return null;
+//		}
+//
+//		@Override
+//		public String getUsage(ICommandSender sender) {
+//			// TODO Auto-generated method stub
+//			return null;
+//		}
+//
+//    }
 
-        @Override
-        public int getRequiredPermissionLevel(){
-            return -100;
-        }
-
-        @Override
-        public String getCommandName(){
-            return "igwmod_download";
-        }
-
-        @Override
-        public String getCommandUsage(ICommandSender p_71518_1_){
-            return getCommandName();
-        }
-
-		@Override
-		public void execute(MinecraftServer server, ICommandSender sender,
-				String[] args) throws CommandException {
-			new ThreadDownloadIGW();
-		}
-
-    }
-
-    private class ThreadDownloadIGW extends Thread{
-
-        public ThreadDownloadIGW(){
-            setName("IGW-Mod Download Thread");
-            start();
-        }
-
-        @Override
-        public void run(){
-
-            try {
-                if(Minecraft.getMinecraft().thePlayer != null) Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("Downloading IGW-Mod..."));
-
-                URL url = new URL(Loader.MC_VERSION.equals("1.7.10") ? DL_URL_1_7_10 : LATEST_DL_URL);
-                URLConnection connection = url.openConnection();
-                connection.connect();
-                File dir = new File(".", "mods");
-                File tempFile = File.createTempFile("IGW-Mod.jar", "");
-                FileUtils.copyURLToFile(url, tempFile);
-
-                ZipFile jar = new ZipFile(tempFile.getAbsolutePath());
-                Enumeration<? extends ZipEntry> entries = jar.entries();
-                InputStream mcmodInfo = null;
-                while(entries.hasMoreElements()) {
-                    ZipEntry entry = entries.nextElement();
-                    if(entry.getName().equals("mcmod.info")) {
-                        mcmodInfo = jar.getInputStream(entry);
-                        break;
-                    }
-                }
-                JsonParser parser = new JsonParser();
-                JsonObject obj = (JsonObject)((JsonArray)parser.parse(IOUtils.toString(mcmodInfo))).get(0);
-                jar.close();
-                String version = obj.get("version").getAsString();
-                String mcVersion = obj.get("mcversion").getAsString();
-                File renamedFile = new File(String.format("." + File.separator + "mods" + File.separator + "IGW-Mod-%s-%s-universal.jar", mcVersion, version));
-                FileUtils.copyFile(tempFile, renamedFile);
-                if(Minecraft.getMinecraft().thePlayer != null) Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString(TextFormatting.GREEN + "Successfully downloaded. Restart Minecraft to apply."));
-                Desktop.getDesktop().open(dir);
-                if(!Loader.MC_VERSION.equals(mcVersion)) {
-                    if(Minecraft.getMinecraft().thePlayer != null) Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString(TextFormatting.RED + "The version of Minecraft you are running doesn't seem to match the version of IGW-Mod that has been downloaded. The mod may not work."));
-                }
-
-                finalize();
-            } catch(Throwable e) {
-                e.printStackTrace();
-                if(Minecraft.getMinecraft().thePlayer != null) Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new TextComponentString(TextFormatting.RED + "Failed to download"));
-                try {
-                    finalize();
-                } catch(Throwable e1) {
-                    e1.printStackTrace();
-                }
-            }
-        }
-
-    }
+//    private class ThreadDownloadIGW extends Thread{
+//
+//        public ThreadDownloadIGW(){
+//            setName("IGW-Mod Download Thread");
+//            start();
+//        }
+//
+//        @Override
+//        public void run(){
+//
+//            try {
+//                if(Minecraft.getMinecraft().player != null) Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString("Downloading IGW-Mod..."));
+//
+//                URL url = new URL(Loader.MC_VERSION.equals("1.7.10") ? DL_URL_1_7_10 : LATEST_DL_URL);
+//                URLConnection connection = url.openConnection();
+//                connection.connect();
+//                File dir = new File(".", "mods");
+//                File tempFile = File.createTempFile("IGW-Mod.jar", "");
+//                FileUtils.copyURLToFile(url, tempFile);
+//
+//                ZipFile jar = new ZipFile(tempFile.getAbsolutePath());
+//                Enumeration<? extends ZipEntry> entries = jar.entries();
+//                InputStream mcmodInfo = null;
+//                while(entries.hasMoreElements()) {
+//                    ZipEntry entry = entries.nextElement();
+//                    if(entry.getName().equals("mcmod.info")) {
+//                        mcmodInfo = jar.getInputStream(entry);
+//                        break;
+//                    }
+//                }
+//                JsonParser parser = new JsonParser();
+//                JsonObject obj = (JsonObject)((JsonArray)parser.parse(IOUtils.toString(mcmodInfo))).get(0);
+//                jar.close();
+//                String version = obj.get("version").getAsString();
+//                String mcVersion = obj.get("mcversion").getAsString();
+//                File renamedFile = new File(String.format("." + File.separator + "mods" + File.separator + "IGW-Mod-%s-%s-universal.jar", mcVersion, version));
+//                FileUtils.copyFile(tempFile, renamedFile);
+//                if(Minecraft.getMinecraft().thePlayer != null) Minecraft.getMinecraft().player.addChatMessage(new TextComponentString(TextFormatting.GREEN + "Successfully downloaded. Restart Minecraft to apply."));
+//                Desktop.getDesktop().open(dir);
+//                if(!Loader.MC_VERSION.equals(mcVersion)) {
+//                    if(Minecraft.getMinecraft().thePlayer != null) Minecraft.getMinecraft().player.addChatMessage(new TextComponentString(TextFormatting.RED + "The version of Minecraft you are running doesn't seem to match the version of IGW-Mod that has been downloaded. The mod may not work."));
+//                }
+//
+//                finalize();
+//            } catch(Throwable e) {
+//                e.printStackTrace();
+//                if(Minecraft.getMinecraft().thePlayer != null) Minecraft.getMinecraft().player.addChatComponentMessage(new TextComponentString(TextFormatting.RED + "Failed to download"));
+//                try {
+//                    finalize();
+//                } catch(Throwable e1) {
+//                    e1.printStackTrace();
+//                }
+//            }
+//        }
+//
+//    }
 }

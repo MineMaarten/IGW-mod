@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -15,11 +18,8 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
 public class LocatedString extends Gui implements IPageLink, GuiYesNoCallback{
-    protected static FontRenderer fontRenderer = FMLClientHandler.instance().getClient().fontRendererObj;
+    protected static FontRenderer fontRenderer = FMLClientHandler.instance().getClient().fontRenderer;
     private final String string;
     private String cappedText;
     private int x;

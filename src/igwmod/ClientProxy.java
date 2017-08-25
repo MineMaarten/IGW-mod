@@ -1,5 +1,10 @@
 package igwmod;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
+
 import igwmod.api.WikiRegistry;
 import igwmod.gui.tabs.BlockAndItemWikiTab;
 import igwmod.gui.tabs.EntityWikiTab;
@@ -7,32 +12,22 @@ import igwmod.gui.tabs.IGWWikiTab;
 import igwmod.lib.Constants;
 import igwmod.lib.IGWLog;
 import igwmod.lib.Paths;
-import igwmod.lib.Util;
 import igwmod.recipeintegration.IntegratorComment;
 import igwmod.recipeintegration.IntegratorCraftingRecipe;
 import igwmod.recipeintegration.IntegratorFurnace;
 import igwmod.recipeintegration.IntegratorImage;
 import igwmod.recipeintegration.IntegratorStack;
 import igwmod.render.TooltipOverlayHandler;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -42,7 +37,8 @@ import net.minecraftforge.fml.common.event.FMLInterModComms.IMCEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
-import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.registries.IForgeRegistry;
 
 public class ClientProxy implements IProxy{
     public static KeyBinding openInterfaceKey;
@@ -87,23 +83,22 @@ public class ClientProxy implements IProxy{
 
     private void addDefaultKeys(){
         //Register all basic items that have (default) pages to the item and blocks page.
-        List<ItemStack> allCreativeStacks = new ArrayList<ItemStack>();
+    	// List<ItemStack> stackList = new ArrayList<ItemStack>();
+        NonNullList<ItemStack> allCreativeStacks = NonNullList.<ItemStack>create();
 
-        Iterator iterator = Item.REGISTRY.iterator();
-        while(iterator.hasNext()) {
-            Item item = (Item)iterator.next();
-
-            if(item != null && item.getCreativeTab() != null) {
+        IForgeRegistry<Item> itemReg = GameRegistry.findRegistry(Item.class);
+        for (Item item : itemReg) {
+        	if(item != null && item.getCreativeTab() != null) {
                 try {
-                    item.getSubItems(item, (CreativeTabs)null, allCreativeStacks);
+                    item.getSubItems(CreativeTabs.SEARCH, allCreativeStacks);
                 } catch(Throwable e) {
                     e.printStackTrace();
                 }
             }
-        }
+		}
 
         for(ItemStack stack : allCreativeStacks) {
-            if(stack != null && stack.getItem() != null && GameData.getItemRegistry().getNameForObject(stack.getItem()) != null) {
+            if(stack != null && stack.getItem() != null && Item.REGISTRY.getNameForObject(stack.getItem()) != null) {
                 String modid = Paths.MOD_ID.toLowerCase();
                 ResourceLocation id = Item.REGISTRY.getNameForObject(stack.getItem());
                 if(id != null && id.getResourceDomain() != null) modid = id.getResourceDomain().toLowerCase();
@@ -115,13 +110,13 @@ public class ClientProxy implements IProxy{
         }
 
         //Register all entities that have (default) pages to the entity page.
-        for(Map.Entry<String, Class<? extends Entity>> entry : EntityList.NAME_TO_CLASS.entrySet()) {
-            String modid = Util.getModIdForEntity(entry.getValue());
-            if(InfoSupplier.getInfo(modid, "entity/" + entry.getKey(), true) != null) WikiRegistry.registerEntityPageEntry(entry.getValue());
+        for(ResourceLocation entry : EntityList.getEntityNameList()) {
+            String modid = entry.getResourceDomain(); //Util.getModIdForEntity(entry.());
+            if(InfoSupplier.getInfo(modid, "entity/" + entry.getResourcePath(), true) != null) WikiRegistry.registerEntityPageEntry(EntityList.getClass(entry));
         }
 
         //Add automatically generated crafting recipe key mappings.
-        for(IRecipe recipe : CraftingManager.getInstance().getRecipeList()) {
+        for(IRecipe recipe : GameRegistry.findRegistry(IRecipe.class)) {
             if(recipe.getRecipeOutput() != null && recipe.getRecipeOutput().getItem() != null) {
                 try {
                     if(recipe.getRecipeOutput().getUnlocalizedName() == null) {
@@ -192,6 +187,6 @@ public class ClientProxy implements IProxy{
 
     @Override
     public EntityPlayer getPlayer(){
-        return Minecraft.getMinecraft().thePlayer;
+        return Minecraft.getMinecraft().player;
     }
 }

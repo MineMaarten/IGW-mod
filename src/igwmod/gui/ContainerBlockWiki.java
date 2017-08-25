@@ -8,6 +8,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 /**
  * This class is derived from Vanilla's ContainerCreative class.
@@ -22,7 +23,7 @@ class ContainerBlockWiki extends Container{
             if(link instanceof LocatedStack) invSize++;
         InventoryBasic inventory = new InventoryBasic("tmp", true, invSize);
         inventorySlots = new ArrayList();
-        inventoryItemStacks = new ArrayList();
+        inventoryItemStacks = NonNullList.<ItemStack>create();
         int curSlot = 0;
         for(LocatedStack stack : stacks) {
             if(stack.y >= GuiWiki.MIN_TEXT_Y * GuiWiki.TEXT_SCALE && 16 + stack.y <= GuiWiki.MAX_TEXT_Y * GuiWiki.TEXT_SCALE) {
@@ -58,9 +59,7 @@ class ContainerBlockWiki extends Container{
         return true;
     }
 
-    @Override
-    protected void retrySlotClick(int par1, int par2, boolean par3, EntityPlayer par4EntityPlayer){}
-
+    
     /**
      * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
      */
