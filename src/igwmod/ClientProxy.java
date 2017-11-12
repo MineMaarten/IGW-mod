@@ -1,10 +1,5 @@
 package igwmod;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
-
 import igwmod.api.WikiRegistry;
 import igwmod.gui.tabs.BlockAndItemWikiTab;
 import igwmod.gui.tabs.EntityWikiTab;
@@ -18,6 +13,13 @@ import igwmod.recipeintegration.IntegratorFurnace;
 import igwmod.recipeintegration.IntegratorImage;
 import igwmod.recipeintegration.IntegratorStack;
 import igwmod.render.TooltipOverlayHandler;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.creativetab.CreativeTabs;
@@ -181,8 +183,13 @@ public class ClientProxy implements IProxy{
 
     @Override
     public String getSaveLocation(){
-        String mcDataLocation = Minecraft.getMinecraft().mcDataDir.getAbsolutePath();
-        return mcDataLocation.substring(0, mcDataLocation.length() - 2);
+        try {
+            return Minecraft.getMinecraft().mcDataDir.getCanonicalPath();
+        } catch(IOException e) {
+            e.printStackTrace();
+            String mcDataLocation = Minecraft.getMinecraft().mcDataDir.getAbsolutePath();
+            return mcDataLocation.substring(0, mcDataLocation.length() - 2);
+        }
     }
 
     @Override
