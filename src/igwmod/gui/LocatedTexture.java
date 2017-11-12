@@ -31,7 +31,7 @@ public class LocatedTexture implements IReservedSpace, IWidget{
 
         if(texture.getResourcePath().startsWith("server")) {
             try {
-                BufferedImage image = ImageIO.read(new FileInputStream(new File(IGWMod.proxy.getSaveLocation() + "\\igwmod\\" + texture.getResourcePath().substring(7))));
+                BufferedImage image = ImageIO.read(new FileInputStream(new File(IGWMod.proxy.getSaveLocation() + File.separator + "igwmod" + File.separator + texture.getResourcePath().substring(7))));
                 DynamicTexture t = new DynamicTexture(image);
                 textureId = t.getGlTextureId();
             } catch(Exception e) {
@@ -49,7 +49,7 @@ public class LocatedTexture implements IReservedSpace, IWidget{
         try {
             BufferedImage bufferedimage;
             if(texture.getResourcePath().startsWith("server")) {
-                bufferedimage = ImageIO.read(new FileInputStream(new File(IGWMod.proxy.getSaveLocation() + "\\igwmod\\" + texture.getResourcePath().substring(7))));
+                bufferedimage = ImageIO.read(new FileInputStream(new File(IGWMod.proxy.getSaveLocation() + File.separator "igwmod" + File.separator + texture.getResourcePath().substring(7))));
             } else {
                 IResource iresource = Minecraft.getMinecraft().getResourceManager().getResource(texture);
                 InputStream inputstream = iresource.getInputStream();
