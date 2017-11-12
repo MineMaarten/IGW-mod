@@ -23,7 +23,7 @@ class ContainerBlockWiki extends Container{
             if(link instanceof LocatedStack) invSize++;
         InventoryBasic inventory = new InventoryBasic("tmp", true, invSize);
         inventorySlots = new ArrayList();
-        inventoryItemStacks = NonNullList.<ItemStack>create();
+        inventoryItemStacks = NonNullList.<ItemStack> create();
         int curSlot = 0;
         for(LocatedStack stack : stacks) {
             if(stack.y >= GuiWiki.MIN_TEXT_Y * GuiWiki.TEXT_SCALE && 16 + stack.y <= GuiWiki.MAX_TEXT_Y * GuiWiki.TEXT_SCALE) {
@@ -32,7 +32,7 @@ class ContainerBlockWiki extends Container{
                     public boolean isItemValid(ItemStack par1ItemStack){
                         return false;
                     }
-                });                
+                });
                 if(stack.stack.getItemDamage() == 32767)//TODO better way to handle wildcard value.
                 {
                     stack.stack.setItemDamage(0);
@@ -59,7 +59,6 @@ class ContainerBlockWiki extends Container{
         return true;
     }
 
-    
     /**
      * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
      */

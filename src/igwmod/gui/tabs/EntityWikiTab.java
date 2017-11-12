@@ -1,11 +1,5 @@
 package igwmod.gui.tabs;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
 import igwmod.TickHandler;
 import igwmod.api.WikiRegistry;
 import igwmod.gui.GuiWiki;
@@ -15,13 +9,21 @@ import igwmod.gui.LocatedEntity;
 import igwmod.gui.LocatedTexture;
 import igwmod.lib.Textures;
 import igwmod.lib.Util;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+
+import org.lwjgl.opengl.GL11;
 
 public class EntityWikiTab implements IWikiTab{
     private static Entity curEntity;
@@ -126,8 +128,8 @@ public class EntityWikiTab implements IWikiTab{
         float maxHitboxComponent = Math.max(1, Math.max(entity.width, entity.height));
         int scale = (int)(40 * size / maxHitboxComponent);
 
-        GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-        GL11.glPushMatrix();
+        GlStateManager.enableColorMaterial();
+        GlStateManager.pushMatrix();
         GL11.glTranslatef(x, y, 50.0F);
         GL11.glScalef(-scale, scale, scale);
         GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
@@ -146,20 +148,22 @@ public class EntityWikiTab implements IWikiTab{
          entity.rotationYawHead = entity.rotationYaw;
          entity.prevRotationYawHead = entity.rotationYaw;*/
         GL11.glTranslatef(0.0F, (float)entity.getYOffset(), 0.0F);
+        RenderManager rendermanager = Minecraft.getMinecraft().getRenderManager();
+        rendermanager.setRenderShadow(false);
         Minecraft.getMinecraft().getRenderManager().playerViewY = 180.0F;
         Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, false);
-        
+        rendermanager.setRenderShadow(true);
         /* entity.renderYawOffset = f2;
          entity.rotationYaw = f3;
          entity.rotationPitch = f4;
          entity.prevRotationYawHead = f5;
          entity.rotationYawHead = f6;*/
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
         RenderHelper.disableStandardItemLighting();
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-        OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
+        GlStateManager.disableRescaleNormal();
+        GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+        GlStateManager.disableTexture2D();
+        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
 
         // GL11.glDisable(GL11.GL_LIGHTING);
     }

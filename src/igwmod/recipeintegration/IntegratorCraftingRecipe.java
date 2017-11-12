@@ -1,9 +1,5 @@
 package igwmod.recipeintegration;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import igwmod.TextureSupplier;
 import igwmod.WikiUtils;
 import igwmod.api.CraftingRetrievalEvent;
@@ -16,6 +12,11 @@ import igwmod.gui.LocatedString;
 import igwmod.gui.LocatedTexture;
 import igwmod.lib.IGWLog;
 import igwmod.lib.Paths;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -84,7 +85,7 @@ public class IntegratorCraftingRecipe implements IRecipeIntegrator{
             for(int i = 0; i < recipe.recipeHeight; i++) {
                 for(int j = 0; j < recipe.recipeWidth; j++) {
                     Ingredient ingredientStack = recipe.recipeItems.get(i * recipe.recipeWidth + j);
-                    if(ingredientStack != null) {
+                    if(ingredientStack.getMatchingStacks().length > 0) {
                         locatedStacks.add(new LocatedStack(ingredientStack.getMatchingStacks()[0], x + STACKS_X_OFFSET + j * 18, y + STACKS_Y_OFFSET + i * 18));
                     }
                 }
@@ -105,9 +106,9 @@ public class IntegratorCraftingRecipe implements IRecipeIntegrator{
             for(int i = 0; i < recipeHeight; i++) {
                 for(int j = 0; j < recipeWidth; j++) {
                     Ingredient ingredient = recipe.getIngredients().get(i * recipeWidth + j);
-                    if(ingredient != null) {
+                    if(ingredient.getMatchingStacks().length > 0) {
                         ItemStack ingredientStack = ingredient.getMatchingStacks()[0];
-                        		//ingredient instanceof ItemStack ? (ItemStack)ingredient : ((List<ItemStack>)ingredient).get(0);
+                        //ingredient instanceof ItemStack ? (ItemStack)ingredient : ((List<ItemStack>)ingredient).get(0);
                         if(ingredientStack != null) {
                             locatedStacks.add(new LocatedStack(ingredientStack, x + STACKS_X_OFFSET + j * 18, y + STACKS_Y_OFFSET + i * 18));
                         }
@@ -139,7 +140,7 @@ public class IntegratorCraftingRecipe implements IRecipeIntegrator{
                         Ingredient ingredient = recipe.getIngredients().get(i * 3 + j);
                         if(ingredient != null) {
                             ItemStack ingredientStack = ingredient.getMatchingStacks()[0];
-                            		//ingredient instanceof ItemStack ? (ItemStack)ingredient : ((List<ItemStack>)ingredient).get(0);
+                            //ingredient instanceof ItemStack ? (ItemStack)ingredient : ((List<ItemStack>)ingredient).get(0);
                             if(ingredientStack != null) {
                                 locatedStacks.add(new LocatedStack(ingredientStack, x + STACKS_X_OFFSET + j * 18, y + STACKS_Y_OFFSET + i * 18));
                             }

@@ -28,9 +28,9 @@ public class ServerWikiTab extends BaseWikiTab{
                 if(entry[0].equals("server_name")) serverName = entry[1];
                 if(entry[0].equals("icon_item")) {
                     String[] icon = entry[1].split(":");
-//                    iconStack = new ItemStack(GameRegistry.findItem(icon[0], icon[1]));
-                    iconStack = GameRegistry.makeItemStack(icon[0] + ":" + icon[1], 1, 1, "");
-                    if(iconStack == null) {
+                    //                    iconStack = new ItemStack(GameRegistry.findItem(icon[0], icon[1]));
+                    iconStack = GameRegistry.makeItemStack(icon[0] + ":" + icon[1], 0, 1, "");
+                    if(iconStack.isEmpty()) {
                         IGWLog.warning("Couldn't find a server tab icon item stack for the name: " + entry[1]);
                     }
                 }

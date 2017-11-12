@@ -1,15 +1,5 @@
 package igwmod.gui;
 
-import java.awt.Rectangle;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-
 import igwmod.ClientProxy;
 import igwmod.ConfigHandler;
 import igwmod.InfoSupplier;
@@ -24,6 +14,13 @@ import igwmod.gui.tabs.IWikiTab;
 import igwmod.lib.IGWLog;
 import igwmod.lib.Textures;
 import igwmod.lib.Util;
+
+import java.awt.Rectangle;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -43,6 +40,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Derived from Vanilla's GuiContainerCreative
@@ -137,10 +138,12 @@ public class GuiWiki extends GuiContainer{
         return fontRenderer;
     }
 
+    @Override
     public int getGuiLeft(){
         return guiLeft;
     }
 
+    @Override
     public int getGuiTop(){
         return guiTop;
     }
@@ -173,13 +176,12 @@ public class GuiWiki extends GuiContainer{
         Keyboard.enableRepeatEvents(false);
         mc.gameSettings.guiScale = oldGuiScale;
     }
-    
+
     @Override
-    protected void handleMouseClick(Slot slot, int slotId, int mouseButton,
-    		ClickType type) {
-    	 if(slot != null && slot.getHasStack()) {
-             setCurrentFile(slot.getStack());
-         }
+    protected void handleMouseClick(Slot slot, int slotId, int mouseButton, ClickType type){
+        if(slot != null && slot.getHasStack()) {
+            setCurrentFile(slot.getStack());
+        }
     }
 
     @Override
@@ -242,7 +244,7 @@ public class GuiWiki extends GuiContainer{
         MinecraftForge.EVENT_BUS.post(wikiEvent);
         if(stack != null) {
             stack = stack.copy();
-//            stack.stackSize = 1;
+            //            stack.stackSize = 1;
             stack.setCount(1);
         }
 
@@ -603,7 +605,7 @@ public class GuiWiki extends GuiContainer{
                     if(tabItem != null && tabItem.getItem() != null) {
                         modid = WikiUtils.getOwningModId(tabItem);
                     }
-                    if(ConfigHandler.debugMode) {
+                    if(ConfigHandler.debugMode && !currentFile.startsWith("server")) {
                         IGWLog.info("Tracked down the mod owner of the page \"" + currentFile + "\" by getting the mod owner of the tab ItemStack. This is not recommended. Please prefix page links with <modid>:, so for example: pneumaticcraft:menu/baseConcepts");
                     }
                 }

@@ -2,12 +2,12 @@ package igwmod.gui;
 
 import net.minecraft.util.text.TextFormatting;
 
-
 /**
  * Created by K-4U on 17-7-2015.
  */
-public class LocatedSectionString extends LocatedString {
+public class LocatedSectionString extends LocatedString{
     private String beforeFormat;
+
     /**
      * A constructor for unlinked located strings. You can specify a color.
      * @param string
@@ -20,6 +20,7 @@ public class LocatedSectionString extends LocatedString {
         super(TextFormatting.BOLD + string, x, y, color, shadow);
         beforeFormat = string;
     }
+
     /**
      * A constructor for unlinked located strings.
      * @param string

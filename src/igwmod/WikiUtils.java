@@ -16,8 +16,8 @@ public class WikiUtils{
     public static ItemStack getStackFromName(String name){
         if(unlocMap == null) {
             unlocMap = new HashMap<String, ItemStack>();
-           // List<ItemStack> stackList = new ArrayList<ItemStack>();
-            NonNullList<ItemStack> stackList = NonNullList.<ItemStack>create();
+            // List<ItemStack> stackList = new ArrayList<ItemStack>();
+            NonNullList<ItemStack> stackList = NonNullList.<ItemStack> create();
             Iterator iterator = Item.REGISTRY.iterator();
             while(iterator.hasNext()) {
                 Item item = (Item)iterator.next();
@@ -38,7 +38,7 @@ public class WikiUtils{
         ItemStack stack = unlocMap.get(splitName[0]);
         if(stack != null) {
             stack = stack.copy();
-//            if(splitName.length > 1) stack.stackSize = Integer.parseInt(splitName[1]);
+            //            if(splitName.length > 1) stack.stackSize = Integer.parseInt(splitName[1]);
             if(splitName.length > 1) stack.setCount(Integer.parseInt(splitName[1]));
             return stack;
         } else {
@@ -55,7 +55,7 @@ public class WikiUtils{
         if(stack.getItem() == null) {
             IGWLog.warning("Found an ItemStack with a null item! This isn't supposed to happen!");
         } else {
-        	ResourceLocation id = Item.REGISTRY.getNameForObject(stack.getItem());
+            ResourceLocation id = Item.REGISTRY.getNameForObject(stack.getItem());
             if(id != null && id.getResourceDomain() != null) modid = id.getResourceDomain().toLowerCase();
         }
         return modid;

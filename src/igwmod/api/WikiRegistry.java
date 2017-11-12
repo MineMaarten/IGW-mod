@@ -57,8 +57,8 @@ public class WikiRegistry{
     }
 
     public static void registerEntityPageEntry(Class<? extends Entity> entityClass){
-//        registerEntityPageEntry(entityClass, "entity/" + EntityList.CLASS_TO_NAME.get(entityClass));
-    	registerEntityPageEntry(entityClass, "entity/" + EntityList.getKey(entityClass).getResourcePath());
+        //        registerEntityPageEntry(entityClass, "entity/" + EntityList.CLASS_TO_NAME.get(entityClass));
+        registerEntityPageEntry(entityClass, "entity/" + EntityList.getKey(entityClass).getResourcePath());
     }
 
     public static void registerEntityPageEntry(Class<? extends Entity> entityClass, String page){
@@ -88,14 +88,14 @@ public class WikiRegistry{
         if(page != null) {
             return page;
         } else {
-//            return "entity/" + EntityList.CLASS_TO_NAME.get(entityClass);
+            //            return "entity/" + EntityList.CLASS_TO_NAME.get(entityClass);
             return "entity/" + EntityList.getKey(entityClass).getResourcePath();
         }
     }
 
     public static List<ItemStack> getItemAndBlockPageEntries(){
-//        List<ItemStack> entries = new ArrayList<ItemStack>();
-        NonNullList entries = NonNullList.<ItemStack>create();
+        //        List<ItemStack> entries = new ArrayList<ItemStack>();
+        NonNullList entries = NonNullList.<ItemStack> create();
         for(Map.Entry<String, ItemStack> entry : itemAndBlockPageEntries) {
             if(entry.getValue().getItemDamage() == OreDictionary.WILDCARD_VALUE) {
                 entry.getValue().getItem().getSubItems(CreativeTabs.SEARCH, entries);
