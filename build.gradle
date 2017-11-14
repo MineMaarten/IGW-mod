@@ -68,7 +68,7 @@ dependencies {
 }
 
 minecraft {
-    version = "1.12.2-14.23.0.2509"
+    version = "1.12.2-14.23.0.2528"
     runDir = "eclipse"
     
     // the mappings can be changed at any time, and must be in the following format.
@@ -76,7 +76,7 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not allways work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20170624"
+    mappings = "snapshot_20171031"
 
     // replacing stuff in the source
 	replace '@MASSIVE@', project.massive
