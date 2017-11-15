@@ -1,14 +1,16 @@
 package igwmod.api;
 
+import igwmod.WikiHooks;
+import igwmod.gui.GuiWiki;
+import igwmod.gui.tabs.IWikiTab;
+import igwmod.gui.tabs.ServerWikiTab;
+
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import igwmod.gui.GuiWiki;
-import igwmod.gui.tabs.IWikiTab;
-import igwmod.gui.tabs.ServerWikiTab;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -24,6 +26,7 @@ public class WikiRegistry{
     private static Map<Class<? extends Entity>, String> entityPageEntries = new HashMap<Class<? extends Entity>, String>();
     public static List<IRecipeIntegrator> recipeIntegrators = new ArrayList<IRecipeIntegrator>();
     public static List<ITextInterpreter> textInterpreters = new ArrayList<ITextInterpreter>();
+    private static IWikiHooks wikiHooks = new WikiHooks();
 
     public static void registerWikiTab(IWikiTab tab){
         if(tab instanceof ServerWikiTab) {
@@ -95,7 +98,7 @@ public class WikiRegistry{
 
     public static List<ItemStack> getItemAndBlockPageEntries(){
         //        List<ItemStack> entries = new ArrayList<ItemStack>();
-        NonNullList entries = NonNullList.<ItemStack> create();
+        NonNullList<ItemStack> entries = NonNullList.create();
         for(Map.Entry<String, ItemStack> entry : itemAndBlockPageEntries) {
             if(entry.getValue().getItemDamage() == OreDictionary.WILDCARD_VALUE) {
                 entry.getValue().getItem().getSubItems(CreativeTabs.SEARCH, entries);
@@ -112,6 +115,9 @@ public class WikiRegistry{
             entries.add(entityClass);
         }
         return entries;
+    }
 
+    public static IWikiHooks getWikiHooks(){
+        return wikiHooks;
     }
 }

@@ -24,6 +24,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -40,6 +41,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.FMLClientHandler;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -78,6 +80,7 @@ public class GuiWiki extends GuiContainer{
     private int lastMouseX;
     private int oldGuiScale;
 
+    private GuiScreen prevGui;
     private GuiButton previousButton, nextButton;
 
     private static GuiTextField searchField;
@@ -146,6 +149,10 @@ public class GuiWiki extends GuiContainer{
     @Override
     public int getGuiTop(){
         return guiTop;
+    }
+
+    public void setPreviousScreen(GuiScreen gui){
+        prevGui = gui;
     }
 
     @Override
@@ -272,15 +279,15 @@ public class GuiWiki extends GuiContainer{
      * Fired when a key is typed. This is the equivalent of KeyListener.keyTyped(KeyEvent e).
      */
     @Override
-    protected void keyTyped(char par1, int par2) throws IOException{
-        if(searchField.textboxKeyTyped(par1, par2)) {
+    protected void keyTyped(char par1, int keyCode) throws IOException{
+        if(searchField.textboxKeyTyped(par1, keyCode)) {
             currentPageLinkScroll = 0;
             updateSearch();
         } else {
-            if(ClientProxy.openInterfaceKey.getKeyCode() == par2) {
-                mc.player.closeScreen();
+            if(keyCode == ClientProxy.openInterfaceKey.getKeyCode() || keyCode == 1) {
+                FMLClientHandler.instance().showGuiScreen(prevGui);
             } else {
-                super.keyTyped(par1, par2);
+                super.keyTyped(par1, keyCode);
             }
         }
     }
