@@ -395,6 +395,7 @@ public class GuiWiki extends GuiContainer{
      */
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks){
+        drawDefaultBackground();
         lastMouseX = mouseX;
         boolean leftClicking = Mouse.isButtonDown(0);
         int pageLinkScrollX1 = guiLeft + PAGE_LINK_SCROLL_X;
