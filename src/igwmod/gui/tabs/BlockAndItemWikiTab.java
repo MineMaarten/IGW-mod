@@ -72,7 +72,7 @@ public class BlockAndItemWikiTab implements IWikiTab{
 
     @Override
     public void renderForeground(GuiWiki gui, int mouseX, int mouseY){
-        if(drawingStack != null) {
+        if(!drawingStack.isEmpty()) {
             GlStateManager.enableLighting();
             RenderHelper.enableGUIStandardItemLighting();
             if(drawingStack.getItem() instanceof ItemBlock) {

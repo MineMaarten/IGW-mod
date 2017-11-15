@@ -17,7 +17,7 @@ public interface IWikiTab{
 
     /**
      * Will be called by the GUI to render the tab. The render matrix will already be translated dependant on where this tab is.
-     * @return When you return an ItemStack, this stack will be drawn rotating. Returning null is valid, nothing will be drawn (you will).
+     * @return When you return an ItemStack, this stack will be drawn rotating. Returning ItemStack.EMPTY is valid, nothing will be drawn (you will).
      */
     public ItemStack renderTabIcon(GuiWiki gui);
 

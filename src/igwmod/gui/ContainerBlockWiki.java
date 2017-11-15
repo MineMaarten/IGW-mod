@@ -64,7 +64,7 @@ class ContainerBlockWiki extends Container{
      */
     @Override
     public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2){
-        return null;
+        return ItemStack.EMPTY;
     }
 
     @Override

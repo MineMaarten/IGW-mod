@@ -40,7 +40,7 @@ public class WikiRegistry{
     }
 
     public static void registerBlockAndItemPageEntry(ItemStack stack){
-        if(stack == null || stack.getItem() == null) throw new IllegalArgumentException("Can't register null items");
+        if(stack.isEmpty() || stack.getItem() == null) throw new IllegalArgumentException("Can't register null items");
         registerBlockAndItemPageEntry(stack, stack.getUnlocalizedName().replace("tile.", "block/").replace("item.", "item/"));
     }
 

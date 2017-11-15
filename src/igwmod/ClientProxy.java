@@ -100,7 +100,7 @@ public class ClientProxy implements IProxy{
         }
 
         for(ItemStack stack : allCreativeStacks) {
-            if(stack != null && stack.getItem() != null && Item.REGISTRY.getNameForObject(stack.getItem()) != null) {
+            if(!stack.isEmpty() && stack.getItem() != null && Item.REGISTRY.getNameForObject(stack.getItem()) != null) {
                 String modid = Paths.MOD_ID.toLowerCase();
                 ResourceLocation id = Item.REGISTRY.getNameForObject(stack.getItem());
                 if(id != null && id.getResourceDomain() != null) modid = id.getResourceDomain().toLowerCase();

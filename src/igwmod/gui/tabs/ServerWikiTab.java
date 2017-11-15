@@ -62,7 +62,7 @@ public class ServerWikiTab extends BaseWikiTab{
 
     @Override
     public ItemStack renderTabIcon(GuiWiki gui){
-        if(iconStack != null) {
+        if(!iconStack.isEmpty()) {
             return iconStack;
         } else {
             GL11.glPushMatrix();

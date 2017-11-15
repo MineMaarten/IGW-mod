@@ -109,7 +109,7 @@ public class IntegratorCraftingRecipe implements IRecipeIntegrator{
                     if(ingredient.getMatchingStacks().length > 0) {
                         ItemStack ingredientStack = ingredient.getMatchingStacks()[0];
                         //ingredient instanceof ItemStack ? (ItemStack)ingredient : ((List<ItemStack>)ingredient).get(0);
-                        if(ingredientStack != null) {
+                        if(!ingredientStack.isEmpty()) {
                             locatedStacks.add(new LocatedStack(ingredientStack, x + STACKS_X_OFFSET + j * 18, y + STACKS_Y_OFFSET + i * 18));
                         }
                     }
@@ -124,7 +124,7 @@ public class IntegratorCraftingRecipe implements IRecipeIntegrator{
                     if(i * 3 + j < recipe.recipeItems.size()) {
                         Ingredient ingredient = recipe.recipeItems.get(i * 3 + j);
                         ItemStack ingredientStack = ingredient.getMatchingStacks()[0];
-                        if(ingredientStack != null) {
+                        if(!ingredientStack.isEmpty()) {
                             locatedStacks.add(new LocatedStack(ingredientStack, x + STACKS_X_OFFSET + j * 18, y + STACKS_Y_OFFSET + i * 18));
                         }
                     }
@@ -141,7 +141,7 @@ public class IntegratorCraftingRecipe implements IRecipeIntegrator{
                         if(ingredient != null) {
                             ItemStack ingredientStack = ingredient.getMatchingStacks()[0];
                             //ingredient instanceof ItemStack ? (ItemStack)ingredient : ((List<ItemStack>)ingredient).get(0);
-                            if(ingredientStack != null) {
+                            if(!ingredientStack.isEmpty()) {
                                 locatedStacks.add(new LocatedStack(ingredientStack, x + STACKS_X_OFFSET + j * 18, y + STACKS_Y_OFFSET + i * 18));
                             }
                         }
@@ -171,13 +171,13 @@ public class IntegratorCraftingRecipe implements IRecipeIntegrator{
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 3; j++) {
                 ItemStack ingredientStack = ingredientMap.get(ingredients[i].substring(j, j + 1));
-                if(ingredientStack != null) {
+                if(!ingredientStack.isEmpty()) {
                     locatedStacks.add(new LocatedStack(ingredientStack, x + STACKS_X_OFFSET + j * 18, y + STACKS_Y_OFFSET + i * 18));
                 }
             }
         }
         ItemStack resultStack = WikiUtils.getStackFromName(result);
-        if(resultStack != null) {
+        if(!resultStack.isEmpty()) {
             locatedStacks.add(new LocatedStack(resultStack, x + RESULT_STACK_X_OFFSET, y + RESULT_STACK_Y_OFFSET));
         }
     }

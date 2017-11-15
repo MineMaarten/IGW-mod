@@ -45,12 +45,12 @@ public class IntegratorFurnace implements IRecipeIntegrator{
         locatedTextures.add(new LocatedTexture(TextureSupplier.getTexture(Paths.MOD_ID_WITH_COLON + "textures/GuiFurnace.png"), x, y, (int)(82 / GuiWiki.TEXT_SCALE), (int)(54 / GuiWiki.TEXT_SCALE)));
         x = (int)(x * GuiWiki.TEXT_SCALE);
         y = (int)(y * GuiWiki.TEXT_SCALE);
-        ItemStack inputStack = null;
-        ItemStack resultStack = null;
+        ItemStack inputStack = ItemStack.EMPTY;
+        ItemStack resultStack = ItemStack.EMPTY;
         if(arguments[2].startsWith("key=")) {
             String resultStackCode = arguments[2].substring(4);
             inputStack = autoMappedFurnaceRecipes.get(resultStackCode);
-            if(inputStack != null) {
+            if(!inputStack.isEmpty()) {
                 resultStack = WikiUtils.getStackFromName(resultStackCode);
             } else {
                 FurnaceRetrievalEvent recipeEvent = new FurnaceRetrievalEvent(resultStackCode);
@@ -62,10 +62,10 @@ public class IntegratorFurnace implements IRecipeIntegrator{
             inputStack = WikiUtils.getStackFromName(arguments[2]);
             resultStack = WikiUtils.getStackFromName(arguments[3]);
         }
-        if(inputStack != null) {
+        if(!inputStack.isEmpty()) {
             locatedStacks.add(new LocatedStack(inputStack, x + IntegratorCraftingRecipe.STACKS_X_OFFSET, y + IntegratorCraftingRecipe.STACKS_Y_OFFSET));
         }
-        if(resultStack != null) {
+        if(!resultStack.isEmpty()) {
             locatedStacks.add(new LocatedStack(resultStack, x + IntegratorCraftingRecipe.STACKS_X_OFFSET + 60, y + IntegratorCraftingRecipe.STACKS_Y_OFFSET + 18));
         }
     }

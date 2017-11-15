@@ -255,7 +255,7 @@ public class GuiWiki extends GuiContainer{
         BrowseHistory.updateHistory(currentPageScroll);
         if(metadata.length == 0) {
             ItemStack displayedStack = WikiUtils.getStackFromName(file);
-            if(displayedStack != null) metadata = new Object[]{displayedStack};
+            if(!displayedStack.isEmpty()) metadata = new Object[]{displayedStack};
         }
         currentFile = file;
         IWikiTab tab = getTabForPage(currentFile);

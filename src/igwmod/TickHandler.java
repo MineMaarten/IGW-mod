@@ -89,7 +89,7 @@ public class TickHandler{
                 IBlockState blockState = world.getBlockState(coordHovered);
                 if(blockState != null) {
                     ItemStack idPicked = blockState.getBlock().getPickBlock(blockState, FMLClientHandler.instance().getClient().objectMouseOver, world, coordHovered, FMLClientHandler.instance().getClientPlayerEntity());
-                    return (idPicked != null ? idPicked : new ItemStack(blockState.getBlock(), 1, blockState.getBlock().getMetaFromState(blockState))).getDisplayName(); //TODO test blockState.getBlock().getDamage()
+                    return (!idPicked.isEmpty() ? idPicked : new ItemStack(blockState.getBlock(), 1, blockState.getBlock().getMetaFromState(blockState))).getDisplayName(); //TODO test blockState.getBlock().getDamage()
                 }
             } catch(Throwable e) {}
             return TextFormatting.RED + "<ERROR>";

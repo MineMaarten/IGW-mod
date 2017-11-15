@@ -35,7 +35,7 @@ public class IntegratorStack implements IRecipeIntegrator{
         }
 
         ItemStack stack = WikiUtils.getStackFromName(arguments[2]);
-        if(stack == null) throw new IllegalArgumentException("Item not found for the name " + arguments[2]);
+        if(stack.isEmpty()) throw new IllegalArgumentException("Item not found for the name " + arguments[2]);
         locatedStacks.add(new LocatedStack(stack, (int)(x * GuiWiki.TEXT_SCALE), (int)(y * GuiWiki.TEXT_SCALE)));
     }
 

@@ -35,14 +35,14 @@ public class WikiUtils{
             }
         }
         String[] splitName = name.contains("#") ? name.split("#") : new String[]{name};
-        ItemStack stack = unlocMap.get(splitName[0]);
-        if(stack != null) {
+        ItemStack stack = unlocMap.getOrDefault(splitName[0], ItemStack.EMPTY);
+        if(!stack.isEmpty()) {
             stack = stack.copy();
             //            if(splitName.length > 1) stack.stackSize = Integer.parseInt(splitName[1]);
             if(splitName.length > 1) stack.setCount(Integer.parseInt(splitName[1]));
             return stack;
         } else {
-            return null;
+            return ItemStack.EMPTY;
         }
     }
 
