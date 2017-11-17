@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ServerWikiTab extends BaseWikiTab{
     private String serverName;
-    private ItemStack iconStack;
+    private ItemStack iconStack = ItemStack.EMPTY;
     private LocatedTexture icon;
 
     public ServerWikiTab(){
@@ -37,7 +37,7 @@ public class ServerWikiTab extends BaseWikiTab{
             }
         }
 
-        if(iconStack == null) {
+        if(iconStack.isEmpty()) {
             icon = new LocatedTexture(new ResourceLocation("server/tab_icon.png"), 5, 10, 27, 27);
         }
 
