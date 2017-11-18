@@ -159,18 +159,17 @@ public class IntegratorCraftingRecipe implements IRecipeIntegrator{
 
     private void addManualCraftingRecipe(String[] codeParts, List<LocatedStack> locatedStacks, List<IWidget> locatedTextures, int x, int y) throws IllegalArgumentException{
         String[] ingredients = new String[codeParts.length - 3];
-        for(int i = 3; i < codeParts.length; i++)
-            ingredients[i - 3] = codeParts[i];
+        System.arraycopy(codeParts, 3, ingredients, 0, codeParts.length - 3);
         // ingredients[codeParts.length - 2] = lastTwoArguments[0];
         String result = codeParts[2];
-        Map<String, ItemStack> ingredientMap = new HashMap<String, ItemStack>();
+        Map<String, ItemStack> ingredientMap = new HashMap<>();
         for(int i = 3; i < ingredients.length; i++) {
             String[] ingredient = ingredients[i].split("=");
             ingredientMap.put(ingredient[0], WikiUtils.getStackFromName(ingredient[1]));
         }
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 3; j++) {
-                ItemStack ingredientStack = ingredientMap.get(ingredients[i].substring(j, j + 1));
+                ItemStack ingredientStack = ingredientMap.getOrDefault(ingredients[i].substring(j, j + 1), ItemStack.EMPTY);
                 if(!ingredientStack.isEmpty()) {
                     locatedStacks.add(new LocatedStack(ingredientStack, x + STACKS_X_OFFSET + j * 18, y + STACKS_Y_OFFSET + i * 18));
                 }

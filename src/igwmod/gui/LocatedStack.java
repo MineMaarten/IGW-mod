@@ -6,7 +6,7 @@ import igwmod.api.WikiRegistry;
 import net.minecraft.item.ItemStack;
 
 public class LocatedStack implements IReservedSpace, IPageLink{
-    public ItemStack stack;
+    public final ItemStack stack;
     public int x, y;
 
     public LocatedStack(ItemStack stack, int x, int y){

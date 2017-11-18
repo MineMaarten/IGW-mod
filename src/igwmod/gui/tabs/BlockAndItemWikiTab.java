@@ -20,7 +20,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
 public class BlockAndItemWikiTab implements IWikiTab{
-    private static ItemStack drawingStack;
+    private static ItemStack drawingStack = ItemStack.EMPTY;
 
     @Override
     public String getName(){
