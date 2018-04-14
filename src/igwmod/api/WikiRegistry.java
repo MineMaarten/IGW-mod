@@ -18,6 +18,7 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class WikiRegistry{
@@ -91,8 +92,8 @@ public class WikiRegistry{
         if(page != null) {
             return page;
         } else {
-            //            return "entity/" + EntityList.CLASS_TO_NAME.get(entityClass);
-            return "entity/" + EntityList.getKey(entityClass).getResourcePath();
+            ResourceLocation entityName = EntityList.getKey(entityClass);
+            return entityName == null ? null : "entity/" + entityName.getResourcePath();
         }
     }
 

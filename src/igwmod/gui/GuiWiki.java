@@ -259,6 +259,8 @@ public class GuiWiki extends GuiContainer{
     }
 
     public void setCurrentFile(String file, Object... metadata){
+        if(file == null) return;
+
         BrowseHistory.updateHistory(currentPageScroll);
         if(metadata.length == 0) {
             ItemStack displayedStack = WikiUtils.getStackFromName(file);
