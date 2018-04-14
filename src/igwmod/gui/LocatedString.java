@@ -5,9 +5,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -17,6 +14,9 @@ import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.FMLClientHandler;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 public class LocatedString extends Gui implements IPageLink, GuiYesNoCallback{
     protected static FontRenderer fontRenderer = FMLClientHandler.instance().getClient().fontRenderer;
@@ -77,7 +77,7 @@ public class LocatedString extends Gui implements IPageLink, GuiYesNoCallback{
     public boolean onMouseClick(GuiWiki gui, int x, int y){
         if(linkAddress != null) {
             if(getMouseSpace().contains(x, y)) {
-                if(linkAddress.contains("www")) {
+                if(linkAddress.contains("www") || linkAddress.startsWith("http://") || linkAddress.startsWith("https://")) {
                     parentGui = Minecraft.getMinecraft().currentScreen;
                     Minecraft.getMinecraft().displayGuiScreen(new GuiConfirmOpenLink(this, linkAddress, 0, false));
                 } else {
