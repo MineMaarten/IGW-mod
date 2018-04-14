@@ -4,7 +4,7 @@
   "name"    : "In-Game wiki Mod",
   "description": "Mod that allows for mods to add in-game documentation.",
   "version": "${version}",
-  "mcversion": "$mcversion",
+  "mcversion": "${mcversion}",
   "url": "www.minemaarten.com",
   "updateUrl": "",
   "authorList": [
