@@ -1,6 +1,7 @@
 package igwmod;
 
 import igwmod.api.WikiRegistry;
+import igwmod.gui.GuiWiki;
 import igwmod.gui.tabs.BlockAndItemWikiTab;
 import igwmod.gui.tabs.EntityWikiTab;
 import igwmod.gui.tabs.IGWWikiTab;
@@ -21,19 +22,24 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.event.FMLInterModComms.IMCEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -41,6 +47,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
+
+import org.lwjgl.input.Keyboard;
 
 public class ClientProxy implements IProxy{
     public static KeyBinding openInterfaceKey;
@@ -73,8 +81,38 @@ public class ClientProxy implements IProxy{
 
     @SubscribeEvent
     public void onKeyBind(KeyInputEvent event){
-        if(openInterfaceKey.isPressed() && FMLClientHandler.instance().getClient().inGameHasFocus) {
-            TickHandler.openWikiGui();
+        if(openInterfaceKey.isPressed()) {
+            if(FMLClientHandler.instance().getClient().inGameHasFocus) {
+                TickHandler.openWikiGui();
+            } else {
+                // handleSlotPresses();
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onGuiKeyBind(GuiScreenEvent.KeyboardInputEvent.Post event){
+        char chr = Keyboard.getEventCharacter();
+        int key = Keyboard.getEventKey();
+
+        if(((key == 0 && chr >= 32) || Keyboard.getEventKeyState()) && key == openInterfaceKey.getKeyCode()) {
+            handleSlotPresses();
+        }
+    }
+
+    private void handleSlotPresses(){
+        GuiScreen guiScreen = Minecraft.getMinecraft().currentScreen;
+        if(guiScreen instanceof GuiContainer) {
+            GuiContainer guiContainer = (GuiContainer)guiScreen;
+            Slot slot = guiContainer.getSlotUnderMouse();
+            if(slot != null) {
+                ItemStack stack = slot.getStack();
+                if(!stack.isEmpty()) {
+                    GuiWiki gui = new GuiWiki();
+                    FMLCommonHandler.instance().showGuiScreen(gui);
+                    gui.setCurrentFile(stack);
+                }
+            }
         }
     }
 
